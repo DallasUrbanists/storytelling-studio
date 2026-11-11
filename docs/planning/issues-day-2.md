@@ -1,10 +1,9 @@
 # Day 2 issue bodies
 
-An implementer can publish these work items after publication approval and start
-them after the later explicit implementation kickoff. IDs are local planning
-identifiers, not existing GitHub issue numbers; the
-[backlog procedure](issue-backlog.md) and [Day 2 runbook](day-2-geographic-storytelling.md)
-define publication, sequencing, evidence, and completion.
+An implementer can start these work items after a later explicit implementation
+kickoff. The [backlog identifier map](issue-backlog.md#github-identifier-map)
+links planning IDs to published issues; the [Day 2 runbook](day-2-geographic-storytelling.md)
+defines sequencing, evidence, and completion.
 
 - [D2-00: Stage the external GIS tool and dated pedestrian graph](#d2-00-stage-the-external-gis-tool-and-dated-pedestrian-graph)
 - [D2-01: Extend scenes to an ordered list of focus steps](#d2-01-extend-scenes-to-an-ordered-list-of-focus-steps)

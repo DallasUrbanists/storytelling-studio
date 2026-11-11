@@ -1,10 +1,9 @@
 # Day 3 issue bodies
 
-An implementer can publish these work items after publication approval and start
-them after the later explicit implementation kickoff. IDs are local planning
-identifiers, not existing GitHub issue numbers; the
-[backlog procedure](issue-backlog.md) and [Day 3 runbook](day-3-research-production.md)
-define publication, sequencing, evidence, and completion.
+An implementer can start these work items after a later explicit implementation
+kickoff. The [backlog identifier map](issue-backlog.md#github-identifier-map)
+links planning IDs to published issues; the [Day 3 runbook](day-3-research-production.md)
+defines sequencing, evidence, and completion.
 
 - [D3-01: Extend source, method, and result provenance records](#d3-01-extend-source-method-and-result-provenance-records)
 - [D3-02: Acquire and map the selected ACS population and boundary snapshot](#d3-02-acquire-and-map-the-selected-acs-population-and-boundary-snapshot)
