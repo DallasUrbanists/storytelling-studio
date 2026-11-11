@@ -161,3 +161,13 @@ fraction error; the implementation was corrected to use spherical rhumb-line
 distance and checked against an 84-case numerical sweep. See the
 [receipt](planning/receipts/D1-04/D1-04-20261111-01.md). Browser projection,
 readiness, and pixel parity remain unverified.
+
+## D1-02 supervised attempt: verified locally
+
+The foreground development stubs, checkout-scoped status and cooperative
+stop, and static and unit checks passed the Windows procedures in the
+[receipt](planning/receipts/D1-02/D1-02-20261111-03.md). The integrated
+`npm run check` passed lint, TypeScript, documentation checks, and 34 core
+and schema tests. The npm dependency audit reports seven moderate findings
+in the development-only lint chain; ESLint 9 is marked unsupported. No
+editor, persistence, or export workflow is implied by these stubs.
