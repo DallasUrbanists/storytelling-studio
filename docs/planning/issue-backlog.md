@@ -1,9 +1,10 @@
 # Execution backlog and publication procedure
 
-You can use these issue bodies to publish the approved execution backlog and
+You can use these issue bodies to understand the approved execution backlog and
 start a later implementation session without reconstructing the planning chat.
-The stable identifiers are local planning IDs; no GitHub issue numbers or pull
-requests exist for this backlog until publication occurs.
+The stable planning IDs are mapped to published GitHub issues in the
+[identifier map](#github-identifier-map); [implementation status](../implementation-status.md)
+records publication progress and verified work.
 
 - [Read an issue](#read-an-issue)
 - [Inherited controller metadata](#inherited-controller-metadata)
@@ -117,11 +118,12 @@ documentation commit/push and issue creation only; the planning session ends
 after the publication audit. Application implementation requires a later
 explicit kickoff or implementation session.
 
-The inspected repository has no established branch or commits, so the first
-documentation baseline cannot be opened as an ordinary pull request against an
-existing `main`. The lead should recheck remote branches and rules before acting
-because another contributor might have initialized the repository after the
-inspection.
+At the initial inspection, the repository had no established branch or commits,
+so the first documentation baseline could not be opened as an ordinary pull
+request against an existing `main`. The baseline has since been published; see
+[implementation status](../implementation-status.md) for the record. The lead
+should recheck remote branches and rules before acting because repository state
+can change after an inspection.
 
 After publication approval, the lead should complete these steps in order.
 
@@ -339,7 +341,96 @@ or the 60-minute reassessment; do not substitute a new claim silently.
 
 ## GitHub identifier map
 
-Publication has not occurred in this planning package. The publisher should
-replace this paragraph with the actual stable-ID → issue-URL map after P02 and
-record failures explicitly; fabricated issue numbers and placeholder URLs are
-not acceptable.
+The approved 81-item backlog was published on November 11, 2026. Each issue
+contains its complete source body, actual dependency links, and exact dispatch
+row. All issues are open and labeled `status:awaiting-kickoff`; publication does
+not authorize application or controller execution.
+
+P01–P03 are publication work records rather than GitHub implementation issues.
+The [publication receipt](../implementation-status.md#publication-record)
+records P03's external prerequisite. X-01 and X-02 remain optional proposals in
+this document and were not added to the four-day execution queue.
+
+| Stable ID | GitHub issue | Preferred model | Scope |
+| --- | --- | --- | --- |
+| D1-01 | [#1: Pin the minimal workspace and rendering toolchain](https://github.com/DallasUrbanists/storytelling-studio/issues/1) | terra | First film |
+| D1-02 | [#2: Create checkout-scoped lifecycle and static-check scripts](https://github.com/DallasUrbanists/storytelling-studio/issues/2) | terra | First film |
+| D1-03 | [#3: Define the minimum versioned project and synthetic fixture](https://github.com/DallasUrbanists/storytelling-studio/issues/3) | terra | First film |
+| D1-04 | [#4: Implement pure frame, camera, trace, and label evaluation](https://github.com/DallasUrbanists/storytelling-studio/issues/4) | sol | First film |
+| D1-05 | [#5: Build one MapLibre frame adapter with explicit readiness](https://github.com/DallasUrbanists/storytelling-studio/issues/5) | sol | First film |
+| D1-06 | [#6: Mount the shared fixture in a Vue preview harness](https://github.com/DallasUrbanists/storytelling-studio/issues/6) | terra | First film |
+| D1-07 | [#7: Mount the shared fixture in a Remotion composition](https://github.com/DallasUrbanists/storytelling-studio/issues/7) | sol | First film |
+| D1-08 | [#8: Render and decode the synthetic fixture in both formats](https://github.com/DallasUrbanists/storytelling-studio/issues/8) | sol | First film |
+| D1-09 | [#9: Prove Vue-to-Remotion parity before editor expansion](https://github.com/DallasUrbanists/storytelling-studio/issues/9) | sol | First film |
+| D1-10 | [#10: Create the minimal Quasar authoring shell](https://github.com/DallasUrbanists/storytelling-studio/issues/10) | terra | First film |
+| D1-11 | [#11: Import bounded GeoJSON with usable validation errors](https://github.com/DallasUrbanists/storytelling-studio/issues/11) | sol | First film |
+| D1-12 | [#12: Edit a camera focus with variant-specific framing](https://github.com/DallasUrbanists/storytelling-studio/issues/12) | terra | First film |
+| D1-13 | [#13: Edit line and boundary trace timing and appearance](https://github.com/DallasUrbanists/storytelling-studio/issues/13) | terra | First film |
+| D1-14 | [#14: Edit animated labels and safe-area placement](https://github.com/DallasUrbanists/storytelling-studio/issues/14) | terra | First film |
+| D1-15 | [#15: Implement the narrow loopback service boundary](https://github.com/DallasUrbanists/storytelling-studio/issues/15) | sol | First film |
+| D1-16 | [#16: Save immutable SQLite revisions with conflict recovery](https://github.com/DallasUrbanists/storytelling-studio/issues/16) | sol | First film |
+| D1-17 | [#17: Wire local project save and open controls](https://github.com/DallasUrbanists/storytelling-studio/issues/17) | terra | First film |
+| D1-18 | [#18: Run cancellable render jobs against a saved revision](https://github.com/DallasUrbanists/storytelling-studio/issues/18) | sol | First film |
+| D1-19 | [#19: Expose export controls and prove the complete local flow](https://github.com/DallasUrbanists/storytelling-studio/issues/19) | terra | First film |
+| D1-20 | [#20: Record Day 1 evidence and wire required checks](https://github.com/DallasUrbanists/storytelling-studio/issues/20) | terra | First film |
+| D2-00 | [#21: Stage the external GIS tool and dated pedestrian graph](https://github.com/DallasUrbanists/storytelling-studio/issues/21) | terra | First film |
+| D2-01 | [#22: Extend scenes to an ordered list of focus steps](https://github.com/DallasUrbanists/storytelling-studio/issues/22) | sol | First film |
+| D2-02 | [#23: Add, duplicate, reorder, and delete focus steps](https://github.com/DallasUrbanists/storytelling-studio/issues/23) | terra | First film |
+| D2-03 | [#24: Fit camera extents independently for both output variants](https://github.com/DallasUrbanists/storytelling-studio/issues/24) | sol | First film |
+| D2-04 | [#25: Prepare verified Dallas, Oak Lawn, Maple, and landmark sources](https://github.com/DallasUrbanists/storytelling-studio/issues/25) | terra | First film |
+| D2-05 | [#26: Normalize one verified transit dataset into project layers](https://github.com/DallasUrbanists/storytelling-studio/issues/26) | sol | First film |
+| D2-06 | [#27: Expose transit layer groups and source details](https://github.com/DallasUrbanists/storytelling-studio/issues/27) | terra | First film |
+| D2-07 | [#28: Import and label verified GoLink service polygons](https://github.com/DallasUrbanists/storytelling-studio/issues/28) | terra | First film |
+| D2-08 | [#29: Persist layer visibility and Keep visible intervals across scenes](https://github.com/DallasUrbanists/storytelling-studio/issues/29) | terra | First film |
+| D2-09 | [#30: Trace verified routes with geometry-aware progress](https://github.com/DallasUrbanists/storytelling-studio/issues/30) | sol | First film |
+| D2-10 | [#31: Acquire one reproducible 600-second pedestrian-network walkshed](https://github.com/DallasUrbanists/storytelling-studio/issues/31) | sol | First film |
+| D2-11 | [#32: Validate and import network walkshed packages](https://github.com/DallasUrbanists/storytelling-studio/issues/32) | terra | First film |
+| D2-12 | [#33: Review the real walkshed's corridor access and barriers](https://github.com/DallasUrbanists/storytelling-studio/issues/33) | sol | First film |
+| D2-13 | [#34: Add the walkshed overlay to saved story scenes](https://github.com/DallasUrbanists/storytelling-studio/issues/34) | terra | First film |
+| D2-14 | [#35: Write portable project archives with a complete asset manifest](https://github.com/DallasUrbanists/storytelling-studio/issues/35) | terra | First film |
+| D2-15 | [#36: Validate archive safety before extraction](https://github.com/DallasUrbanists/storytelling-studio/issues/36) | sol | First film |
+| D2-16 | [#37: Import validated archives atomically with asset hash checks](https://github.com/DallasUrbanists/storytelling-studio/issues/37) | sol | First film |
+| D2-17 | [#38: Prove portable round trip in a clean data directory](https://github.com/DallasUrbanists/storytelling-studio/issues/38) | terra | First film |
+| D2-18 | [#39: Assemble the sourced Dallas-to-Maple geographic sequence](https://github.com/DallasUrbanists/storytelling-studio/issues/39) | terra | First film |
+| D2-19 | [#40: Record the geographic and portable-project gate](https://github.com/DallasUrbanists/storytelling-studio/issues/40) | sol | First film |
+| D3-01 | [#41: Extend source, method, and result provenance records](https://github.com/DallasUrbanists/storytelling-studio/issues/41) | terra | First film |
+| D3-02 | [#42: Acquire and map the selected ACS population and boundary snapshot](https://github.com/DallasUrbanists/storytelling-studio/issues/42) | sol | First film |
+| D3-03 | [#43: Bind research runs to the reviewed study-area snapshot](https://github.com/DallasUrbanists/storytelling-studio/issues/43) | terra | First film |
+| D3-04 | [#44: Compute bounded polygon intersections and geodesic areas](https://github.com/DallasUrbanists/storytelling-studio/issues/44) | sol | First film |
+| D3-05 | [#45: Allocate one population measure across partial overlaps](https://github.com/DallasUrbanists/storytelling-studio/issues/45) | sol | First film |
+| D3-06 | [#46: Aggregate allocated population with reproducible rounding and diagnostics](https://github.com/DallasUrbanists/storytelling-studio/issues/46) | sol | First film |
+| D3-07 | [#47: Run the bounded population analysis as a local job](https://github.com/DallasUrbanists/storytelling-studio/issues/47) | terra | First film |
+| D3-08 | [#48: Display research results with source and limitation details](https://github.com/DallasUrbanists/storytelling-studio/issues/48) | terra | First film |
+| D3-09 | [#49: Record explicit review and invalidate stale research approvals](https://github.com/DallasUrbanists/storytelling-studio/issues/49) | sol | First film |
+| D3-10 | [#50: Enforce historical comparability before calculating change](https://github.com/DallasUrbanists/storytelling-studio/issues/50) | sol | Conditional |
+| D3-11 | [#51: Find one defensible historical comparator or record its absence](https://github.com/DallasUrbanists/storytelling-studio/issues/51) | terra | Conditional |
+| D3-12 | [#52: Enforce valid income measures and comparisons](https://github.com/DallasUrbanists/storytelling-studio/issues/52) | sol | Conditional |
+| D3-13 | [#53: Prepare one income source snapshot for review](https://github.com/DallasUrbanists/storytelling-studio/issues/53) | sol | Conditional |
+| D3-14 | [#54: Render research cards from approved snapshot references](https://github.com/DallasUrbanists/storytelling-studio/issues/54) | terra | First film |
+| D3-15 | [#55: Review one candidate aerial image for rights and usefulness](https://github.com/DallasUrbanists/storytelling-studio/issues/55) | terra | Conditional |
+| D3-16 | [#56: Import one cleared georeferenced image for deterministic scenes](https://github.com/DallasUrbanists/storytelling-studio/issues/56) | sol | Conditional |
+| D3-17 | [#57: Run and review the first real Maple population result](https://github.com/DallasUrbanists/storytelling-studio/issues/57) | sol | First film |
+| D3-18 | [#58: Assemble approved population and conditional research scenes](https://github.com/DallasUrbanists/storytelling-studio/issues/58) | terra | First film |
+| D3-19 | [#59: Record the research mechanism gate and real-content status](https://github.com/DallasUrbanists/storytelling-studio/issues/59) | sol | First film |
+| D4-01 | [#60: Define roadway bands, dimensions, and provenance fields](https://github.com/DallasUrbanists/storytelling-studio/issues/60) | terra | First film |
+| D4-02 | [#61: Implement a width solver that preserves locked dimensions](https://github.com/DallasUrbanists/storytelling-studio/issues/61) | sol | First film |
+| D4-03 | [#62: Add meaningful roadway constraint tests](https://github.com/DallasUrbanists/storytelling-studio/issues/62) | sol | First film |
+| D4-04 | [#63: Render top-down roadway bands and readable dimensions](https://github.com/DallasUrbanists/storytelling-studio/issues/63) | terra | First film |
+| D4-05 | [#64: Add editable four-lane and three-lane concept presets](https://github.com/DallasUrbanists/storytelling-studio/issues/64) | terra | First film |
+| D4-06 | [#65: Edit band widths, order, types, and locks](https://github.com/DallasUrbanists/storytelling-studio/issues/65) | terra | First film |
+| D4-07 | [#66: Represent longitudinal segments with varying roadway layouts](https://github.com/DallasUrbanists/storytelling-studio/issues/66) | sol | First film |
+| D4-08 | [#67: Edit and inspect roadway segment ranges](https://github.com/DallasUrbanists/storytelling-studio/issues/67) | terra | First film |
+| D4-09 | [#68: Render variable segments in a continuous top-down roadway view](https://github.com/DallasUrbanists/storytelling-studio/issues/68) | sol | First film |
+| D4-10 | [#69: Animate a mapped four-to-three-lane reallocation by frame](https://github.com/DallasUrbanists/storytelling-studio/issues/69) | sol | First film |
+| D4-11 | [#70: Edit roadway transformation timing and annotations](https://github.com/DallasUrbanists/storytelling-studio/issues/70) | terra | First film |
+| D4-12 | [#71: Attach source evidence and uncertainty to each roadway dimension](https://github.com/DallasUrbanists/storytelling-studio/issues/71) | terra | First film |
+| D4-13 | [#72: Verify the Maple segment dimensions or record bounded estimates](https://github.com/DallasUrbanists/storytelling-studio/issues/72) | sol | First film |
+| D4-14 | [#73: Persist roadway edits in projects and portable archives](https://github.com/DallasUrbanists/storytelling-studio/issues/73) | terra | First film |
+| D4-15 | [#74: Integrate roadway scenes into the shared renderer](https://github.com/DallasUrbanists/storytelling-studio/issues/74) | sol | First film |
+| D4-16 | [#75: Author the reviewed Maple roadway transformation](https://github.com/DallasUrbanists/storytelling-studio/issues/75) | terra | First film |
+| D4-17 | [#76: Assemble the full geographic, research, and roadway story](https://github.com/DallasUrbanists/storytelling-studio/issues/76) | terra | First film |
+| D4-18 | [#77: Add captions, source credits, and final variant-specific framing](https://github.com/DallasUrbanists/storytelling-studio/issues/77) | terra | First film |
+| D4-19 | [#78: Obtain final factual, dimension, and rights review of the pinned revision](https://github.com/DallasUrbanists/storytelling-studio/issues/78) | sol | First film |
+| D4-20 | [#79: Render and decode both final video variants](https://github.com/DallasUrbanists/storytelling-studio/issues/79) | sol | First film |
+| D4-21 | [#80: Review full playback and reopen the final portable project](https://github.com/DallasUrbanists/storytelling-studio/issues/80) | terra | First film |
+| D4-22 | [#81: Close the sprint with accurate guides and delivery evidence](https://github.com/DallasUrbanists/storytelling-studio/issues/81) | terra | First film |

@@ -1,13 +1,13 @@
 # Four-day implementation plan
 
-You can use this package to approve an executable sequence for a local
+You can use this package to review an executable sequence for a local
 geographic storytelling tool and a Maple Avenue pilot film. The schedule covers
 Wednesday, November 11, through Saturday, November 14, 2026, in America/Chicago;
 the dates are target checkpoints, not evidence that work is complete.
 
 The starting repository contains planning documents only. The
 [implementation status](../implementation-status.md) records what has actually
-been inspected, and the [issue backlog](issue-backlog.md) contains publication-ready
+been inspected, and the [issue backlog](issue-backlog.md) contains
 work items with dependencies and acceptance criteria.
 
 - [Recommended route](#recommended-route)
@@ -111,19 +111,17 @@ verification gates, not facts supplied by this planning package.
 
 ## Approval boundary
 
-This package is prepared for local review only. No application scaffold,
-dependency installation, Git initialization, commit, GitHub issue, pull request,
-or publication is authorized until the user approves the package's publication.
-That approval authorizes the planning commit and GitHub backlog, not application
-implementation.
+The owner approved publication of the planning package and GitHub backlog.
+The [implementation status](../implementation-status.md) records the
+publication state, and the [backlog](issue-backlog.md) maps published identifiers.
+Application implementation has not started and requires a later explicit
+implementation kickoff or implementation session.
 
-After that approval, the planning lead can execute the
-[publication procedure](issue-backlog.md#publish-the-approved-backlog), then end
-the planning/publication phase. A later explicit implementation kickoff or
-implementation session activates ordinary branch, pull-request, passing-merge,
-and issue-closure authority without repeated approval requests. The separate
-security, permissions, licensing, and
-substantial-architecture boundaries in [AGENTS.md](../../AGENTS.md) still apply.
+After that kickoff, ordinary branch, pull-request, passing-merge, and issue-closure
+authority applies without repeated approval requests. Controller development and
+activation require separate authorization, and the security, permissions,
+licensing, and substantial-architecture boundaries in [AGENTS.md](../../AGENTS.md)
+still apply.
 
 ## Maintain the plan
 

@@ -6,8 +6,9 @@ the issue bodies' dependencies, model assignments, and bounded scope while
 allowing independent workers to run in isolated worktrees.
 
 This is a planning contract, not an installed or running controller. Publication
-approval remains pending, implementation has not been started, and controller
-activation needs the separate capability and authorization checks in
+has been approved; [implementation status](../implementation-status.md) records
+its progress. Implementation has not started, and controller activation needs
+the separate capability and authorization checks in
 [orchestration activation](orchestration-activation.md). The
 [controller design](agent-controller.md) defines durable state, retries,
 GitHub questions, fencing, and the single merge coordinator.
@@ -42,8 +43,8 @@ not merely a closed GitHub issue or a worker's success message. Required real
 source or approval evidence cannot be replaced by a receipt saying unavailable;
 a reviewed conditional omission can satisfy only the outcome explicitly allowed
 by that issue. At activation, P03 must identify the approved published planning
-handoff through its durable audit receipt and actual documentation commit;
-this plan does not claim that publication has occurred.
+handoff through its durable audit receipt and actual documentation commit. The
+[implementation status](../implementation-status.md) records publication evidence.
 
 The initial capacity is two workers, including AI reviewers, plus one
 controller/merge coordinator.

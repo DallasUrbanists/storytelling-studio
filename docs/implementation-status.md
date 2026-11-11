@@ -10,8 +10,8 @@ The planning session inspected the following baseline on November 11, 2026.
 
 | Item | Observed state | Consequence |
 | --- | --- | --- |
-| Local working directory | Empty before planning files were written; no `.git` directory | Git has not been initialized in this planning session |
-| GitHub repository | Public `DallasUrbanists/storytelling-studio`, default branch name `main`, empty repository tree, no existing issues or pull requests | The initial commit and issue publication need the explicit planning approval |
+| Local working directory | Empty before planning files were written; initially no `.git` directory | Historical starting state; initialization and publication are recorded below |
+| GitHub repository | Initially public `DallasUrbanists/storytelling-studio`, default branch name `main`, empty tree, no issues or pull requests | Historical starting state; the owner subsequently approved planning publication |
 | Local tools | Node `24.22.1`, npm `11.19.1`, Git `2.50.1.windows.1` reported by read-only probes | Compatibility remains unverified until bootstrap and export proof |
 | FFmpeg | No `ffmpeg` executable found on `PATH` | Bootstrap must select and verify a supported render/inspection binary path |
 | Application and tests | No application code, package manifest, lockfile, scripts, fixtures, or tests | Every command in the runbooks is a future contract until its issue implements it |
@@ -24,7 +24,7 @@ should replace a status only with linked commit and verification evidence.
 
 | Capability | Status | Required evidence |
 | --- | --- | --- |
-| Planning package | Draft for local review | Completed document/link audit; user approval before publication |
+| Planning package | Approved and published | Owner's November 11 approval and the baseline commit in the publication record |
 | Workspace and local lifecycle | Planned | D1-01 and D1-02 checks on a clean checkout |
 | Vue/Remotion deterministic bridge | Planned; critical path | D1-03 through D1-09 frame and export receipts |
 | Map editor and local revisions | Planned | D1-10 through D1-19; reopening and conflict checks |
@@ -35,7 +35,7 @@ should replace a status only with linked commit and verification evidence.
 | Cleared aerial imagery | Conditional; no assets approved by this plan | Per-asset metadata and reuse/export rights |
 | Top-down roadway editor | Planned | Day 4 dimensional, lock, segment, and transition tests |
 | Final Maple pilot | Planned; no research claims or dimensions verified here | Both decoded videos, editable package, approvals, and playback review |
-| GitHub backlog | Prepared locally, not published | Actual issue URLs mapped to stable identifiers after approval |
+| GitHub backlog | Published and verified; awaiting implementation kickoff | All 81 complete bodies, dependency links, dispatch rows, labels, and four milestones checked against the approved files |
 | Persistent execution controller | Planned separately; not built or activated | Complete readiness receipt, approved configuration, and explicit implementation kickoff |
 | Parallel scheduling manifest | Prepared for the 81 application issues | Reviewed schedule hash, matched issue metadata, and verified dependency/resource handling |
 
@@ -45,8 +45,9 @@ The additional continuous-execution requirement is specified in the
 [controller contract](planning/agent-controller.md),
 [scheduling manifest](planning/execution-schedule.md), and
 [activation plan](planning/orchestration-activation.md). Local CLI discovery and
-help output are recorded as capability evidence only; no model worker,
-controller, GitHub decision question, or merge exercise has been run.
+help output are recorded as capability evidence only; no controller-launched
+worker, controller, GitHub decision question, or controller recovery exercise
+has been run.
 
 The initial planning review on November 11, 2026, checked 33 Markdown files and 496
 local links, including heading anchors. The review found no broken local links,
@@ -56,10 +57,10 @@ and estimate totals: 81 implementation cards and five publication or optional
 evaluation cards. Three Mermaid diagram sources received a source review;
 they have not been rendered in this planning session.
 
-These checks used temporary read-only audit commands, not application test
-scripts. No application tests, dependency installs, Git commits, or GitHub
-mutations were performed. The package remains local and awaits publication
-approval.
+Those pre-publication checks used temporary read-only audit commands, not
+application test scripts. No application tests, dependency installs, Git
+commits, or GitHub mutations were performed during that planning review.
+The owner subsequently authorized the publication recorded below.
 
 The continuous-execution amendment adds three planning documents, bringing the
 package to 36 Markdown files. Its 81 scheduling rows match the issue bodies'
@@ -69,6 +70,50 @@ remain separate from the 75 first-film rows. The planning review checked the
 source describes the controller lifecycle and has not been rendered. These are
 documentation checks, not evidence of a running scheduler or a successful
 phone-reply/recovery exercise.
+
+## Publication record
+
+The repository owner approved committing and publishing the planning package
+and creating the GitHub backlog on November 11, 2026. The same instruction
+explicitly prohibited starting application or controller implementation.
+
+| Publication item | Verified evidence |
+| --- | --- |
+| P01: documentation baseline | [Commit e32f395](https://github.com/DallasUrbanists/storytelling-studio/commit/e32f395caa5b92cd8521a174fd404ba578c33ff1), published normally to the rechecked empty `main`; 38 documentation and license files |
+| P02: execution backlog | [81 mapped issues](planning/issue-backlog.md#github-identifier-map), all open with complete approved bodies, linked prerequisites, dispatch metadata, model labels, and `status:awaiting-kickoff` |
+| P03: publication audit | Every published title, full body, dependency link, model label, conditional label, and milestone matches the approved source; this receipt and identifier map are published through the documentation follow-up PR |
+| Application and controller | Neither implementation has started; no dependencies, runtime scaffold, controller code, CI workflow, or background scheduler was installed or created |
+
+The four milestones preserve the November 11–14 target calendar dates.
+
+| Milestone | Date | Open implementation issues |
+| --- | --- | --- |
+| [Day 1](https://github.com/DallasUrbanists/storytelling-studio/milestone/1) | November 11, 2026 | 20 |
+| [Day 2](https://github.com/DallasUrbanists/storytelling-studio/milestone/2) | November 12, 2026 | 20 |
+| [Day 3](https://github.com/DallasUrbanists/storytelling-studio/milestone/3) | November 13, 2026 | 19 |
+| [Day 4](https://github.com/DallasUrbanists/storytelling-studio/milestone/4) | November 14, 2026 | 22 |
+
+Six issues carry `scope:conditional`; the required first-film path still has
+75 issues. Optional X-01/X-02 evaluations remain documented proposals, and
+P01–P03 remain publication records without fabricated implementation issue
+numbers. No repository permissions, branch protection, or security settings
+were changed for publication.
+
+The publication checks include `git diff --check`, local Markdown links and
+anchors, metadata/dependency validation, and a read-back comparison of all
+81 GitHub issue bodies and labels. Application tests remain unavailable and
+were not run. Independent GPT-6.1 Terra review checked the documentation scope
+and publication wording; it is a model review, not a human approval of research
+claims or application behavior.
+
+P03 becomes an accepted scheduling prerequisite when this publication receipt
+and identifier map are merged into `main`; its evidence is that merged document
+commit and the verified baseline above, not a GitHub implementation issue.
+After a later explicit implementation kickoff, the first dependency-eligible
+tasks are [D1-01](https://github.com/DallasUrbanists/storytelling-studio/issues/1)
+and [D2-00](https://github.com/DallasUrbanists/storytelling-studio/issues/21).
+Continuous controller execution additionally requires the separately documented
+activation evidence. Publication alone starts neither task.
 
 ## Record a verified change
 

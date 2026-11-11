@@ -5,8 +5,9 @@ making editable geographic explainer videos. Its Explore, Research, and Animate
 workspaces are designed to reuse the same geographic features and source-backed
 research.
 
-The repository contains a **planning package awaiting owner approval**. There is
-no application to run yet, and the four-day implementation sprint has not begun.
+The repository contains an **approved planning package**. There is no application
+to run yet, and the four-day implementation sprint has not begun. See
+[implementation status](docs/implementation-status.md) for the publication record.
 The first production target is a Maple Avenue explainer covering Mockingbird
 Lane to Oak Lawn Avenue in Dallas.
 
@@ -46,14 +47,14 @@ to write or review an improvement. Application setup instructions will be added
 alongside working code; proposed command contracts are explicitly marked in the
 [testing and completion gates](docs/planning/testing-and-gates.md).
 
-The owner must approve this package before it is committed or published and
-before its proposed GitHub issues are created. Subsequent implementation follows
-the repository's agent rules and the scope of the approved work.
+The owner approved publication of the planning package and backlog. A later
+explicit implementation kickoff is required before application work begins;
+controller development and activation require separate authorization.
 
 Questions and proposals belong in the
-[repository's issues](https://github.com/DallasUrbanists/storytelling-studio/issues)
-after publication. Contributors should distinguish a proposed feature from a
-working capability and include the relevant plan or issue reference.
+[repository's issues](https://github.com/DallasUrbanists/storytelling-studio/issues).
+Contributors should distinguish a proposed feature from a working capability and
+include the relevant plan or issue reference.
 
 ## License
 

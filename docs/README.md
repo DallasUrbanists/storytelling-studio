@@ -9,7 +9,7 @@ record of what has actually been built and verified.
 
 | Your task | Start here |
 | --- | --- |
-| Review the package before publication | [Planning overview](planning/README.md) |
+| Review the planning package | [Planning overview](planning/README.md) |
 | Check coverage of the requested handoff | [Deliverables map](planning/deliverables.md) |
 | Understand the product and scope | [Product specification](planning/product-specification.md) |
 | Implement the next approved task | [Agent rules](../AGENTS.md), then [issue backlog](planning/issue-backlog.md) |
@@ -21,8 +21,8 @@ record of what has actually been built and verified.
 
 ## Four-day runbooks
 
-The runbooks describe work to be performed after approval; their acceptance
-criteria are not claims of completed work.
+The runbooks describe work to be performed after an explicit implementation
+kickoff; their acceptance criteria are not claims of completed work.
 
 - [Day 1: Functional MVP](planning/day-1-mvp.md)
 - [Day 2: Geographic storytelling](planning/day-2-geographic-storytelling.md)

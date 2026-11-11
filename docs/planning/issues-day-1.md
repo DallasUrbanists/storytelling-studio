@@ -1,10 +1,9 @@
 # Day 1 issue bodies
 
-An implementer can publish these work items after publication approval and start
-them after the later explicit implementation kickoff. IDs are local planning
-identifiers, not existing GitHub issue numbers; the
-[backlog procedure](issue-backlog.md) and [Day 1 runbook](day-1-mvp.md)
-define publication, sequencing, evidence, and completion.
+An implementer can start these work items after a later explicit implementation
+kickoff. The [backlog identifier map](issue-backlog.md#github-identifier-map)
+links planning IDs to published issues; the [Day 1 runbook](day-1-mvp.md)
+defines sequencing, evidence, and completion.
 
 - [D1-01: Pin the minimal workspace and rendering toolchain](#d1-01-pin-the-minimal-workspace-and-rendering-toolchain)
 - [D1-02: Create checkout-scoped lifecycle and static-check scripts](#d1-02-create-checkout-scoped-lifecycle-and-static-check-scripts)
