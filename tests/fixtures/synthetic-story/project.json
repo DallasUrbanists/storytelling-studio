@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "id": "synthetic-story",
+  "title": "Fictional bridge fixture",
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z",
+  "fps": 30,
+  "projection": "mercator",
+  "outputVariants": {
+    "portrait": {
+      "width": 1080,
+      "height": 1920
+    },
+    "landscape": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "assets": [
+    {
+      "id": "fictional-note",
+      "path": "note.txt",
+      "mediaType": "text/plain",
+      "sha256": "263e2b429c1ef8cb8e1d02814170514be1647caf1030101cf7cdbfcaaac9e7fa"
+    }
+  ],
+  "sources": [
+    {
+      "id": "fictional-drawing",
+      "title": "Fictional author drawing",
+      "sourceKind": "author-origin"
+    }
+  ],
+  "features": [
+    {
+      "id": "point",
+      "name": "Fictional point",
+      "kind": "point",
+      "currentRevisionId": "point-revision"
+    },
+    {
+      "id": "line",
+      "name": "Fictional line",
+      "kind": "line",
+      "currentRevisionId": "line-revision"
+    },
+    {
+      "id": "area",
+      "name": "Fictional area",
+      "kind": "area",
+      "currentRevisionId": "area-revision"
+    }
+  ],
+  "featureRevisions": [
+    {
+      "id": "point-revision",
+      "featureId": "point",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0,
+          0
+        ]
+      },
+      "geometrySha256": "52b7fb7f36a0fb2637bec96caca0653e0180b736209aa9438f3d7e889730c071",
+      "sourceIds": [
+        "fictional-drawing"
+      ]
+    },
+    {
+      "id": "line-revision",
+      "featureId": "line",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            0,
+            0
+          ],
+          [
+            0.01,
+            0.01
+          ],
+          [
+            0.02,
+            0
+          ]
+        ]
+      },
+      "geometrySha256": "966661feff9c409518f97df3700c23098fb38600edf2fb0a9a669453b63d2e69",
+      "sourceIds": [
+        "fictional-drawing"
+      ]
+    },
+    {
+      "id": "area-revision",
+      "featureId": "area",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.02,
+              0
+            ],
+            [
+              0.02,
+              0.02
+            ],
+            [
+              0,
+              0.02
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ]
+      },
+      "geometrySha256": "47aedf2430f2097b63c378774d2c1548dd588ce6005df5ed1e3a243fefe04223",
+      "sourceIds": [
+        "fictional-drawing"
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "id": "point-layer",
+      "featureRevisionId": "point-revision",
+      "order": 0,
+      "startFrame": 0,
+      "endFrameExclusive": 300
+    },
+    {
+      "id": "line-layer",
+      "featureRevisionId": "line-revision",
+      "order": 1,
+      "startFrame": 0,
+      "endFrameExclusive": 300,
+      "trace": {
+        "startFrame": 30,
+        "endFrameExclusive": 180,
+        "mode": "line"
+      }
+    },
+    {
+      "id": "area-layer",
+      "featureRevisionId": "area-revision",
+      "order": 2,
+      "startFrame": 0,
+      "endFrameExclusive": 300,
+      "trace": {
+        "startFrame": 30,
+        "endFrameExclusive": 180,
+        "mode": "outer-ring"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene-fictional",
+      "kind": "map",
+      "durationFrames": 300,
+      "focusFeatureRevisionId": "area-revision",
+      "cameraTrack": [
+        {
+          "frame": 0,
+          "center": [
+            0,
+            0
+          ],
+          "zoom": 12,
+          "bearing": 0,
+          "pitch": 0,
+          "easing": "linear"
+        },
+        {
+          "frame": 299,
+          "center": [
+            0.01,
+            0.01
+          ],
+          "zoom": 14,
+          "bearing": 20,
+          "pitch": 0,
+          "easing": "linear"
+        }
+      ],
+      "annotations": [
+        {
+          "id": "fictional-label",
+          "text": "Fictional place",
+          "anchor": [
+            0.01,
+            0.01
+          ],
+          "startFrame": 30,
+          "fadeInEndFrame": 60,
+          "fadeOutStartFrame": 240,
+          "endFrameExclusive": 270
+        }
+      ]
+    }
+  ]
+}

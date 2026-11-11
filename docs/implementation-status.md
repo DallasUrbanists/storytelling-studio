@@ -142,3 +142,13 @@ Remotion identifies its GPL-2.0-or-later FFmpeg as using `fdk-aac-free`;
 the installed binary reports GPL-2.0-or-later. The exact tagged source-to-binary
 chain has not been independently verified. Redistribution and codec rights
 require their own review; no binary is distributed by this change.
+## D1-03 supervised attempt: verified locally
+
+Attempt `D1-03-20261111-01` supplies a bounded bridge schema and an explicitly
+synthetic fixture. The schema suite passed 21 cases and strict TypeScript
+compilation passed on Windows with the pinned toolchain. The independent Terra
+review identified unsupported variant overrides being silently accepted; the
+validator now rejects unsupported fields, with regression coverage. Full
+geometry validation, asset verification, variant-specific framing, and portable
+package validation remain future work. See the
+[receipt](planning/receipts/D1-03/D1-03-20261111-01.md) for limitations.
