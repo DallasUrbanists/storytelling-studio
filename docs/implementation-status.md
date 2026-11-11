@@ -129,18 +129,16 @@ the presence of a source URL or from silence.
 
 No implementation entries have been recorded in this planning-only package.
 
-## D1-01 supervised attempt: blocked
+## D1-01 supervised attempt: verification pending review
 
 Attempt `D1-01-20261111-01` on `codex/d1-01-toolchain`, based on
-`2c25993`, installed the draft pinned workspaces on Windows with Node 24.22.1
-and npm 11.19.1. Imports of Vue, Quasar, Quasar app-vite, MapLibre, React,
-Remotion, and the Remotion renderer succeeded. The install reported an
-unapproved `@parcel/watcher` install-script warning. A clean install has not
-been verified.
+`2c25993`, completed the Windows clean install, workspace imports, Chromium
+launch, synthetic H.264 encoding, inspection, and decoding described in the
+[receipt](planning/receipts/D1-01/D1-01-20261111-01.md). The lockfile was
+unchanged; npm warned that the `@parcel/watcher` install script was not approved,
+so file watching remains unverified. Review and merge are pending.
 
-The selected Remotion 4.0.542 Windows FFmpeg binary reports GPL version 2 or
-later and a configuration including `--enable-gpl` and `libfdk-aac`. Its exact
-license obligations remain unresolved. The issue's license stop condition
-therefore blocks acceptance. Chromium, encoding, media inspection, and decoding
-have not been verified. No application lifecycle commands are available yet.
-The next Day 1 issues depend on D1-01 acceptance.
+Remotion identifies its GPL-2.0-or-later FFmpeg as using `fdk-aac-free`;
+the installed binary reports GPL-2.0-or-later. The exact tagged source-to-binary
+chain has not been independently verified. Redistribution and codec rights
+require their own review; no binary is distributed by this change.
