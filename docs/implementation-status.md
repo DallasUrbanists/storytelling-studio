@@ -152,3 +152,12 @@ validator now rejects unsupported fields, with regression coverage. Full
 geometry validation, asset verification, variant-specific framing, and portable
 package validation remain future work. See the
 [receipt](planning/receipts/D1-03/D1-03-20261111-01.md) for limitations.
+
+## D1-04 supervised attempt: verified locally
+
+The pure bridge evaluator passed 34 core and schema cases and strict
+TypeScript checking. Independent Sol review identified a high-latitude trace
+fraction error; the implementation was corrected to use spherical rhumb-line
+distance and checked against an 84-case numerical sweep. See the
+[receipt](planning/receipts/D1-04/D1-04-20261111-01.md). Browser projection,
+readiness, and pixel parity remain unverified.
