@@ -1,0 +1,15 @@
+{
+  "name": "@gstory/studio",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "vue": "3.5.45",
+    "quasar": "2.35.3",
+    "pinia": "4.1.0",
+    "vue-router": "5.5.0"
+  },
+  "devDependencies": {
+    "@quasar/app-vite": "3.10.4"
+  }
+}

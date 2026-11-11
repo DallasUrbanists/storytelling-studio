@@ -128,3 +128,19 @@ reviewer, scope, source snapshot, and date; agents must not infer approval from
 the presence of a source URL or from silence.
 
 No implementation entries have been recorded in this planning-only package.
+
+## D1-01 supervised attempt: blocked
+
+Attempt `D1-01-20261111-01` on `codex/d1-01-toolchain`, based on
+`2c25993`, installed the draft pinned workspaces on Windows with Node 24.22.1
+and npm 11.19.1. Imports of Vue, Quasar, Quasar app-vite, MapLibre, React,
+Remotion, and the Remotion renderer succeeded. The install reported an
+unapproved `@parcel/watcher` install-script warning. A clean install has not
+been verified.
+
+The selected Remotion 4.0.542 Windows FFmpeg binary reports GPL version 2 or
+later and a configuration including `--enable-gpl` and `libfdk-aac`. Its exact
+license obligations remain unresolved. The issue's license stop condition
+therefore blocks acceptance. Chromium, encoding, media inspection, and decoding
+have not been verified. No application lifecycle commands are available yet.
+The next Day 1 issues depend on D1-01 acceptance.

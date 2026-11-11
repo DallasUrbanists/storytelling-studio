@@ -1,0 +1,9 @@
+{
+  "name": "@gstory/story-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@turf/helpers": "7.4.0"
+  }
+}
