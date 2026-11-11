@@ -1,16 +1,18 @@
 # Development setup
 
-The D1-01 workspace contains package manifests only. It does not yet provide an
-application, development server, or project commands.
+The workspace provides development stubs and local checks. The studio stub is
+not an editor, and the service exposes only a health endpoint.
 
 ## Setup and verified versions
 
 Use Node 24.22.1 and npm 11.19.1, then run `npm ci` in the repository root.
 On Windows on November 11, 2026, a clean install added 269 packages and left
-`package-lock.json` unchanged (SHA-256
+the D1-01 lockfile unchanged (SHA-256
 `7d0b090b50b8f4db09262e1174bd7dbb80e24dac266ceac2d33c9d93932fe27c`).
+D1-02 subsequently changes the lockfile to add static-check tooling.
 The installer warned that `@parcel/watcher@2.6.0` has an unapproved install
-script. No approval was granted; this check does not verify file watching.
+script. No approval was granted. A later Windows probe verified a file change
+event with the installed watcher; this does not verify every watcher backend.
 
 The direct pins are Vue 3.5.45, Quasar 2.35.3, @quasar/app-vite 3.10.4,
 Pinia 4.1.0, Vue Router 5.5.0, MapLibre GL JS 6.17.0, React and React DOM
@@ -44,4 +46,28 @@ rights can be separate from copyright licenses. Before distributing binaries,
 review the exact source, notices, corresponding source obligations, and codec
 rights for that distribution. This probe does not authorize redistribution.
 
-No application lifecycle, test, or export command is available from this issue.
+## Start and stop a development session
+
+Run `npm run dev` from the repository root. Keep that terminal open and use the
+reported loopback URLs. From a second terminal in the same checkout, run
+`npm run dev:status` to confirm that Studio and the service are ready.
+
+Press Ctrl+C in the foreground terminal or run `npm run dev:stop` from the
+same checkout. After shutdown, `npm run dev:status` reports `Stopped`.
+The stop command uses the checkout's existing file permissions to request
+shutdown through the latest numbered record in `.local/lifecycle/`. The
+foreground process closes its listeners and marks its record stopped. The next
+start creates a new record. Project files are preserved.
+
+If the foreground process exits abruptly, inspect the latest numbered record
+and confirm that its process has exited before removing that record and
+restarting. Use a checkout whose local files are writable only by accounts you
+trust. The execution environment must permit loopback connections.
+
+## Check the workspace
+
+Run `npm run check` from the repository root for ESLint, TypeScript checking of
+existing JavaScript, and `npm run test:docs` for local Markdown links and heading
+anchors. No unit suite or export workflow is implemented yet. ESLint 9.39.5 is
+reported unsupported by npm; its replacement requires resolving the moderate
+advisories npm reported in the tested ESLint 10 dependency chain.
