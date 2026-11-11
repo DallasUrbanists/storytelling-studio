@@ -66,8 +66,4 @@ trust. The execution environment must permit loopback connections.
 
 ## Check the workspace
 
-Run `npm run check` from the repository root for ESLint, TypeScript checking of
-existing JavaScript, and `npm run test:docs` for local Markdown links and heading
-anchors. No unit suite or export workflow is implemented yet. ESLint 9.39.5 is
-reported unsupported by npm; its replacement requires resolving the moderate
-advisories npm reported in the tested ESLint 10 dependency chain.
+Run `npm run check` for lint, TypeScript, local Markdown links, and the core and schema unit suite. Run `npm run test:core` for the unit suite alone. No export workflow is implemented yet. ESLint 9.39.5 is reported unsupported by npm, and the TypeScript lint dependency chain has a moderate minimatch advisory; see the D1-02 receipt for details.

@@ -16,8 +16,12 @@ async function markdownFiles(directory) {
 function withoutFences(text) {
   return text.replace(/^ {0,3}(`{3,}|~{3,})[^\n]*\r?\n[\s\S]*?^ {0,3}\1[ \t]*$/gm, '');
 }
+function withoutInlineCode(text) {
+  return text.replace(/(?<!`)(`+)(?!`)[\s\S]*?(?<!`)\1(?!`)/g, 'code');
+}
 function readDestination(text, offset) {
-  while (text[offset] === ' ' || text[offset] === '\t') offset++;
+  const whitespace = text.slice(offset).match(/^[ \t]*(?:\r?\n[ \t]*)?/);
+  offset += whitespace[0].length;
   if (text[offset] === '<') {
     const end = text.indexOf('>', offset + 1);
     return end !== -1 && !text.slice(offset, end).includes('\n') ? text.slice(offset + 1, end) : null;
@@ -48,19 +52,19 @@ function headings(text) {
 const files = await markdownFiles(root);
 for (const file of files) {
   const text = await readFile(file, 'utf8');
-  const prose = withoutFences(text);
+  const prose = withoutInlineCode(withoutFences(text));
   const targets = [];
-  for (const match of prose.matchAll(/\[[^\]\n]+\]\(/g)) {
+  for (const match of prose.matchAll(/\[[^\][]+\]\(/g)) {
     const target = readDestination(prose, match.index + match[0].length);
     if (target) targets.push(target);
   }
   const definitions = new Set();
-  for (const match of prose.matchAll(/^ {0,3}\[([^\]\n]+)\]:[ \t]*/gm)) {
+  for (const match of prose.matchAll(/^ {0,3}\[([^\][]+)\]:/gm)) {
     definitions.add(match[1].trim().replace(/\s+/g, ' ').toLowerCase());
     const target = readDestination(prose, match.index + match[0].length);
     if (target) targets.push(target);
   }
-  for (const match of prose.matchAll(/\[([^\]\n]+)\]\[([^\]\n]*)\]/g)) {
+  for (const match of prose.matchAll(/\[([^\][]+)\]\[([^\][]*)\]/g)) {
     const label = (match[2] || match[1]).trim().replace(/\s+/g, ' ').toLowerCase();
     if (!definitions.has(label)) errors.push(`${path.relative(root, file)}: undefined reference ${label}`);
   }
