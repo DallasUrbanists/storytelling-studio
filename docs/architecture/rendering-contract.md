@@ -423,3 +423,20 @@ The [dependency evidence](../planning/dependency-evidence.md) records license,
 runtime, and binary constraints. The [system architecture](system-architecture.md)
 owns the package boundary and local process contract; this document owns frame
 semantics and the evidence required to trust an export.
+
+## Implemented bridge evaluator
+
+D1-04 evaluates a validated bridge project and integer frame into a frozen
+snapshot for either fixed viewport. Camera and label timing are scene-local;
+layer and trace timing use absolute project frames. Camera centers interpolate
+in Web Mercator with shortest wrapped longitude, zoom linearly, and bearing by
+the shortest turn; half-turn ties go positive. The bridge supports pitch zero
+and linear easing. Both variants use the saved camera and anchors.
+
+Traces advance by cumulative spherical rhumb-line distance along saved
+Mercator segments. Polygon traces follow the exterior ring; the original fill
+retains holes. Labels use linear entrance and exit opacity and half-open
+intervals. The [receipt](../planning/receipts/D1-04/D1-04-20261111-01.md)
+records checks and unsupported modes. Camera fitting, authored variant
+framing, terrain, globe, multipart and antimeridian geometry, timed fills,
+resource readiness, and browser pixel parity remain future work.

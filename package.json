@@ -11,6 +11,9 @@
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "test:core": "node --test tests/core/*.test.mjs tests/project-schema/*.test.mjs"
+  },
   "devDependencies": {
     "typescript": "5.9.3"
   }
