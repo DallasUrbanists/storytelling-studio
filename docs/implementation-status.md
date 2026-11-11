@@ -129,14 +129,14 @@ the presence of a source URL or from silence.
 
 No implementation entries have been recorded in this planning-only package.
 
-## D1-01 supervised attempt: verification pending review
+## D1-01 supervised attempt: verified locally
 
 Attempt `D1-01-20261111-01` on `codex/d1-01-toolchain`, based on
 `2c25993`, completed the Windows clean install, workspace imports, Chromium
 launch, synthetic H.264 encoding, inspection, and decoding described in the
 [receipt](planning/receipts/D1-01/D1-01-20261111-01.md). The lockfile was
 unchanged; npm warned that the `@parcel/watcher` install script was not approved,
-so file watching remains unverified. Review and merge are pending.
+so file watching remains unverified. Integration is tracked in [PR #83](https://github.com/DallasUrbanists/storytelling-studio/pull/83).
 
 Remotion identifies its GPL-2.0-or-later FFmpeg as using `fdk-aac-free`;
 the installed binary reports GPL-2.0-or-later. The exact tagged source-to-binary
