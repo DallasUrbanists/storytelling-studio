@@ -587,3 +587,14 @@ The gate must establish the following outcomes.
 The [testing and gate plan](../planning/testing-and-gates.md) owns command names
 and evidence locations. A package that preserves only images or videos must
 fail this gate even if its preview looks correct.
+
+## Implemented bridge subset
+
+D1-03 defines a bounded shared schema and a
+[synthetic fixture](../../tests/fixtures/synthetic-story/README.md) for the
+initial rendering bridge. Its parser validates supported fields, IDs,
+references, finite values, geometry shape, and integer frame intervals, and
+rejects unsupported fields. It is not the complete portable project validator:
+asset bytes and provenance, polygon self-intersections, variant-specific
+framing, migration, and archive validation remain future gates. See the
+[attempt receipt](../planning/receipts/D1-03/D1-03-20261111-01.md).
