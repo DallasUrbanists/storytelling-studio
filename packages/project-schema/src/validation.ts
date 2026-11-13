@@ -109,43 +109,64 @@ const dimension = (value: unknown, sources: RecordValue[], path: string) => {
     for (const key of ['date','location','method','uncertainty']) string(d[key], `${path}.${key}`);
   }
 };
+const roadwaySection = (value: unknown, sources: RecordValue[]) => {
+  const section = object(value, 'section'); const role = section.role;
+  fields(section, ['role','curbToCurb','envelope','bands','proposalDescription'], 'section');
+  if (!['existing', 'proposed'].includes(role as string)) fail('section role');
+  if (role === 'proposed') string(section.proposalDescription, 'proposalDescription');
+  else if (section.proposalDescription !== undefined) fail('existing proposalDescription');
+  dimension(section.curbToCurb, sources, 'curbToCurb');
+  const envelope = object(section.envelope, 'envelope'); fields(envelope, ['kind','width'], 'envelope');
+  if (!['illustrated','right-of-way','unknown'].includes(envelope.kind as string)) fail('envelope.kind');
+  dimension(envelope.width, sources, 'envelope.width');
+  const width = object(envelope.width, 'envelope.width');
+  if ((envelope.kind === 'unknown') !== (width.status === 'unknown')) fail('envelope evidence');
+  if (envelope.kind === 'right-of-way' && width.status !== 'documented') fail('right-of-way evidence');
+  let outsidePhase = 0;
+  for (const band of collection(section.bands, 'bands')) {
+    fields(band, ['id','kind','direction','location','width','locked','label'], 'band');
+    if (!['through-lane','center-turn-lane','bike-lane','buffer','sidewalk','parking','median','other'].includes(band.kind as string)) fail('band.kind');
+    if (!['forward','reverse','both','none'].includes(band.direction as string) || (band.kind === 'center-turn-lane' && band.direction !== 'both') || (['sidewalk','buffer'].includes(band.kind as string) && band.direction !== 'none')) fail('band.direction');
+    if (band.kind === 'other') string(band.label, 'band.label'); else if (band.label !== undefined) string(band.label, 'band.label');
+    if (band.location === 'between-curbs') { if (outsidePhase === 2) fail('band location order'); outsidePhase = 1; }
+    else if (band.location === 'outside-curbs') { if (outsidePhase === 1) outsidePhase = 2; }
+    else fail('band.location');
+    if (band.kind === 'sidewalk' && band.location !== 'outside-curbs') fail('sidewalk location');
+    if (typeof band.locked !== 'boolean') fail('band.locked'); dimension(band.width, sources, 'band.width');
+  }
+  return section;
+};
 const roadways = (value: unknown, sources: RecordValue[], revisions: RecordValue[]) => {
   for (const road of collection(value, 'roadways')) {
-    fields(road, ['id','title','corridorFeatureRevisionId','stationOrigin','stationDirection','stationExtentMeters','sourceIds','segments'], 'roadway');
+    fields(road, ['id','title','corridorFeatureRevisionId','stationOrigin','stationDirection','stationExtentMeters','sourceIds','segments','layouts'], 'roadway');
     string(road.title, 'roadway.title'); string(road.stationOrigin, 'stationOrigin'); string(road.stationDirection, 'stationDirection');
     const revision = ref(road.corridorFeatureRevisionId, revisions, 'corridorFeatureRevisionId');
     if (object(revision.geometry, 'geometry').type !== 'LineString') fail('roadway corridor geometry');
     const extent = number(road.stationExtentMeters, 'stationExtentMeters'); if (extent <= 0) fail('stationExtentMeters');
     for (const source of array(road.sourceIds, 'roadway.sourceIds')) ref(source, sources, 'roadway.sourceId');
+    const layouts = road.layouts === undefined ? [] : collection(road.layouts, 'layouts');
+    for (const layout of layouts) {
+      fields(layout, ['id', 'section'], 'layout'); roadwaySection(layout.section, sources);
+    }
+    const layoutSection = (layoutId: unknown, role: string) => {
+      const section = object(ref(layoutId, layouts, 'layoutId').section, 'section');
+      if (section.role !== role) fail('section role');
+    };
     let previous = 0;
     for (const segment of collection(road.segments, 'segments')) {
-      fields(segment, ['id','name','startMeters','endMeters','existing','proposed'], 'segment'); string(segment.name, 'segment.name');
+      fields(segment, ['id','name','startMeters','endMeters','existing','proposed','transition'], 'segment'); string(segment.name, 'segment.name');
       const start = number(segment.startMeters, 'segment.startMeters'), end = number(segment.endMeters, 'segment.endMeters');
       if (start < previous || start >= end || end > extent) fail('segment range'); previous = end;
       for (const role of ['existing', 'proposed']) {
-        const section = object(segment[role], role); fields(section, ['role','curbToCurb','envelope','bands','proposalDescription'], role);
-        if (section.role !== role) fail('section role');
-        if (role === 'proposed') string(section.proposalDescription, 'proposalDescription');
-        else if (section.proposalDescription !== undefined) fail('existing proposalDescription');
-        dimension(section.curbToCurb, sources, 'curbToCurb');
-        const envelope = object(section.envelope, 'envelope'); fields(envelope, ['kind','width'], 'envelope');
-        if (!['illustrated','right-of-way','unknown'].includes(envelope.kind as string)) fail('envelope.kind');
-        dimension(envelope.width, sources, 'envelope.width');
-        const width = object(envelope.width, 'envelope.width');
-        if ((envelope.kind === 'unknown') !== (width.status === 'unknown')) fail('envelope evidence');
-        if (envelope.kind === 'right-of-way' && width.status !== 'documented') fail('right-of-way evidence');
-        let outsidePhase = 0;
-        for (const band of collection(section.bands, 'bands')) {
-          fields(band, ['id','kind','direction','location','width','locked','label'], 'band');
-          if (!['through-lane','center-turn-lane','bike-lane','buffer','sidewalk','parking','median','other'].includes(band.kind as string)) fail('band.kind');
-          if (!['forward','reverse','both','none'].includes(band.direction as string) || (band.kind === 'center-turn-lane' && band.direction !== 'both') || (['sidewalk','buffer'].includes(band.kind as string) && band.direction !== 'none')) fail('band.direction');
-          if (band.kind === 'other') string(band.label, 'band.label'); else if (band.label !== undefined) string(band.label, 'band.label');
-          if (band.location === 'between-curbs') { if (outsidePhase === 2) fail('band location order'); outsidePhase = 1; }
-          else if (band.location === 'outside-curbs') { if (outsidePhase === 1) outsidePhase = 2; }
-          else fail('band.location');
-          if (band.kind === 'sidewalk' && band.location !== 'outside-curbs') fail('sidewalk location');
-          if (typeof band.locked !== 'boolean') fail('band.locked'); dimension(band.width, sources, 'band.width');
-        }
+        const section = object(segment[role], role);
+        if (Object.hasOwn(section, 'layoutId')) {
+          fields(section, ['layoutId'], role); layoutSection(section.layoutId, role);
+        } else if (roadwaySection(section, sources).role !== role) fail('section role');
+      }
+      if (segment.transition !== undefined) {
+        const transition = object(segment.transition, 'transition');
+        fields(transition, ['existingLayoutId', 'proposedLayoutId'], 'transition');
+        for (const role of ['existing', 'proposed']) layoutSection(transition[`${role}LayoutId`], role);
       }
     }
   }

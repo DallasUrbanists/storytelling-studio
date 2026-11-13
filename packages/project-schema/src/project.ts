@@ -15,11 +15,22 @@ export type RoadwayCrossSection = {
   envelope: { kind: 'illustrated' | 'right-of-way' | 'unknown'; width: RoadwayDimension };
   bands: RoadwayBand[]; proposalDescription?: string;
 };
+/** A stable, roadway-local reference or a legacy inline cross-section. */
+export type RoadwaySectionReference = RoadwayCrossSection | { layoutId: string };
+export type RoadwayLayout = { id: string; section: RoadwayCrossSection };
+/** A named [start, end) range; only the corridor's final endpoint is inclusive. */
+export type RoadwaySegment = {
+  id: string; name: string; startMeters: number; endMeters: number;
+  existing: RoadwaySectionReference; proposed: RoadwaySectionReference;
+  /** The entire segment is a longitudinal transition to these endpoint layouts. */
+  transition?: { existingLayoutId: string; proposedLayoutId: string };
+};
 /** A corridor's ordered, nonoverlapping station segments in meters. */
 export type Roadway = {
   id: string; title: string; corridorFeatureRevisionId: string; stationOrigin: string;
   stationDirection: string; stationExtentMeters: number; sourceIds: string[];
-  segments: { id: string; name: string; startMeters: number; endMeters: number; existing: RoadwayCrossSection; proposed: RoadwayCrossSection }[];
+  layouts?: RoadwayLayout[];
+  segments: RoadwaySegment[];
 };
 export type Position = [number, number];
 export type Geometry =
