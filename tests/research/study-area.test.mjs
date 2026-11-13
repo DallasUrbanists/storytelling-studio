@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { methodHash, reopenResearchRequest, selectStudyArea, saveResearchRequest, loadResearchRequest } from '../../apps/local-service/src/routes/research.ts';
 
 const area = { kind: 'synthetic', featureRevisionId: 'area-1', geometry: { type: 'Polygon', coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] } };
@@ -51,10 +51,30 @@ test('saved requests reopen without overwriting an earlier revision', async () =
   const path = `${directory}/request.json`;
   try {
     const request = select();
+    request.derivedInputs.push({ nested: [3, { value: null }] });
     await saveResearchRequest(path, request, method, hash);
     assert.deepEqual(await loadResearchRequest(path, method, hash), request);
     await assert.rejects(saveResearchRequest(path, request, method, hash));
     await assert.rejects(loadResearchRequest(path, { ...method, version: 2 }, hash));
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+test('rejects non-JSON derived inputs before writing a revision', async () => {
+  const directory = await mkdtemp('tests/research/study-area-');
+  const path = `${directory}/request.json`;
+  try {
+    for (const value of [NaN, Infinity, -Infinity, undefined, new Date()]) {
+      const request = select();
+      request.derivedInputs.push({ nested: [{ value }] });
+      assert.throws(() => reopenResearchRequest(request, method, hash));
+      await assert.rejects(saveResearchRequest(path, request, method, hash));
+      await assert.rejects(readFile(path), { code: 'ENOENT' });
+    }
+    const request = select();
+    request.derivedInputs.length = 1;
+    await assert.rejects(saveResearchRequest(path, request, method, hash));
+    await assert.rejects(readFile(path), { code: 'ENOENT' });
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

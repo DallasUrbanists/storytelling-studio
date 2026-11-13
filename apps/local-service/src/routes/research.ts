@@ -77,6 +77,7 @@ export function methodHash(method: Method): string { return digest(method); }
 export function reopenResearchRequest(saved: ResearchRequest, currentMethod: Method, currentMethodSha256: string): ResearchRequest {
   if (!saved || !Array.isArray(saved.derivedInputs) || digest(saved.area?.geometry) !== saved.geometrySha256 ||
       digest(saved.method) !== saved.methodSha256 || saved.methodSha256 !== currentMethodSha256) throw new Error('Invalid or stale saved request');
+  canonical(saved.derivedInputs);
   return selectStudyArea(saved.area, saved.projectRevision, saved.selectionRationale, currentMethod, currentMethodSha256, saved);
 }
 
