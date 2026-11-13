@@ -75,11 +75,11 @@ The still test requires a bundle prepared from the entry point with matching
 Remotion 4.0.542 bundling tooling, the public resources above, and an environment
 that permits Chromium child processes. The matching bundler is not installed
 by this change: it is unavailable in this environment's package cache, and
-registry access is blocked. No mismatched Remotion version was substituted.
+registry access was blocked during the original worker attempt. The later Windows host run used the matching bundler.
 D1-08 still owns the repeatable bundle/video-export command.
 
 After a coordinator prepares a bundle inside the worktree and supplies an
-installed browser, run the pending acceptance test as follows in PowerShell.
+installed browser, run the still acceptance test as follows in PowerShell.
 The default bundle location is `.local/renderer-bundle`; the optional bundle
 variable must also resolve inside this worktree.
 
@@ -96,3 +96,5 @@ an output file. A distinct `.local/d1-07-stills/` directory retains its PNGs,
 temporary browser data, and result receipt. Review those PNGs visually as well;
 these checks do not establish Vue parity or a full-video gate. All test-owned
 browser processes close at the end of a run; no background service is started.
+
+See the [D1-07 Windows host verification receipt](../../docs/planning/receipts/D1-07/D1-07-20261113-host.md) for the passing still and missing-font checks.
