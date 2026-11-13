@@ -1,0 +1,28 @@
+{
+  "issue": "D1-08",
+  "attempt": "D1-08-20261113-02",
+  "worktree": "task-8",
+  "branch": "orchestrator/task-8",
+  "baseSha": "4eec641292074c3daffe06e792a8283d7ebac0ab",
+  "implementationManifestSha256": "07458067569eb1023e3b50805f989fed6b146c7989f55a322071b85e8d553814",
+  "trackedDiffSha256": "82bfdfba9c893dd2d364d2b12829f6383413f41d32ccf0e29279a03b8065326a",
+  "files": [
+    {
+      "path": "apps/renderer/src/render-job.ts",
+      "sha256": "93a5084d6e87510f58d09702a040962dd9b8da4d30efccb1710d294ea8917daa"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "a9e9663e9a2ef64f4cb733384e1d38b99106594c6c2ddfccb228d692acb5ef2e"
+    },
+    {
+      "path": "package.json",
+      "sha256": "7c42147bf049712cbab2c84cfa2ffc47c8ec9cecdd815d6c050d2b970f4ba3de"
+    },
+    {
+      "path": "scripts/render-fixture.mjs",
+      "sha256": "892c0cca04f9f9f0a5cd151532eebe55ead6871c39e482ce66dcc5c86ad9f1af"
+    }
+  ],
+  "notes": "Current implementation hashes supersede attempt 01. Manifest digest covers compact UTF-8 JSON of the ordered files array. Tracked diff is git diff --no-ext-diff --no-textconv --binary HEAD written with --output. Receipts and generated artifacts are excluded. Full composition verification remains blocked by sandbox child-process EPERM."
+}

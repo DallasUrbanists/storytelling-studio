@@ -1,0 +1,28 @@
+{
+  "issue": "D1-08",
+  "attempt": "D1-08-20261113-01",
+  "worktree": "task-8",
+  "branch": "orchestrator/task-8",
+  "baseSha": "4eec641292074c3daffe06e792a8283d7ebac0ab",
+  "implementationManifestSha256": "eed9004b6ca6ddc63a3f21e71cf61ca8b1a14b3e1619621b5f92d45bf038c216",
+  "trackedDiffSha256": "82bfdfba9c893dd2d364d2b12829f6383413f41d32ccf0e29279a03b8065326a",
+  "files": [
+    {
+      "path": "apps/renderer/src/render-job.ts",
+      "sha256": "345ae0f72b99673c8d8a05760cfac9822e4f1c341172bc1f2a23d478547fa35f"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "a9e9663e9a2ef64f4cb733384e1d38b99106594c6c2ddfccb228d692acb5ef2e"
+    },
+    {
+      "path": "package.json",
+      "sha256": "7c42147bf049712cbab2c84cfa2ffc47c8ec9cecdd815d6c050d2b970f4ba3de"
+    },
+    {
+      "path": "scripts/render-fixture.mjs",
+      "sha256": "892c0cca04f9f9f0a5cd151532eebe55ead6871c39e482ce66dcc5c86ad9f1af"
+    }
+  ],
+  "notes": "Manifest covers the four implementation files, including untracked source; excludes receipts and generated artifacts. Coordinator must record committed head after review."
+}
