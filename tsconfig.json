@@ -12,6 +12,7 @@
   "include": [
     "scripts/**/*.mjs",
     "apps/*/src/**/*.mjs",
+    "apps/local-service/src/**/*.ts",
     "packages/**/*.ts"
   ]
 }

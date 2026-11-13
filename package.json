@@ -18,8 +18,9 @@
     "lint": "eslint scripts apps/studio/src apps/local-service/src packages --ext .mjs,.ts",
     "typecheck": "tsc --noEmit",
     "test:docs": "node scripts/check-docs.mjs",
-    "check": "npm run lint && npm run typecheck && npm run test:docs && npm run test:core",
+    "check": "npm run lint && npm run typecheck && npm run test:docs && npm run test:core && npm run test:research",
     "test:core": "node --test tests/core/*.test.mjs tests/project-schema/*.test.mjs",
+    "test:research": "node --test tests/research/*.test.mjs",
     "render:fixture": "node scripts/render-fixture.mjs"
   },
   "devDependencies": {
