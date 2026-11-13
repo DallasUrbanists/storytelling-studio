@@ -20,7 +20,9 @@
     "test:docs": "node scripts/check-docs.mjs",
     "check": "npm run lint && npm run typecheck && npm run test:docs && npm run test:core",
     "test:core": "node --test tests/core/*.test.mjs tests/project-schema/*.test.mjs",
-    "render:fixture": "node scripts/render-fixture.mjs"
+    "render:fixture": "node scripts/render-fixture.mjs",
+    "test:render-contract": "node tests/render-contract/run.mjs",
+    "test:render-contract:unit": "node --test --test-isolation=none tests/render-contract/compare.test.mjs tests/render-contract/browser.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

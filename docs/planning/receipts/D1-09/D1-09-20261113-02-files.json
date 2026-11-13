@@ -1,0 +1,45 @@
+{
+  "issue": "D1-09",
+  "attemptId": "D1-09-20261113-02",
+  "baseSha": "db24aeab294aa00a9d7284eac1a44327f9de3701",
+  "committed": false,
+  "sourceManifestSha256": "1795106c706d6de51c822a33dd98708d175857c84bf6e99d790ad135a5e7d8ed",
+  "files": [
+    {
+      "path": "docs/planning/receipts/D1-09/D1-09-20261113-02.md",
+      "sha256": "d8bdce6b5045b5c846f7af03bf536603cb76eac38bd5bad50f5060dcb4ec6312"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "03563a77f444b6ed2834663a6c8ab39f6c7f27c4d881830923f595db201df1c8"
+    },
+    {
+      "path": "package.json",
+      "sha256": "6a92658459e9b6f917bdfe5a6384b8ba9c45690f1e9b3330bd2bf8b40cc85164"
+    },
+    {
+      "path": "tests/render-contract/README.md",
+      "sha256": "f51a2215b792f3df917eee8036846c044400528856f08593fa30f655979ba137"
+    },
+    {
+      "path": "tests/render-contract/browser.mjs",
+      "sha256": "990c5661acc1ad855475c719645b9f7ac72abc7e2192b47f8a6ebe7fff570e34"
+    },
+    {
+      "path": "tests/render-contract/browser.test.mjs",
+      "sha256": "6618ea4a888610cf827a910fba965e0af141eb61fbbfcc196e3920c0aefc6a08"
+    },
+    {
+      "path": "tests/render-contract/compare.mjs",
+      "sha256": "5cd856f63e12a7e988334833b08d1e00026de70ea3f9f3a6943a08331bf162cb"
+    },
+    {
+      "path": "tests/render-contract/compare.test.mjs",
+      "sha256": "2e98c616467725e3e8d52e24251edeafbe1b136a5e347c53bdc85f4093684cd0"
+    },
+    {
+      "path": "tests/render-contract/run.mjs",
+      "sha256": "911418371dd1af24d462d80184ec3194b5a8b4130dedec89e7a5f930d2f1027a"
+    }
+  ]
+}
