@@ -10,6 +10,18 @@ const id = (v: unknown, path: string): string => typeof v === 'string' && /^[A-Z
 const number = (v: unknown, path: string): number => typeof v === 'number' && Number.isFinite(v) ? v : fail(path);
 const integer = (v: unknown, path: string): number => Number.isSafeInteger(v) ? v as number : fail(path);
 const digest = (v: unknown, path: string) => typeof v === 'string' && /^[a-f0-9]{64}$/.test(v) ? v : fail(path);
+const nullableString = (v: unknown, path: string) => v === null ? null : string(v, path);
+const json = (v: unknown, path: string): void => {
+  if (v === null || typeof v === 'boolean' || typeof v === 'string') return;
+  if (typeof v === 'number') { number(v, path); return; }
+  if (Array.isArray(v)) { for (const item of v) json(item, path); return; }
+  const o = object(v, path); for (const item of Object.values(o)) json(item, path);
+};
+const canonical = (v: unknown): string => {
+  if (Array.isArray(v)) return `[${v.map(canonical).join(',')}]`;
+  if (v !== null && typeof v === 'object') return `{${Object.keys(v).sort().map(k => `${JSON.stringify(k)}:${canonical((v as RecordValue)[k])}`).join(',')}}`;
+  return JSON.stringify(v);
+};
 const position = (v: unknown, path: string): number[] => {
   const p = array(v, path); if (p.length !== 2) fail(path);
   const x = number(p[0], path), y = number(p[1], path);
@@ -43,7 +55,7 @@ const geometry = (value: unknown) => {
 /** Validate the bounded bridge document; throws on invalid input. */
 export function parseProject(value: unknown): ProjectDocument {
   const p = object(value, 'project');
-  fields(p, ['schemaVersion','id','title','createdAt','updatedAt','fps','projection','outputVariants','assets','sources','features','featureRevisions','layers','scenes'], 'project');
+  fields(p, ['schemaVersion','id','title','createdAt','updatedAt','fps','projection','outputVariants','assets','sources','features','featureRevisions','layers','scenes','researchSnapshots'], 'project');
   if (p.schemaVersion !== 1 || p.fps !== 30 || p.projection !== 'mercator') fail('version, fps, or projection');
   id(p.id, 'project.id'); string(p.title, 'title');
   for (const field of ['createdAt', 'updatedAt']) if (typeof p[field] !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(p[field] as string) || !Number.isFinite(Date.parse(p[field] as string))) fail(field);
@@ -51,9 +63,55 @@ export function parseProject(value: unknown): ProjectDocument {
   for (const [name, width, height] of [['portrait', 1080, 1920], ['landscape', 1920, 1080]] as const) { const v = object(variants[name], name); fields(v, ['width','height'], name); if (v.width !== width || v.height !== height) fail(name); }
   const assets = collection(p.assets, 'assets'), sources = collection(p.sources, 'sources'), features = collection(p.features, 'features'), revisions = collection(p.featureRevisions, 'featureRevisions'), layers = collection(p.layers, 'layers'), scenes = collection(p.scenes, 'scenes');
   for (const a of assets) { fields(a, ['id','path','mediaType','sha256'], 'asset'); const path = string(a.path, 'asset.path'); if (path.startsWith('/') || path.includes('\\') || path.split('/').some(part => !part || part === '.' || part === '..') || /^[A-Za-z]:/.test(path)) fail('asset.path'); string(a.mediaType, 'asset.mediaType'); digest(a.sha256, 'asset.sha256'); }
-  for (const s of sources) { fields(s, ['id','title','sourceKind'], 'source'); string(s.title, 'source.title'); if (s.sourceKind !== 'author-origin') fail('source.kind'); }
+  for (const s of sources) {
+    string(s.title, 'source.title');
+    if (s.sourceKind === 'author-origin') fields(s, ['id','title','sourceKind'], 'source');
+    else if (s.sourceKind === 'dataset') {
+      fields(s, ['id','title','sourceKind','publisher','version','referencePeriod','boundaryVintage','contentSha256','universe','rights'], 'source');
+      string(s.publisher, 'source.publisher');
+      for (const key of ['version','referencePeriod','boundaryVintage','universe']) nullableString(s[key], `source.${key}`);
+      if (s.contentSha256 !== null) digest(s.contentSha256, 'source.contentSha256');
+      const rights = object(s.rights, 'source.rights'); fields(rights, ['localUse','publication','redistribution'], 'rights');
+      for (const key of ['localUse','publication','redistribution']) if (!['unknown','allowed','restricted'].includes(rights[key] as string)) fail(`rights.${key}`);
+    } else fail('source.kind');
+  }
   for (const r of revisions) { fields(r, ['id','featureId','geometry','geometrySha256','sourceIds'], 'featureRevision'); ref(r.featureId, features, 'revision.featureId'); geometry(r.geometry); digest(r.geometrySha256, 'geometrySha256'); for (const source of array(r.sourceIds, 'sourceIds')) ref(source, sources, 'sourceId'); }
   for (const f of features) { fields(f, ['id','name','kind','currentRevisionId'], 'feature'); string(f.name, 'feature.name'); const r = ref(f.currentRevisionId, revisions, 'currentRevisionId'); if (r.featureId !== f.id) fail('revision ownership'); const kind = object(r.geometry, 'geometry').type; if ((f.kind === 'point' && kind !== 'Point') || (f.kind === 'line' && kind !== 'LineString') || (f.kind === 'area' && kind !== 'Polygon') || !['point', 'line', 'area'].includes(f.kind as string)) fail('feature.kind'); }
+  for (const snapshot of p.researchSnapshots === undefined ? [] : collection(p.researchSnapshots, 'researchSnapshots')) {
+    fields(snapshot, ['id','inputs','result','status','reviews'], 'researchSnapshot');
+    if (!['draft','approved','stale','unavailable'].includes(snapshot.status as string)) fail('snapshot.status');
+    const inputs = object(snapshot.inputs, 'inputs'); fields(inputs, ['featureRevisionId','geometrySha256','sourceInputs','methodId','methodVersion','parameters'], 'inputs');
+    const revision = ref(inputs.featureRevisionId, revisions, 'inputs.featureRevisionId');
+    digest(inputs.geometrySha256, 'inputs.geometrySha256'); if (inputs.geometrySha256 !== revision.geometrySha256) fail('input geometry hash mismatch');
+    string(inputs.methodId, 'methodId'); if (integer(inputs.methodVersion, 'methodVersion') < 1) fail('methodVersion');
+    json(object(inputs.parameters, 'parameters'), 'parameters');
+    const sourceInputs = array(inputs.sourceInputs, 'sourceInputs'); const seenSources = new Set<string>();
+    for (const item of sourceInputs) {
+      const input = object(item, 'sourceInput'); fields(input, ['sourceId','contentSha256','version','referencePeriod','boundaryVintage'], 'sourceInput');
+      const source = ref(input.sourceId, sources, 'sourceInput.sourceId');
+      if (source.sourceKind !== 'dataset' || seenSources.has(input.sourceId as string)) fail('sourceInput duplicate or unsupported source');
+      seenSources.add(input.sourceId as string);
+      if (input.contentSha256 !== null) digest(input.contentSha256, 'sourceInput.contentSha256');
+      for (const key of ['version','referencePeriod','boundaryVintage']) nullableString(input[key], `sourceInput.${key}`);
+      for (const key of ['contentSha256','version','referencePeriod','boundaryVintage']) if (input[key] !== source[key]) fail(`sourceInput.${key} mismatch`);
+      if (snapshot.status === 'approved' && (!input.contentSha256 || !input.version || !input.referencePeriod || !source.universe)) fail('approved source missing provenance');
+    }
+    const result = object(snapshot.result, 'result'); fields(result, ['kind','value','universe','note'], 'result');
+    if (!['raw-input','estimate','unavailable'].includes(result.kind as string)) fail('result.kind');
+    json(result.value, 'result.value'); nullableString(result.universe, 'result.universe'); string(result.note, 'result.note');
+    if (result.kind === 'unavailable' && result.value !== null) fail('unavailable result value');
+    if ((snapshot.status === 'unavailable') !== (result.kind === 'unavailable')) fail('unavailable status');
+    const reviews = array(snapshot.reviews, 'reviews'); let matched = false;
+    for (const item of reviews) {
+      const review = object(item, 'review'); fields(review, ['reviewer','reviewedAt','decision','inputs','result'], 'review');
+      string(review.reviewer, 'reviewer'); const date = string(review.reviewedAt, 'reviewedAt');
+      if (!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(date) || !Number.isFinite(Date.parse(date))) fail('reviewedAt');
+      if (!['approved','rejected','reviewed'].includes(review.decision as string)) fail('review.decision');
+      json(object(review.inputs, 'review.inputs'), 'review.inputs'); json(object(review.result, 'review.result'), 'review.result');
+      if (review.decision === 'approved' && canonical(review.inputs) === canonical(inputs) && canonical(review.result) === canonical(result)) matched = true;
+    }
+    if (snapshot.status === 'approved' && (!matched || !sourceInputs.length || result.kind === 'unavailable' || result.value === null || !result.universe)) fail('approved snapshot requires matching review and complete inputs');
+  }
   let duration = 0;
   for (const s of scenes) { fields(s, ['id','kind','durationFrames','focusFeatureRevisionId','cameraTrack','annotations'], 'scene'); if (s.kind !== 'map') fail('scene.kind'); const d = integer(s.durationFrames, 'durationFrames'); if (d <= 0) fail('durationFrames'); duration += d; if (!Number.isSafeInteger(duration)) fail('project duration'); ref(s.focusFeatureRevisionId, revisions, 'focus'); const track = array(s.cameraTrack, 'cameraTrack'); if (!track.length) fail('cameraTrack'); let previous = -1; for (const item of track) { const k = object(item, 'camera'); const frame = integer(k.frame, 'camera.frame'); if (frame <= previous || frame >= d || (previous === -1 && frame !== 0)) fail('camera.frame'); previous = frame; position(k.center, 'camera.center'); number(k.zoom, 'camera.zoom'); number(k.bearing, 'camera.bearing'); if (k.pitch !== 0 || k.easing !== 'linear' || Object.keys(k).some(key => !['frame','center','zoom','bearing','pitch','easing'].includes(key))) fail('camera fields'); } for (const a of collection(s.annotations, 'annotations')) { fields(a, ['id','text','anchor','startFrame','fadeInEndFrame','fadeOutStartFrame','endFrameExclusive'], 'annotation'); string(a.text, 'annotation.text'); position(a.anchor, 'annotation.anchor'); interval(a.startFrame, a.endFrameExclusive, d, 'annotation interval'); const start = a.startFrame as number, end = a.endFrameExclusive as number, fadeIn = integer(a.fadeInEndFrame, 'fadeIn'), fadeOut = integer(a.fadeOutStartFrame, 'fadeOut'); if (fadeIn < start || fadeOut < fadeIn || fadeOut > end) fail('annotation fades'); } }
   if (!duration) fail('scenes');
