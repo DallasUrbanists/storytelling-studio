@@ -7,9 +7,15 @@
     "vue": "3.5.45",
     "quasar": "2.35.3",
     "pinia": "4.1.0",
-    "vue-router": "5.5.0"
+    "vue-router": "5.5.0",
+    "@gstory/map-adapter": "0.0.0",
+    "@gstory/project-schema": "0.0.0",
+    "@gstory/story-core": "0.0.0",
+    "maplibre-gl": "6.17.0"
   },
   "devDependencies": {
-    "@quasar/app-vite": "3.10.4"
+    "@quasar/app-vite": "3.10.4",
+    "vite": "8.3.8",
+    "@vitejs/plugin-vue": "6.0.10"
   }
 }
