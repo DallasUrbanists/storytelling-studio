@@ -346,3 +346,15 @@ Later work can add map-aligned curved bands, explicit tapers, more general
 element correspondence, intersection diagrams, design-guidance checks, and accessible
 street-section templates. Those additions must preserve the distinction
 between a visualization tool and a professional engineering approval process.
+
+## Implemented roadway schema
+
+The project parser accepts optional roadway records with ordered segments and
+existing and proposed cross-sections. Stations use meters within an authored
+extent. Each cross-section has ordered bands with explicit placement, locks,
+and evidence. Known dimensions retain original units and normalized meters.
+Unknown dimensions carry no numeric value. Documented and estimated widths
+require source references and provenance.
+
+The schema tests use synthetic roadway layouts. The width solver, editor,
+rendering, and verification of real-world measurements remain future work.

@@ -95,10 +95,66 @@ function validateLeaderLine(value: unknown): void {
   if (Math.hypot(x, y) <= 7) fail('leaderLine must extend beyond the anchor dot');
 }
 
+const dimension = (value: unknown, sources: RecordValue[], path: string) => {
+  const d = object(value, path);
+  if (d.status === 'unknown') { fields(d, ['status'], path); return; }
+  if (!['documented', 'estimated', 'assumed'].includes(d.status as string)) fail(`${path}.status`);
+  fields(d, d.status === 'assumed' ? ['status','value','unit','meters','rationale'] : ['status','value','unit','meters','sourceIds','date','location','method','uncertainty'], path);
+  const amount = number(d.value, path), meters = number(d.meters, path);
+  if (amount <= 0 || meters <= 0 || !['m', 'ft'].includes(d.unit as string) || Math.abs(meters - amount * (d.unit === 'ft' ? 0.3048 : 1)) > 1e-9 * Math.max(1, meters)) fail(path);
+  if (d.status === 'assumed') string(d.rationale, `${path}.rationale`);
+  else {
+    const refs = array(d.sourceIds, `${path}.sourceIds`); if (!refs.length) fail(`${path}.sourceIds`);
+    for (const source of refs) ref(source, sources, `${path}.sourceId`);
+    for (const key of ['date','location','method','uncertainty']) string(d[key], `${path}.${key}`);
+  }
+};
+const roadways = (value: unknown, sources: RecordValue[], revisions: RecordValue[]) => {
+  for (const road of collection(value, 'roadways')) {
+    fields(road, ['id','title','corridorFeatureRevisionId','stationOrigin','stationDirection','stationExtentMeters','sourceIds','segments'], 'roadway');
+    string(road.title, 'roadway.title'); string(road.stationOrigin, 'stationOrigin'); string(road.stationDirection, 'stationDirection');
+    const revision = ref(road.corridorFeatureRevisionId, revisions, 'corridorFeatureRevisionId');
+    if (object(revision.geometry, 'geometry').type !== 'LineString') fail('roadway corridor geometry');
+    const extent = number(road.stationExtentMeters, 'stationExtentMeters'); if (extent <= 0) fail('stationExtentMeters');
+    for (const source of array(road.sourceIds, 'roadway.sourceIds')) ref(source, sources, 'roadway.sourceId');
+    let previous = 0;
+    for (const segment of collection(road.segments, 'segments')) {
+      fields(segment, ['id','name','startMeters','endMeters','existing','proposed'], 'segment'); string(segment.name, 'segment.name');
+      const start = number(segment.startMeters, 'segment.startMeters'), end = number(segment.endMeters, 'segment.endMeters');
+      if (start < previous || start >= end || end > extent) fail('segment range'); previous = end;
+      for (const role of ['existing', 'proposed']) {
+        const section = object(segment[role], role); fields(section, ['role','curbToCurb','envelope','bands','proposalDescription'], role);
+        if (section.role !== role) fail('section role');
+        if (role === 'proposed') string(section.proposalDescription, 'proposalDescription');
+        else if (section.proposalDescription !== undefined) fail('existing proposalDescription');
+        dimension(section.curbToCurb, sources, 'curbToCurb');
+        const envelope = object(section.envelope, 'envelope'); fields(envelope, ['kind','width'], 'envelope');
+        if (!['illustrated','right-of-way','unknown'].includes(envelope.kind as string)) fail('envelope.kind');
+        dimension(envelope.width, sources, 'envelope.width');
+        const width = object(envelope.width, 'envelope.width');
+        if ((envelope.kind === 'unknown') !== (width.status === 'unknown')) fail('envelope evidence');
+        if (envelope.kind === 'right-of-way' && width.status !== 'documented') fail('right-of-way evidence');
+        let outsidePhase = 0;
+        for (const band of collection(section.bands, 'bands')) {
+          fields(band, ['id','kind','direction','location','width','locked','label'], 'band');
+          if (!['through-lane','center-turn-lane','bike-lane','buffer','sidewalk','parking','median','other'].includes(band.kind as string)) fail('band.kind');
+          if (!['forward','reverse','both','none'].includes(band.direction as string) || (band.kind === 'center-turn-lane' && band.direction !== 'both') || (['sidewalk','buffer'].includes(band.kind as string) && band.direction !== 'none')) fail('band.direction');
+          if (band.kind === 'other') string(band.label, 'band.label'); else if (band.label !== undefined) string(band.label, 'band.label');
+          if (band.location === 'between-curbs') { if (outsidePhase === 2) fail('band location order'); outsidePhase = 1; }
+          else if (band.location === 'outside-curbs') { if (outsidePhase === 1) outsidePhase = 2; }
+          else fail('band.location');
+          if (band.kind === 'sidewalk' && band.location !== 'outside-curbs') fail('sidewalk location');
+          if (typeof band.locked !== 'boolean') fail('band.locked'); dimension(band.width, sources, 'band.width');
+        }
+      }
+    }
+  }
+};
+
 /** Validate the bounded bridge document; throws on invalid input. */
 export function parseProject(value: unknown): ProjectDocument {
   const p = object(value, 'project');
-  fields(p, ['schemaVersion','id','title','createdAt','updatedAt','fps','projection','outputVariants','assets','sources','features','featureRevisions','layers','scenes','researchSnapshots'], 'project');
+  fields(p, ['schemaVersion','id','title','createdAt','updatedAt','fps','projection','outputVariants','assets','sources','features','featureRevisions','layers','scenes','researchSnapshots','roadways'], 'project');
   if (p.schemaVersion !== 1 || p.fps !== 30 || p.projection !== 'mercator') fail('version, fps, or projection');
   id(p.id, 'project.id'); string(p.title, 'title');
   for (const field of ['createdAt', 'updatedAt']) if (typeof p[field] !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(p[field] as string) || !Number.isFinite(Date.parse(p[field] as string))) fail(field);
@@ -151,5 +207,6 @@ export function parseProject(value: unknown): ProjectDocument {
   for (const s of scenes) { fields(s, ['id','kind','durationFrames','focusFeatureRevisionId','outsideDimming','cameraTrack','annotations'], 'scene'); if (s.kind !== 'map') fail('scene.kind'); const d = integer(s.durationFrames, 'durationFrames'); if (d <= 0) fail('durationFrames'); duration += d; if (!Number.isSafeInteger(duration)) fail('project duration'); ref(s.focusFeatureRevisionId, revisions, 'focus'); validateOutsideDimming(s.outsideDimming, revisions); const track = array(s.cameraTrack, 'cameraTrack'); if (!track.length) fail('cameraTrack'); let previous = -1; for (const item of track) { const k = object(item, 'camera'); const frame = integer(k.frame, 'camera.frame'); if (frame <= previous || frame >= d || (previous === -1 && frame !== 0)) fail('camera.frame'); previous = frame; position(k.center, 'camera.center'); number(k.zoom, 'camera.zoom'); number(k.bearing, 'camera.bearing'); if (k.pitch !== 0 || k.easing !== 'linear' || Object.keys(k).some(key => !['frame','center','zoom','bearing','pitch','easing'].includes(key))) fail('camera fields'); } for (const a of collection(s.annotations, 'annotations')) { fields(a, ['id','text','anchor','leaderLine','startFrame','fadeInEndFrame','fadeOutStartFrame','endFrameExclusive'], 'annotation'); string(a.text, 'annotation.text'); position(a.anchor, 'annotation.anchor'); validateLeaderLine(a.leaderLine); interval(a.startFrame, a.endFrameExclusive, d, 'annotation interval'); const start = a.startFrame as number, end = a.endFrameExclusive as number, fadeIn = integer(a.fadeInEndFrame, 'fadeIn'), fadeOut = integer(a.fadeOutStartFrame, 'fadeOut'); if (fadeIn < start || fadeOut < fadeIn || fadeOut > end) fail('annotation fades'); } }
   if (!duration) fail('scenes');
   for (const l of layers) { fields(l, ['id','featureRevisionId','order','startFrame','endFrameExclusive','trace'], 'layer'); const r = ref(l.featureRevisionId, revisions, 'layer.featureRevisionId'); integer(l.order, 'layer.order'); interval(l.startFrame, l.endFrameExclusive, duration, 'layer interval'); if (l.trace !== undefined) { const t = object(l.trace, 'trace'); fields(t, ['startFrame','endFrameExclusive','mode'], 'trace'); interval(t.startFrame, t.endFrameExclusive, duration, 'trace interval'); if ((t.startFrame as number) < (l.startFrame as number) || (t.endFrameExclusive as number) > (l.endFrameExclusive as number)) fail('trace outside layer'); const type = object(r.geometry, 'geometry').type; if (!((t.mode === 'line' && type === 'LineString') || (t.mode === 'outer-ring' && type === 'Polygon'))) fail('trace mode'); } }
+  if (p.roadways !== undefined) roadways(p.roadways, sources, revisions);
   return p as unknown as ProjectDocument;
 }

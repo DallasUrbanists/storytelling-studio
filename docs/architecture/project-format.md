@@ -626,3 +626,15 @@ rejects unsupported fields. It is not the complete portable project validator:
 asset bytes and provenance, polygon self-intersections, variant-specific
 framing, migration, and archive validation remain future gates. See the
 [attempt receipt](../planning/receipts/D1-03/D1-03-20261111-01.md).
+
+## Implemented roadway schema
+
+The project parser accepts optional roadway records with ordered segments and
+existing and proposed cross-sections. Stations use meters within an authored
+extent. Each cross-section has ordered bands with explicit placement, locks,
+and evidence. Known dimensions retain original units and normalized meters.
+Unknown dimensions carry no numeric value. Documented and estimated widths
+require source references and provenance.
+
+The schema tests use synthetic roadway layouts. The width solver, editor,
+rendering, and verification of real-world measurements remain future work.
