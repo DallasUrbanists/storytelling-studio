@@ -4,6 +4,10 @@ export type Geometry =
   | { type: 'LineString'; coordinates: Position[] }
   | { type: 'Polygon'; coordinates: Position[][] };
 export type CameraKeyframe = { frame: number; center: Position; zoom: number; bearing: number; pitch: 0; easing: 'linear' };
+/** Dim the scene outside a saved polygon, including its interior holes. */
+export type OutsideDimming = { featureRevisionId: string; opacity: number };
+/** Screen-pixel offset from the geographic anchor to the leader endpoint/text. */
+export type LeaderLine = { offset: [number, number] };
 export type ProjectDocument = {
   schemaVersion: 1; id: string; title: string; createdAt: string; updatedAt: string;
   fps: 30; projection: 'mercator';
@@ -13,5 +17,5 @@ export type ProjectDocument = {
   features: { id: string; name: string; kind: 'point' | 'line' | 'area'; currentRevisionId: string }[];
   featureRevisions: { id: string; featureId: string; geometry: Geometry; geometrySha256: string; sourceIds: string[] }[];
   layers: { id: string; featureRevisionId: string; order: number; startFrame: number; endFrameExclusive: number; trace?: { startFrame: number; endFrameExclusive: number; mode: 'line' | 'outer-ring' } }[];
-  scenes: { id: string; kind: 'map'; durationFrames: number; focusFeatureRevisionId: string; cameraTrack: CameraKeyframe[]; annotations: { id: string; text: string; anchor: Position; startFrame: number; fadeInEndFrame: number; fadeOutStartFrame: number; endFrameExclusive: number }[] }[];
+  scenes: { id: string; kind: 'map'; durationFrames: number; focusFeatureRevisionId: string; outsideDimming?: OutsideDimming; cameraTrack: CameraKeyframe[]; annotations: { id: string; text: string; anchor: Position; leaderLine?: LeaderLine; startFrame: number; fadeInEndFrame: number; fadeOutStartFrame: number; endFrameExclusive: number }[] }[];
 };

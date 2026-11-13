@@ -40,6 +40,27 @@ const geometry = (value: unknown) => {
   }
 };
 
+function validateOutsideDimming(value: unknown, revisions: RecordValue[]): void {
+  if (value === undefined) return;
+  const dim = object(value, 'outsideDimming');
+  fields(dim, ['featureRevisionId', 'opacity'], 'outsideDimming');
+  const revision = ref(dim.featureRevisionId, revisions, 'outsideDimming.featureRevisionId');
+  if (object(revision.geometry, 'geometry').type !== 'Polygon') fail('outsideDimming polygon');
+  const opacity = number(dim.opacity, 'outsideDimming.opacity');
+  if (opacity < 0 || opacity > 1) fail('outsideDimming.opacity');
+}
+
+function validateLeaderLine(value: unknown): void {
+  if (value === undefined) return;
+  const leader = object(value, 'leaderLine');
+  fields(leader, ['offset'], 'leaderLine');
+  const offset = array(leader.offset, 'leaderLine.offset');
+  if (offset.length !== 2) fail('leaderLine.offset');
+  const x = number(offset[0], 'leaderLine.offset.x');
+  const y = number(offset[1], 'leaderLine.offset.y');
+  if (Math.hypot(x, y) <= 7) fail('leaderLine must extend beyond the anchor dot');
+}
+
 /** Validate the bounded bridge document; throws on invalid input. */
 export function parseProject(value: unknown): ProjectDocument {
   const p = object(value, 'project');
@@ -55,7 +76,7 @@ export function parseProject(value: unknown): ProjectDocument {
   for (const r of revisions) { fields(r, ['id','featureId','geometry','geometrySha256','sourceIds'], 'featureRevision'); ref(r.featureId, features, 'revision.featureId'); geometry(r.geometry); digest(r.geometrySha256, 'geometrySha256'); for (const source of array(r.sourceIds, 'sourceIds')) ref(source, sources, 'sourceId'); }
   for (const f of features) { fields(f, ['id','name','kind','currentRevisionId'], 'feature'); string(f.name, 'feature.name'); const r = ref(f.currentRevisionId, revisions, 'currentRevisionId'); if (r.featureId !== f.id) fail('revision ownership'); const kind = object(r.geometry, 'geometry').type; if ((f.kind === 'point' && kind !== 'Point') || (f.kind === 'line' && kind !== 'LineString') || (f.kind === 'area' && kind !== 'Polygon') || !['point', 'line', 'area'].includes(f.kind as string)) fail('feature.kind'); }
   let duration = 0;
-  for (const s of scenes) { fields(s, ['id','kind','durationFrames','focusFeatureRevisionId','cameraTrack','annotations'], 'scene'); if (s.kind !== 'map') fail('scene.kind'); const d = integer(s.durationFrames, 'durationFrames'); if (d <= 0) fail('durationFrames'); duration += d; if (!Number.isSafeInteger(duration)) fail('project duration'); ref(s.focusFeatureRevisionId, revisions, 'focus'); const track = array(s.cameraTrack, 'cameraTrack'); if (!track.length) fail('cameraTrack'); let previous = -1; for (const item of track) { const k = object(item, 'camera'); const frame = integer(k.frame, 'camera.frame'); if (frame <= previous || frame >= d || (previous === -1 && frame !== 0)) fail('camera.frame'); previous = frame; position(k.center, 'camera.center'); number(k.zoom, 'camera.zoom'); number(k.bearing, 'camera.bearing'); if (k.pitch !== 0 || k.easing !== 'linear' || Object.keys(k).some(key => !['frame','center','zoom','bearing','pitch','easing'].includes(key))) fail('camera fields'); } for (const a of collection(s.annotations, 'annotations')) { fields(a, ['id','text','anchor','startFrame','fadeInEndFrame','fadeOutStartFrame','endFrameExclusive'], 'annotation'); string(a.text, 'annotation.text'); position(a.anchor, 'annotation.anchor'); interval(a.startFrame, a.endFrameExclusive, d, 'annotation interval'); const start = a.startFrame as number, end = a.endFrameExclusive as number, fadeIn = integer(a.fadeInEndFrame, 'fadeIn'), fadeOut = integer(a.fadeOutStartFrame, 'fadeOut'); if (fadeIn < start || fadeOut < fadeIn || fadeOut > end) fail('annotation fades'); } }
+  for (const s of scenes) { fields(s, ['id','kind','durationFrames','focusFeatureRevisionId','outsideDimming','cameraTrack','annotations'], 'scene'); if (s.kind !== 'map') fail('scene.kind'); const d = integer(s.durationFrames, 'durationFrames'); if (d <= 0) fail('durationFrames'); duration += d; if (!Number.isSafeInteger(duration)) fail('project duration'); ref(s.focusFeatureRevisionId, revisions, 'focus'); validateOutsideDimming(s.outsideDimming, revisions); const track = array(s.cameraTrack, 'cameraTrack'); if (!track.length) fail('cameraTrack'); let previous = -1; for (const item of track) { const k = object(item, 'camera'); const frame = integer(k.frame, 'camera.frame'); if (frame <= previous || frame >= d || (previous === -1 && frame !== 0)) fail('camera.frame'); previous = frame; position(k.center, 'camera.center'); number(k.zoom, 'camera.zoom'); number(k.bearing, 'camera.bearing'); if (k.pitch !== 0 || k.easing !== 'linear' || Object.keys(k).some(key => !['frame','center','zoom','bearing','pitch','easing'].includes(key))) fail('camera fields'); } for (const a of collection(s.annotations, 'annotations')) { fields(a, ['id','text','anchor','leaderLine','startFrame','fadeInEndFrame','fadeOutStartFrame','endFrameExclusive'], 'annotation'); string(a.text, 'annotation.text'); position(a.anchor, 'annotation.anchor'); validateLeaderLine(a.leaderLine); interval(a.startFrame, a.endFrameExclusive, d, 'annotation interval'); const start = a.startFrame as number, end = a.endFrameExclusive as number, fadeIn = integer(a.fadeInEndFrame, 'fadeIn'), fadeOut = integer(a.fadeOutStartFrame, 'fadeOut'); if (fadeIn < start || fadeOut < fadeIn || fadeOut > end) fail('annotation fades'); } }
   if (!duration) fail('scenes');
   for (const l of layers) { fields(l, ['id','featureRevisionId','order','startFrame','endFrameExclusive','trace'], 'layer'); const r = ref(l.featureRevisionId, revisions, 'layer.featureRevisionId'); integer(l.order, 'layer.order'); interval(l.startFrame, l.endFrameExclusive, duration, 'layer interval'); if (l.trace !== undefined) { const t = object(l.trace, 'trace'); fields(t, ['startFrame','endFrameExclusive','mode'], 'trace'); interval(t.startFrame, t.endFrameExclusive, duration, 'trace interval'); if ((t.startFrame as number) < (l.startFrame as number) || (t.endFrameExclusive as number) > (l.endFrameExclusive as number)) fail('trace outside layer'); const type = object(r.geometry, 'geometry').type; if (!((t.mode === 'line' && type === 'LineString') || (t.mode === 'outer-ring' && type === 'Polygon'))) fail('trace mode'); } }
   return p as unknown as ProjectDocument;

@@ -224,3 +224,46 @@ test('zero-duration label fades are explicit steps', () => {
     assert.equal(opacityAt(frame, input), opacity);
   }
 });
+
+test('scene dimming retains full rings independently of traces, layers, and seeks', () => {
+  const hole = [[0.005, 0.005], [0.005, 0.015], [0.015, 0.015], [0.005, 0.005]];
+  const input = projectWith(document => {
+    document.featureRevisions[2].geometry.coordinates.push(hole);
+    document.layers[2].startFrame = 30;
+  });
+  for (const variant of variantIds) {
+    for (const frame of [299, 0, 149, 1, 299]) {
+      const state = evaluateFrame(input, variant, frame);
+      assert.deepEqual(state.outsideDimming, {
+        featureRevisionId: 'area-revision', opacity: 0.45,
+        geometry: input.featureRevisions[2].geometry,
+      });
+      assert.deepEqual(state.layers.map(l => l.id), ['point-layer', 'line-layer', 'area-layer']);
+      assert.ok(Object.isFrozen(state.outsideDimming.geometry.coordinates[1]));
+      assert.notEqual(state.outsideDimming.geometry, input.featureRevisions[2].geometry);
+    }
+  }
+  const nextScene = projectWith(document => {
+    const scene = structuredClone(document.scenes[0]);
+    scene.id = 'without-dimming';
+    delete scene.outsideDimming;
+    document.scenes.push(scene);
+  });
+  assert.equal(evaluateFrame(nextScene, 'portrait', 300).outsideDimming, undefined);
+});
+
+test('point leader offset is immutable, serialized, and uses the annotation fade', () => {
+  const before = JSON.stringify(project);
+  for (const variant of variantIds) {
+    for (const frame of [299, 0, 29, 30, 45, 60, 149, 240, 255, 269, 270, 299]) {
+      const state = evaluateFrame(project, variant, frame);
+      const label = state.annotations.find(a => a.id === 'fictional-point-label');
+      assert.deepEqual(label.anchor, project.featureRevisions[0].geometry.coordinates);
+      assert.deepEqual(label.leaderLine.offset, [100, -70]);
+      assert.equal(label.opacity, state.annotations[0].opacity);
+      assert.deepEqual(JSON.parse(JSON.stringify(label)).leaderLine, label.leaderLine);
+      assert.throws(() => { label.leaderLine.offset[0] = 0; }, TypeError);
+    }
+  }
+  assert.equal(JSON.stringify(project), before);
+});

@@ -54,6 +54,21 @@ export function drawOverlay(
     }));
   };
 
+  // One even-odd complement keeps the polygon body clear and dims its holes.
+  // This scene effect sits above the basemap, below all ordered feature layers.
+  if (state.outsideDimming) {
+    const { geometry, opacity, featureRevisionId } = state.outsideDimming;
+    const { width, height } = state.viewport;
+    content.append(element(owner, 'path', {
+      'data-outside-dimming': featureRevisionId,
+      d: `M0,0 H${width} V${height} H0 Z `
+        + geometry.coordinates.map(ring => `${path(ring)} Z`).join(' '),
+      fill: '#000000',
+      'fill-opacity': opacity,
+      'fill-rule': 'evenodd',
+    }));
+  }
+
   for (const layer of state.layers) {
     if (!layer.visible) continue;
     const group = element(owner, 'g', { 'data-layer': layer.id });
@@ -89,12 +104,22 @@ export function drawOverlay(
       'data-annotation': annotation.id,
       opacity: annotation.opacity,
     });
+    const [offsetX, offsetY] = annotation.leaderLine?.offset ?? [12, -12];
+    if (annotation.leaderLine) {
+      // Shared casing and ink fade with the dot and text as one annotation.
+      for (const [stroke, width] of [['white', 6], ['#134e4a', 2]] as const) {
+        group.append(element(owner, 'line', {
+          x1: x, y1: y, x2: x + offsetX, y2: y + offsetY,
+          stroke, 'stroke-width': width, 'stroke-linecap': 'round',
+        }));
+      }
+    }
     group.append(element(owner, 'circle', {
       cx: x, cy: y, r: 5, fill: '#134e4a', stroke: 'white', 'stroke-width': 2,
     }));
     const text = element(owner, 'text', {
-      x: x + 12,
-      y: y - 12,
+      x: x + offsetX,
+      y: y + offsetY,
       'font-family': fontFamily,
       'font-size': 30,
       fill: '#134e4a',
