@@ -2,9 +2,9 @@ import type { Roadway, RoadwayBand, RoadwayCrossSection, RoadwayDimension } from
 import type { BandMapping } from '../../project-schema/src/authoring.ts';
 import { evaluateRoadwayStation, validateRoadwaySegments } from './roadway.ts';
 
-export type RoadwayFrame = { title: string; progress: number; qualifier: string; extent: number; segments: {
+export type RoadwayFrame = { title: string; stationOrigin: string; stationDirection: string; progress: number; qualifier: string; extent: number; segments: {
   id: string; name: string; start: number; end: number; envelope: number; curbWidth: number;
-  bands: { id: string; left: number; width: number; leftEnd: number; widthEnd: number; from?: RoadwayBand['kind']; to?: RoadwayBand['kind']; direction: RoadwayBand['direction']; oldOpacity: number; newOpacity: number }[];
+  bands: { id: string; left: number; width: number; leftEnd: number; widthEnd: number; from?: RoadwayBand['kind']; to?: RoadwayBand['kind']; direction: RoadwayBand['direction']; fromDirection?: RoadwayBand['direction']; toDirection?: RoadwayBand['direction']; oldOpacity: number; newOpacity: number }[];
 }[]; gaps: { startMeters: number; endMeters: number }[] };
 
 const meters = (value: RoadwayDimension): number => {
@@ -47,7 +47,7 @@ export function evaluateRoadwayAnimation(road: Roadway, mappings: Record<string,
       const nextEnd = next ? after.endSection.bands[to.bands.indexOf(next)] : undefined;
       const aEnd = oldEnd ? meters(oldEnd.width) : 0, bEnd = nextEnd ? meters(nextEnd.width) : 0;
       const widthEnd = progress === 0 ? aEnd : progress === 1 ? bEnd : (1 - progress) * aEnd + progress * bEnd;
-      const band = { id: slot.id, left, width, leftEnd, widthEnd, ...(old ? { from: old.kind } : {}), ...(next ? { to: next.kind } : {}),
+      const band = { id: slot.id, left, width, leftEnd, widthEnd, ...(old ? { from: old.kind, fromDirection: old.direction } : {}), ...(next ? { to: next.kind, toDirection: next.direction } : {}),
         direction: (progress < 0.5 ? old?.direction : next?.direction) ?? next?.direction ?? old!.direction,
         oldOpacity: 1 - progress, newOpacity: progress };
       left += width; leftEnd += widthEnd; return band;
@@ -60,7 +60,7 @@ export function evaluateRoadwayAnimation(road: Roadway, mappings: Record<string,
     return 'layoutId' in section ? road.layouts!.find(l => l.id === section.layoutId)!.section : section;
   })).concat((road.layouts ?? []).map(l => l.section)).flatMap(s => [s.curbToCurb, s.envelope.width, ...s.bands.map(b => b.width)]);
   const qualifier = evidence.some(d => d.status === 'assumed') ? 'Illustrative dimensions — concept only' : evidence.some(d => d.status === 'estimated') ? 'Estimated dimensions — concept only' : 'Documented dimensions — concept only';
-  return { title: road.title, progress, qualifier, extent: road.stationExtentMeters, segments, gaps: validation.gaps };
+  return { title: road.title, stationOrigin: road.stationOrigin, stationDirection: road.stationDirection, progress, qualifier, extent: road.stationExtentMeters, segments, gaps: validation.gaps };
 }
 
 /** Editable illustrative presets carry no claim about an actual street. */

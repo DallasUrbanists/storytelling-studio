@@ -10,3 +10,4 @@ coverage/
 .env
 **/.quasar/
 **/quasar.config.*.temporary.compiled*
+out/

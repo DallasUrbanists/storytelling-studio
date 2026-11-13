@@ -31,7 +31,8 @@ export function drawStoryPanels(parent: DocumentFragment, owner: Document, state
     group.append(label(64, 95, road.title, 56));
     group.append(label(64, 145, 'Top-down schematic · ' + (road.progress === 0 ? 'Existing' : road.progress === 1 ? 'Proposed' : 'Reallocating space'), 32));
     group.append(label(64, 191, road.qualifier, 30));
-    const top = 280, available = height - top - Math.max(260, footerHeight + 40);
+    group.append(label(64, 232, 'Station increases downward · ' + road.stationDirection, 26));
+    const top = 310, available = height - top - Math.max(260, footerHeight + 40);
     const maxWidth = Math.max(...road.segments.map(segment => segment.envelope));
     const scale = (width - 200) / maxWidth;
     for (const gap of road.gaps) {
@@ -46,10 +47,23 @@ export function drawStoryPanels(parent: DocumentFragment, owner: Document, state
       for (const band of segment.bands) {
         const x = left + band.left * scale, bandWidth = band.width * scale, xEnd = left + band.leftEnd * scale, endWidth = band.widthEnd * scale;
         if (Math.max(bandWidth, endWidth) < 0.01) continue;
-        for (const [kind, opacity] of [[band.from, band.oldOpacity], [band.to, band.newOpacity]] as const) {
+        for (const [kind, opacity, direction] of [[band.from, band.oldOpacity, band.fromDirection], [band.to, band.newOpacity, band.toDirection]] as const) {
           if (!kind || opacity <= 0) continue;
           group.append(node('polygon', { points: [[x,y],[x+bandWidth,y],[xEnd+endWidth,y+length],[xEnd,y+length]].map(p => p.join(',')).join(' '), fill: colors[kind], opacity }));
           group.append(node('line', { x1: x + 2, x2: xEnd + 2, y1: y, y2: y + length, stroke: '#fff', 'stroke-width': 3, 'stroke-dasharray': kind === 'through-lane' ? '22 16' : 'none', opacity }));
+          if (kind === 'center-turn-lane') for (const [edge, offset] of [5, bandWidth - 5].entries()) {
+            group.append(node('line', { x1: x + offset, x2: xEnd + (edge === 0 ? 5 : endWidth - 5), y1: y, y2: y + length, stroke: '#ffe58a', 'stroke-width': 3, opacity }));
+          }
+          const arrowWidth = bandWidth * .22 + endWidth * .78, arrowX = x * .22 + xEnd * .78 + arrowWidth / 2;
+          if (arrowWidth > 65 && length > 230 && direction && direction !== 'none') {
+            const directions = direction === 'both' ? ['reverse', 'forward'] : [direction];
+            directions.forEach((travel, index) => {
+              const offset = direction === 'both' ? (index === 0 ? -1 : 1) * arrowWidth * .18 : 0;
+              const arrow = node('path', { d: kind === 'center-turn-lane' ? 'M 0 -30 V 10 Q 0 28 -18 28 H -27 M -15 16 L -27 28 L -15 40' : 'M 0 -32 V 28 M -12 14 L 0 28 L 12 14', fill: 'none', stroke: '#fff', 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity });
+              arrow.setAttribute('transform', `translate(${arrowX + offset},${y + length * .78}) rotate(${travel === 'reverse' ? 180 : 0})`);
+              group.append(arrow);
+            });
+          }
           if (bandWidth > 55 && length > 150) {
             const text = label(0, 0, names[kind], 30, kind === 'sidewalk' || kind === 'buffer' ? '#16262e' : '#ffffff');
             text.setAttribute('transform', `translate(${x + bandWidth / 2},${y + length / 2}) rotate(-90)`);

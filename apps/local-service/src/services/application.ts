@@ -92,7 +92,7 @@ export function applicationRoutes(repository: SqliteProjectRepository, directory
         if (!saved) throw new Error('Save the selected project before exporting.');
         if (!Array.isArray(input.variants) || !input.variants.length || input.variants.some(v => !['portrait','landscape'].includes(String(v))) || new Set(input.variants).size !== input.variants.length) throw new Error('Choose portrait, landscape, or both.');
         const issues = preflight(saved.document, hash => repository.getAsset(hash)); if (issues.length) { send(response, { code: 'PREFLIGHT_FAILED', message: issues.join(' ') }, 422); return true; }
-        if (cancel.size) throw new Error('An export is already running. Wait or cancel it before starting another.');
+        if (cancel.size) throw new Error('An export is active or finishing cancellation. Wait for its renderer to close before starting another.');
         const id = randomUUID(), folder = path.join(directory, 'jobs', id);
         await mkdir(folder, { recursive: true });
         const assets = [];
@@ -101,7 +101,10 @@ export function applicationRoutes(repository: SqliteProjectRepository, directory
         }
         await writeFile(path.join(folder, 'input.json'), JSON.stringify({ ...saved, variants: input.variants, assets }));
         repository.putJob({ id, kind: 'render', projectId: saved.projectId, revisionId: saved.revisionId, status: 'queued', progress: 0 });
-        const stop = startRender(folder, progress => repository.putJob({ ...repository.getJob(id)!, id, status: 'running', progress }), async (error) => {
+        const stop = startRender(folder, progress => {
+          const current = repository.getJob(id)!;
+          if (current.status !== 'cancelled') repository.putJob({ ...current, id, status: 'running', progress });
+        }, async (error) => {
           cancel.delete(id); if (repository.getJob(id)?.status === 'cancelled') return;
           let receipt;
           if (!error) try { receipt = JSON.parse(await readFile(path.join(folder, 'receipt.json'), 'utf8')); } catch { error = 'The render did not produce a completion receipt.'; }
