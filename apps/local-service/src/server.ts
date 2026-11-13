@@ -31,6 +31,7 @@ export type ServiceOptions = {
   dataDirectory?: string;
   maxJsonBytes?: number;
   repository?: ProjectRepository;
+  extension?: (request: http.IncomingMessage, response: http.ServerResponse, target: string) => Promise<boolean>;
 };
 
 function record(value: unknown, keys: string[]): Record<string, unknown> {
@@ -180,7 +181,8 @@ export function createService(options: ServiceOptions = {}): http.Server {
       throw new HttpError(400, 'INVALID_TARGET', 'Expected a canonical API path.');
     }
     const length = request.headers['content-length'];
-    if (length !== undefined && (!/^\d+$/.test(length) || Number(length) > limit)) {
+    const bodyLimit = ['/api/assets', '/api/package-import'].includes(target) && options.extension ? 64 * 1024 * 1024 : limit;
+    if (length !== undefined && (!/^\d+$/.test(length) || Number(length) > bodyLimit)) {
       throw new HttpError(413, 'REQUEST_TOO_LARGE', 'The JSON request limit was exceeded.');
     }
     if (['GET', 'HEAD'].includes(request.method ?? '')
@@ -190,6 +192,7 @@ export function createService(options: ServiceOptions = {}): http.Server {
     // Kept for the D1-02 lifecycle probe; this reports liveness, never database readiness.
     if (request.method === 'GET' && target === '/health') return send(response, 200, { status: 'ok' });
     requireSession(request, token);
+    if (options.extension && await options.extension(request, response, target)) return;
     if (request.method === 'GET' && target === '/api/health') {
       const database = !!repository && await repository.ready() === true;
       return send(response, database ? 200 : 503, { runtime: 'ready', schema: 1, database: database ? 'ready' : 'unavailable' });
@@ -234,3 +237,4 @@ export function createService(options: ServiceOptions = {}): http.Server {
   }
   return server;
 }
+

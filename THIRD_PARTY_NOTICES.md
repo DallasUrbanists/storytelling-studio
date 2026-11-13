@@ -40,3 +40,10 @@ a complete source manifest and actual rights evidence for the selected assets.
 The synthetic bridge fixture includes Inter Regular v4.1, Copyright 2016
 the Inter Project Authors, under the SIL Open Font License 1.1. The full
 license and notices are retained in [OFL-Inter.txt](tests/fixtures/synthetic-story/assets/OFL-Inter.txt).
+
+## Integrated application dependency
+
+The .gstory archive implementation uses fflate 0.8.3 by Arjun Barrett under
+the [MIT license](LICENSES/fflate-0.8.3-MIT.txt). The installed packages retain
+their own notices. Browser executables are supplied by the local operator and
+are not redistributed by this repository.

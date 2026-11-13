@@ -8,6 +8,9 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { createStudio } from '../apps/studio/src/server.mjs';
 import { createService } from '../apps/local-service/src/server.mjs';
+import { SqliteProjectRepository } from '../apps/local-service/src/db/project-repository.ts';
+import { applicationRoutes } from '../apps/local-service/src/services/application.ts';
+import { newSessionToken, storageRoot } from '../apps/local-service/src/security.ts';
 
 const root = await realpath(
   path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'),
@@ -69,7 +72,7 @@ function listen(server, port = 0) {
 }
 
 function close(server) {
-  if (!server.listening) return;
+  if (!server?.listening) return;
   return new Promise((resolve, reject) => {
     server.close((error) => error ? reject(error) : resolve(undefined));
     server.closeAllConnections();
@@ -109,8 +112,9 @@ async function start() {
     if (error.code === 'EEXIST') throw new Error('Lifecycle record exists. Check its status before retrying.');
     throw error;
   });
-  const studio = createStudio();
-  const service = createService();
+  const proxy = { origin: '', token: newSessionToken() };
+  const studio = createStudio({ proxy });
+  let service, repository, routes;
   let interrupted = false;
   const onInterrupt = () => { interrupted = true; };
   process.on('SIGINT', onInterrupt);
@@ -128,8 +132,13 @@ async function start() {
   let published = false;
   try {
     owner.file = fileIdentity(await file.stat({ bigint: true }));
-    const studioPort = await listen(studio, Number(process.env.GSTORY_STUDIO_PORT || 0));
+    const studioPort = await listen(studio, Number(process.env.GSTORY_STUDIO_PORT || 4173));
+    const dataDirectory = storageRoot(root, process.env.STORY_STUDIO_DATA_DIR);
+    repository = new SqliteProjectRepository(dataDirectory);
+    routes = applicationRoutes(repository, dataDirectory);
+    service = createService({ repository, dataDirectory, studioOrigin: `http://127.0.0.1:${studioPort}`, sessionToken: proxy.token, extension: routes });
     const servicePort = await listen(service, Number(process.env.GSTORY_SERVICE_PORT || 0));
+    proxy.origin = `http://127.0.0.1:${servicePort}`;
     const controlPort = await listen(controller);
     await file.writeFile(JSON.stringify([0, 0, {
       ...owner, studio: studioPort, service: servicePort, control: controlPort,
@@ -148,6 +157,8 @@ async function start() {
   } finally {
     try {
       await Promise.all([studio, service, controller].map(close));
+      await routes?.close();
+      repository?.close();
       await finishRecord(file, owner, published);
     } finally {
       await file.close();

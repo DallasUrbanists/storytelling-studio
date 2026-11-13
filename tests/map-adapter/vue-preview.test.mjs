@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp } from 'node:fs/promises';
 import { test } from 'node:test';
-import { openBrowser } from '@remotion/renderer';
+import { openSandboxedBrowser } from '../../apps/renderer/src/sandboxed-browser.ts';
 import vue from '@vitejs/plugin-vue';
 import { createServer } from 'vite';
 
@@ -19,29 +19,25 @@ test('Vue preview conceals stale frames and recovers', { timeout: 90_000 }, asyn
     plugins: [vue(), {
       name: 'preview-test-route',
       configureServer(server) {
-        server.middlewares.use('/__preview', (_, response) => {
+        server.middlewares.use('/__parity', (_, response) => {
           response.setHeader('Content-Type', 'text/html');
           response.end('<!doctype html><div id="app"></div><script type="module" src="/apps/studio/src/main.js"></script>');
         });
       },
     }],
-    server: { host: '127.0.0.1', port: 0, hmr: false },
+    server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
   });
   let browser;
   t.after(async () => {
     try { await browser?.close({ silent: true }); } finally { await vite.close(); }
   });
   await vite.listen();
-  browser = await openBrowser('chrome', {
-    browserExecutable: process.env.GSTORY_CHROME,
-    chromiumOptions: { gl: 'swangle' },
-    logLevel: 'error',
-  });
+  browser = await openSandboxedBrowser(process.env.GSTORY_CHROME);
   const page = await browser.newPage({
     context: () => Promise.resolve(null), indent: false, logLevel: 'error',
     onBrowserLog: null, onLog: () => {}, pageIndex: 0,
   });
-  await page.goto({ url: new URL('/__preview', vite.resolvedUrls.local[0]).href, timeout: 30_000 });
+  await page.goto({ url: new URL('/__parity', vite.resolvedUrls.local[0]).href, timeout: 30_000 });
   await page.evaluate(async () => {
     const wait = async predicate => {
       const deadline = Date.now() + 20_000;
@@ -96,3 +92,4 @@ test('Vue preview conceals stale frames and recovers', { timeout: 90_000 }, asyn
   await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
   assert.equal(await page.evaluate(() => document.activeElement.value), '2');
 });
+

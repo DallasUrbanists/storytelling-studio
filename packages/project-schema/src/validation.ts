@@ -1,5 +1,6 @@
 import type { ProjectDocument } from './project.ts';
 import { FocusValidationError, validateFocusSteps } from './focus.ts';
+import { validateCameraTrack, validatePresentation } from './authoring.ts';
 
 type RecordValue = Record<string, unknown>;
 const fail = (message: string): never => { throw new Error(`Invalid project: ${message}`); };
@@ -64,7 +65,12 @@ const interval = (start: unknown, end: unknown, limit: number, path: string) => 
 const geometry = (value: unknown) => {
   const g = object(value, 'geometry'); fields(g, ['type', 'coordinates'], 'geometry');
   if (g.type === 'Point') { position(g.coordinates, 'point'); return; }
-  const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'Polygon' ? array(g.coordinates, 'polygon') : fail('geometry.type');
+  if (g.type === 'MultiPolygon') {
+    const parts = array(g.coordinates, 'multipolygon'); if (!parts.length) fail('empty multipolygon');
+    for (const coordinates of parts) geometry({ type: 'Polygon', coordinates });
+    return;
+  }
+  const lines = g.type === 'LineString' ? [g.coordinates] : ['Polygon', 'MultiLineString'].includes(g.type as string) ? array(g.coordinates, 'parts') : fail('geometry.type');
   if (!lines.length) fail('geometry coordinates');
   for (const line of lines) {
     const points = array(line, 'line').map(p => position(p, 'coordinate'));
@@ -80,7 +86,7 @@ function validateOutsideDimming(value: unknown, revisions: RecordValue[]): void 
   const dim = object(value, 'outsideDimming');
   fields(dim, ['featureRevisionId', 'opacity'], 'outsideDimming');
   const revision = ref(dim.featureRevisionId, revisions, 'outsideDimming.featureRevisionId');
-  if (object(revision.geometry, 'geometry').type !== 'Polygon') fail('outsideDimming polygon');
+  if (!['Polygon','MultiPolygon'].includes(object(revision.geometry, 'geometry').type as string)) fail('outsideDimming polygon');
   const opacity = number(dim.opacity, 'outsideDimming.opacity');
   if (opacity < 0 || opacity > 1) fail('outsideDimming.opacity');
 }
@@ -176,19 +182,28 @@ const roadways = (value: unknown, sources: RecordValue[], revisions: RecordValue
 /** Validate the bounded bridge document; throws on invalid input. */
 export function parseProject(value: unknown): ProjectDocument {
   const p = object(value, 'project');
-  fields(p, ['schemaVersion','id','title','createdAt','updatedAt','fps','projection','outputVariants','assets','sources','features','featureRevisions','layers','scenes','researchSnapshots','roadways'], 'project');
+  fields(p, ['schemaVersion','id','title','createdAt','updatedAt','fps','projection','outputVariants','assets','sources','features','featureRevisions','layers','scenes','researchSnapshots','roadways','walksheds','importedFrom'], 'project');
   if (p.schemaVersion !== 1 || p.fps !== 30 || p.projection !== 'mercator') fail('version, fps, or projection');
   id(p.id, 'project.id'); string(p.title, 'title');
   for (const field of ['createdAt', 'updatedAt']) if (typeof p[field] !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(p[field] as string) || !Number.isFinite(Date.parse(p[field] as string))) fail(field);
   const variants = object(p.outputVariants, 'outputVariants'); fields(variants, ['portrait','landscape'], 'outputVariants');
   for (const [name, width, height] of [['portrait', 1080, 1920], ['landscape', 1920, 1080]] as const) { const v = object(variants[name], name); fields(v, ['width','height'], name); if (v.width !== width || v.height !== height) fail(name); }
   const assets = collection(p.assets, 'assets'), sources = collection(p.sources, 'sources'), features = collection(p.features, 'features'), revisions = collection(p.featureRevisions, 'featureRevisions'), layers = collection(p.layers, 'layers'), scenes = collection(p.scenes, 'scenes');
-  for (const a of assets) { fields(a, ['id','path','mediaType','sha256'], 'asset'); const path = string(a.path, 'asset.path'); if (path.startsWith('/') || path.includes('\\') || path.split('/').some(part => !part || part === '.' || part === '..') || /^[A-Za-z]:/.test(path)) fail('asset.path'); string(a.mediaType, 'asset.mediaType'); digest(a.sha256, 'asset.sha256'); }
+  for (const a of assets) { fields(a, ['id','path','mediaType','sha256','permission'], 'asset'); const path = string(a.path, 'asset.path'); if (path.startsWith('/') || path.includes('\\') || path.split('/').some(part => !part || part === '.' || part === '..') || /^[A-Za-z]:/.test(path)) fail('asset.path'); string(a.mediaType, 'asset.mediaType'); digest(a.sha256, 'asset.sha256');
+    if (a.permission !== undefined) {
+      const permission = object(a.permission, 'asset.permission'); fields(permission, ['localUse','publication','redistribution','license','credit'], 'asset.permission');
+      for (const key of ['localUse','publication','redistribution']) if (typeof permission[key] !== 'boolean') fail('asset.permission');
+      string(permission.license, 'asset.license'); string(permission.credit, 'asset.credit');
+    }
+  }
   for (const s of sources) {
     string(s.title, 'source.title');
-    if (s.sourceKind === 'author-origin') fields(s, ['id','title','sourceKind'], 'source');
+    for (const key of ['url','retrievedAt','serviceDate','notes']) if (s[key] !== undefined) string(s[key], 'source.' + key);
+    if (s.url !== undefined && !/^https?:\/\//.test(s.url as string)) fail('source.url');
+    if (s.interpretation !== undefined && !['official','editorial','synthetic'].includes(s.interpretation as string)) fail('source.interpretation');
+    if (s.sourceKind === 'author-origin') fields(s, ['id','title','sourceKind','url','retrievedAt','interpretation','serviceDate','notes'], 'source');
     else if (s.sourceKind === 'dataset') {
-      fields(s, ['id','title','sourceKind','publisher','version','referencePeriod','boundaryVintage','contentSha256','universe','rights'], 'source');
+      fields(s, ['id','title','sourceKind','publisher','version','referencePeriod','boundaryVintage','contentSha256','universe','rights','url','retrievedAt','interpretation','serviceDate','notes'], 'source');
       string(s.publisher, 'source.publisher');
       for (const key of ['version','referencePeriod','boundaryVintage','universe']) nullableString(s[key], `source.${key}`);
       if (s.contentSha256 !== null) digest(s.contentSha256, 'source.contentSha256');
@@ -197,7 +212,7 @@ export function parseProject(value: unknown): ProjectDocument {
     } else fail('source.kind');
   }
   for (const r of revisions) { fields(r, ['id','featureId','geometry','geometrySha256','sourceIds'], 'featureRevision'); ref(r.featureId, features, 'revision.featureId'); geometry(r.geometry); digest(r.geometrySha256, 'geometrySha256'); for (const source of array(r.sourceIds, 'sourceIds')) ref(source, sources, 'sourceId'); }
-  for (const f of features) { fields(f, ['id','name','kind','currentRevisionId'], 'feature'); string(f.name, 'feature.name'); const r = ref(f.currentRevisionId, revisions, 'currentRevisionId'); if (r.featureId !== f.id) fail('revision ownership'); const kind = object(r.geometry, 'geometry').type; if ((f.kind === 'point' && kind !== 'Point') || (f.kind === 'line' && kind !== 'LineString') || (f.kind === 'area' && kind !== 'Polygon') || !['point', 'line', 'area'].includes(f.kind as string)) fail('feature.kind'); }
+  for (const f of features) { fields(f, ['id','name','kind','currentRevisionId'], 'feature'); string(f.name, 'feature.name'); const r = ref(f.currentRevisionId, revisions, 'currentRevisionId'); if (r.featureId !== f.id) fail('revision ownership'); const kind = object(r.geometry, 'geometry').type; if ((f.kind === 'point' && kind !== 'Point') || (f.kind === 'line' && !['LineString','MultiLineString'].includes(kind as string)) || (f.kind === 'area' && !['Polygon','MultiPolygon'].includes(kind as string)) || !['point', 'line', 'area'].includes(f.kind as string)) fail('feature.kind'); }
   for (const snapshot of p.researchSnapshots === undefined ? [] : collection(p.researchSnapshots, 'researchSnapshots')) {
     fields(snapshot, ['id','inputs','result','status','reviews'], 'researchSnapshot');
     if (!['draft','approved','stale','unavailable'].includes(snapshot.status as string)) fail('snapshot.status');
@@ -221,14 +236,90 @@ export function parseProject(value: unknown): ProjectDocument {
       if (!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(date) || !Number.isFinite(Date.parse(date))) fail('reviewedAt');
       if (!['approved','rejected','reviewed'].includes(review.decision as string)) fail('review.decision');
       researchInputs(review.inputs, 'review.inputs'); researchResult(review.result, 'review.result');
-      if (review.decision === 'approved' && canonical(review.inputs) === canonical(inputs) && canonical(review.result) === canonical(result)) matched = true;
+      if (canonical(review.inputs) === canonical(inputs) && canonical(review.result) === canonical(result) && review.decision !== 'reviewed') matched = review.decision === 'approved';
     }
     if (snapshot.status === 'approved' && (!matched || !sourceInputs.length || result.kind === 'unavailable' || result.value === null || !result.universe)) fail('approved snapshot requires matching review and complete inputs');
   }
   let duration = 0;
-  for (const s of scenes) { fields(s, ['id','kind','durationFrames','focusFeatureRevisionId','focusSteps','outsideDimming','cameraTrack','annotations'], 'scene'); if (s.kind !== 'map') fail('scene.kind'); const d = integer(s.durationFrames, 'durationFrames'); if (d <= 0) fail('durationFrames'); duration += d; if (!Number.isSafeInteger(duration)) fail('project duration'); if (s.focusSteps === undefined) ref(s.focusFeatureRevisionId, revisions, 'focus'); else { if (s.focusFeatureRevisionId !== undefined) throw new FocusValidationError('ambiguous-focus', 'scene.focusSteps'); validateFocusSteps(s.focusSteps, new Set(revisions.map(r => r.id as string)), d); } validateOutsideDimming(s.outsideDimming, revisions); const track = array(s.cameraTrack, 'cameraTrack'); if (!track.length) fail('cameraTrack'); let previous = -1; for (const item of track) { const k = object(item, 'camera'); const frame = integer(k.frame, 'camera.frame'); if (frame <= previous || frame >= d || (previous === -1 && frame !== 0)) fail('camera.frame'); previous = frame; position(k.center, 'camera.center'); number(k.zoom, 'camera.zoom'); number(k.bearing, 'camera.bearing'); if (k.pitch !== 0 || k.easing !== 'linear' || Object.keys(k).some(key => !['frame','center','zoom','bearing','pitch','easing'].includes(key))) fail('camera fields'); } for (const a of collection(s.annotations, 'annotations')) { fields(a, ['id','text','anchor','leaderLine','startFrame','fadeInEndFrame','fadeOutStartFrame','endFrameExclusive'], 'annotation'); string(a.text, 'annotation.text'); position(a.anchor, 'annotation.anchor'); validateLeaderLine(a.leaderLine); interval(a.startFrame, a.endFrameExclusive, d, 'annotation interval'); const start = a.startFrame as number, end = a.endFrameExclusive as number, fadeIn = integer(a.fadeInEndFrame, 'fadeIn'), fadeOut = integer(a.fadeOutStartFrame, 'fadeOut'); if (fadeIn < start || fadeOut < fadeIn || fadeOut > end) fail('annotation fades'); } }
+  for (const s of scenes) {
+    fields(s, ['id','kind','durationFrames','focusFeatureRevisionId','focusSteps','outsideDimming','cameraTrack','annotations','title','caption','credit','variantOverrides','roadway','researchSnapshotId'], 'scene');
+    if (s.kind !== 'map') fail('scene.kind');
+    const d = integer(s.durationFrames, 'durationFrames');
+    if (d <= 0 || d > 108000) fail('durationFrames');
+    duration += d; if (!Number.isSafeInteger(duration) || duration > 1080000) fail('project duration');
+    if (s.focusSteps === undefined) ref(s.focusFeatureRevisionId, revisions, 'focus');
+    else {
+      if (s.focusFeatureRevisionId !== undefined) throw new FocusValidationError('ambiguous-focus', 'scene.focusSteps');
+      validateFocusSteps(s.focusSteps, new Set(revisions.map(r => r.id as string)), d);
+    }
+    validateOutsideDimming(s.outsideDimming, revisions);
+    validateCameraTrack(s.cameraTrack, d);
+    validatePresentation(s, d);
+    if (s.researchSnapshotId !== undefined) ref(s.researchSnapshotId, collection(p.researchSnapshots, 'researchSnapshots'), 'scene research');
+    if (s.roadway !== undefined) ref(object(s.roadway, 'roadway').roadwayId, collection(p.roadways, 'roadways'), 'scene roadway');
+    for (const a of collection(s.annotations, 'annotations')) {
+      fields(a, ['id','text','anchor','leaderLine','startFrame','fadeInEndFrame','fadeOutStartFrame','endFrameExclusive','fontSize','variantOffsets'], 'annotation');
+      string(a.text, 'annotation.text'); position(a.anchor, 'annotation.anchor'); validateLeaderLine(a.leaderLine);
+      interval(a.startFrame, a.endFrameExclusive, d, 'annotation interval');
+      const start = a.startFrame as number, end = a.endFrameExclusive as number, fadeIn = integer(a.fadeInEndFrame, 'fadeIn'), fadeOut = integer(a.fadeOutStartFrame, 'fadeOut');
+      if (fadeIn < start || fadeOut < fadeIn || fadeOut > end) fail('annotation fades');
+      if (a.fontSize !== undefined && (number(a.fontSize, 'fontSize') < 16 || (a.fontSize as number) > 128)) fail('fontSize');
+      if (a.variantOffsets !== undefined) {
+        const offsets = object(a.variantOffsets, 'variantOffsets'); fields(offsets, ['portrait','landscape'], 'variantOffsets');
+        for (const offset of Object.values(offsets)) {
+          if (!Array.isArray(offset) || offset.length !== 2 || !offset.every(x => typeof x === 'number' && Number.isFinite(x) && Math.abs(x) <= 3840)) fail('label offset');
+        }
+      }
+    }
+  }
   if (!duration) fail('scenes');
-  for (const l of layers) { fields(l, ['id','featureRevisionId','order','startFrame','endFrameExclusive','trace'], 'layer'); const r = ref(l.featureRevisionId, revisions, 'layer.featureRevisionId'); integer(l.order, 'layer.order'); interval(l.startFrame, l.endFrameExclusive, duration, 'layer interval'); if (l.trace !== undefined) { const t = object(l.trace, 'trace'); fields(t, ['startFrame','endFrameExclusive','mode'], 'trace'); interval(t.startFrame, t.endFrameExclusive, duration, 'trace interval'); if ((t.startFrame as number) < (l.startFrame as number) || (t.endFrameExclusive as number) > (l.endFrameExclusive as number)) fail('trace outside layer'); const type = object(r.geometry, 'geometry').type; if (!((t.mode === 'line' && type === 'LineString') || (t.mode === 'outer-ring' && type === 'Polygon'))) fail('trace mode'); } }
+  for (const l of layers) { fields(l, ['id','featureRevisionId','order','startFrame','endFrameExclusive','trace','style','group','sceneRange','fillFade'], 'layer'); const r = ref(l.featureRevisionId, revisions, 'layer.featureRevisionId'); integer(l.order, 'layer.order'); interval(l.startFrame, l.endFrameExclusive, duration, 'layer interval'); if (l.trace !== undefined) { const t = object(l.trace, 'trace'); fields(t, ['startFrame','endFrameExclusive','mode'], 'trace'); interval(t.startFrame, t.endFrameExclusive, duration, 'trace interval'); if ((t.startFrame as number) < (l.startFrame as number) || (t.endFrameExclusive as number) > (l.endFrameExclusive as number)) fail('trace outside layer'); const type = object(r.geometry, 'geometry').type; if (!((t.mode === 'line' && ['LineString','MultiLineString'].includes(type as string)) || (t.mode === 'outer-ring' && ['Polygon','MultiPolygon'].includes(type as string)))) fail('trace mode'); } }
+  for (const layer of layers) {
+    if (layer.fillFade !== undefined) {
+      const fade = object(layer.fillFade, 'fill fade'); fields(fade, ['startFrame','endFrameExclusive'], 'fill fade');
+      interval(fade.startFrame, fade.endFrameExclusive, duration, 'fill fade');
+      const revision = ref(layer.featureRevisionId, revisions, 'fill feature');
+      if (!['Polygon','MultiPolygon'].includes(object(revision.geometry, 'fill geometry').type as string) || (fade.startFrame as number) < (layer.startFrame as number) || (fade.endFrameExclusive as number) > (layer.endFrameExclusive as number)) fail('fill fade outside area layer');
+    }
+    if (layer.group !== undefined && !['context','rail','bus','stop','station','service-area','walkshed'].includes(layer.group as string)) fail('layer group');
+    if (layer.style !== undefined) {
+      const style = object(layer.style, 'layer style'); fields(style, ['stroke','width','fill','fillOpacity','opacity'], 'layer style');
+      for (const key of ['stroke','fill']) if (typeof style[key] !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(style[key] as string)) fail('layer color');
+      if (number(style.width, 'stroke width') < 0 || (style.width as number) > 40) fail('stroke width');
+      for (const key of ['opacity','fillOpacity']) if (number(style[key], key) < 0 || (style[key] as number) > 1) fail(key);
+    }
+    if (layer.sceneRange !== undefined) {
+      const range = object(layer.sceneRange, 'scene range'); fields(range, ['from','through'], 'scene range');
+      const from = scenes.indexOf(ref(range.from, scenes, 'from scene')), through = scenes.indexOf(ref(range.through, scenes, 'through scene'));
+      if (from > through) fail('reversed scene range');
+      const start = scenes.slice(0, from).reduce((n, scene) => n + (scene.durationFrames as number), 0);
+      const end = scenes.slice(0, through + 1).reduce((n, scene) => n + (scene.durationFrames as number), 0);
+      if (start !== layer.startFrame || end !== layer.endFrameExclusive) fail('stale scene range');
+    }
+  }
+  if (p.importedFrom !== undefined) {
+    const provenance = object(p.importedFrom, 'importedFrom'); fields(provenance, ['projectId','revisionId','packageSha256'], 'importedFrom');
+    id(provenance.projectId, 'source project'); id(provenance.revisionId, 'source revision'); digest(provenance.packageSha256, 'package digest');
+  }
+  if (p.walksheds !== undefined) for (const item of array(p.walksheds, 'walksheds')) {
+    const walk = object(item, 'walkshed');
+    fields(walk, ['featureRevisionId','durationSeconds','method','tool','toolVersion','networkDate','networkSha256','speedMetersPerSecond','origins','reachableNetworkAssetId','sourceAssetIds','barriers','assumptions','limitations','technicalReview'], 'walkshed');
+    const revision = ref(walk.featureRevisionId, revisions, 'walkshed area');
+    if (!['Polygon','MultiPolygon'].includes(object(revision.geometry, 'walkshed geometry').type as string)) fail('walkshed area');
+    if (walk.durationSeconds !== 600 || walk.method !== 'pedestrian-network') fail('walkshed method');
+    for (const key of ['tool','toolVersion','networkDate','barriers','assumptions','limitations']) string(walk[key], key);
+    digest(walk.networkSha256, 'network hash');
+    if (number(walk.speedMetersPerSecond, 'walking speed') <= 0 || (walk.speedMetersPerSecond as number) > 3) fail('walking speed');
+    const origins = array(walk.origins, 'origins'); if (!origins.length) fail('origins');
+    for (const origin of origins) position(origin, 'walkshed origin');
+    ref(walk.reachableNetworkAssetId, assets, 'reachable network');
+    for (const asset of array(walk.sourceAssetIds, 'walkshed inputs')) ref(asset, assets, 'walkshed input');
+    if (walk.technicalReview !== undefined) {
+      const review = object(walk.technicalReview, 'walkshed review'); fields(review, ['reviewer','reviewedAt','notes'], 'walkshed review');
+      for (const key of ['reviewer','reviewedAt','notes']) string(review[key], key);
+    }
+  }
   if (p.roadways !== undefined) roadways(p.roadways, sources, revisions);
   return p as unknown as ProjectDocument;
 }
+

@@ -1,7 +1,9 @@
 import type { Geometry, Position, ProjectDocument } from '../../project-schema/src/index.ts';
 import { evaluateCamera, type CameraState } from './camera.ts';
-import { copyGeometry, tracePath } from './geometry.ts';
+import { copyGeometry, tracePath, traceParts } from './geometry.ts';
 import { evaluateFocus, type FocusState } from './focus.ts';
+import { evaluateRoadwayAnimation, type RoadwayFrame } from './roadway-animation.ts';
+import type { LayerStyle } from '../../project-schema/src/authoring.ts';
 
 type VariantId = keyof ProjectDocument['outputVariants'];
 type Scene = ProjectDocument['scenes'][number];
@@ -15,10 +17,12 @@ type LayerState = {
   order: number;
   visible: boolean;
   geometry: Geometry;
+  style?: LayerStyle;
   trace?: {
     mode: NonNullable<Layer['trace']>['mode'];
     progress: number;
     coordinates: Position[];
+    paths?: Position[][];
   };
 };
 
@@ -32,12 +36,16 @@ export type FrameState = Immutable<{
   focus: { featureRevisionId: string; geometry: Geometry } | FocusState | null;
   outsideDimming?: {
     featureRevisionId: string;
-    geometry: Extract<Geometry, { type: 'Polygon' }>;
+    geometry: Extract<Geometry, { type: 'Polygon' | 'MultiPolygon' }>;
     opacity: number;
   };
   layers: LayerState[];
+  roadway?: RoadwayFrame;
+  caption?: string;
+  credit?: string;
+  researchCard?: { text: string; qualifier: string; status: string };
   annotations: {
-    id: string; text: string; anchor: Position; opacity: number;
+    id: string; text: string; anchor: Position; opacity: number; fontSize?: number;
     leaderLine?: { offset: [number, number] };
   }[];
 }>;
@@ -66,16 +74,25 @@ function evaluateLayer(layer: Layer, geometry: Geometry, frame: number): LayerSt
     order: layer.order,
     visible: frame >= layer.startFrame && frame < layer.endFrameExclusive,
     geometry: copyGeometry(geometry),
+    ...(layer.style ? { style: { ...layer.style } } : {}),
   };
 
   // Validation pairs a trace with a LineString or Polygon of the matching mode.
   const trace = layer.trace;
   if (trace && geometry.type !== 'Point') {
-    const path = geometry.type === 'Polygon' ? geometry.coordinates[0] : geometry.coordinates;
+    const paths = geometry.type === 'Polygon' ? [geometry.coordinates[0]]
+      : geometry.type === 'MultiPolygon' ? geometry.coordinates.map(rings => rings[0])
+      : geometry.type === 'MultiLineString' ? geometry.coordinates : [geometry.coordinates];
     const progress = Math.max(0, Math.min(1,
       (frame - trace.startFrame) / (trace.endFrameExclusive - trace.startFrame),
     ));
-    state.trace = { mode: trace.mode, progress, coordinates: tracePath(path, progress) };
+    state.trace = paths.length === 1
+      ? { mode: trace.mode, progress, coordinates: tracePath(paths[0], progress) }
+      : { mode: trace.mode, progress, coordinates: [], paths: traceParts(paths, progress) };
+  }
+  if (layer.fillFade) {
+    const progress = Math.max(0, Math.min(1, (frame - layer.fillFade.startFrame) / Math.max(1, layer.fillFade.endFrameExclusive - layer.fillFade.startFrame - 1)));
+    state.style = { stroke: '#0f766e', width: 4, fill: '#5eead4', opacity: 1, ...layer.style, fillOpacity: (layer.style?.fillOpacity ?? 0.26) * progress };
   }
   return state;
 }
@@ -127,7 +144,7 @@ export function evaluateFrame(
     sceneId: scene.id,
     variantId,
     viewport: { ...project.outputVariants[variantId], pixelRatio: 1 as const },
-    camera: sequence?.camera ?? evaluateCamera(scene.cameraTrack, localFrame),
+    camera: sequence?.camera ?? evaluateCamera(scene.variantOverrides?.[variantId]?.cameraTrack ?? scene.cameraTrack, localFrame),
     focus,
     ...(scene.outsideDimming ? {
       outsideDimming: {
@@ -137,14 +154,31 @@ export function evaluateFrame(
       },
     } : {}),
     layers,
+    ...(scene.roadway ? { roadway: evaluateRoadwayAnimation(project.roadways!.find(r => r.id === scene.roadway!.roadwayId)!, scene.roadway.mappings, localFrame, scene.roadway.startFrame, scene.roadway.endFrame) } : {}),
+    ...(scene.caption ? { caption: scene.caption } : {}),
+    ...(scene.credit ? { credit: scene.credit } : {}),
+    ...(scene.researchSnapshotId ? { researchCard: researchCard(project, scene.researchSnapshotId) } : {}),
     annotations: scene.annotations.map(annotation => ({
       id: annotation.id,
       text: annotation.text,
       anchor: [...annotation.anchor] as Position,
       opacity: labelOpacity(annotation, localFrame),
-      ...(annotation.leaderLine ? {
+      ...(annotation.fontSize ? { fontSize: annotation.fontSize } : {}),
+      ...(annotation.variantOffsets?.[variantId] ? { leaderLine: { offset: [...annotation.variantOffsets[variantId]!] as Position } } : annotation.leaderLine ? {
         leaderLine: { offset: [...annotation.leaderLine.offset] as [number, number] },
       } : {}),
     })),
   });
 }
+
+function researchCard(project: ProjectDocument, id: string) {
+  const snapshot = project.researchSnapshots!.find(value => value.id === id)!;
+  const value = snapshot.result.value;
+  const number = value && typeof value === 'object' && !Array.isArray(value) ? value.displayPopulation : value;
+  return {
+    text: snapshot.status === 'approved' ? (typeof number === 'number' ? number.toLocaleString('en-US') : String(number)) + ' estimated residents' : 'Research awaiting review',
+    qualifier: snapshot.result.note,
+    status: snapshot.status,
+  };
+}
+

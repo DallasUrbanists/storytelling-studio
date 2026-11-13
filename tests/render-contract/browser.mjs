@@ -30,7 +30,7 @@ export async function previewServer(cacheDir) {
         });
       },
     }],
-    server: { host: '127.0.0.1', port: 0, hmr: false },
+    server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
   });
   try { await server.listen(); return server; }
   catch (error) { await server.close(); throw error; }
@@ -58,15 +58,31 @@ function fixtureResource(url, resourceType) {
 
 /** Capture successful resource bytes and inject failures before either actual host starts. */
 export async function observeNetwork(page, origin, fault) {
-  const client = page._client(), resources = [], errors = [], pending = new Set(), requests = new Map();
+  const client = page._client(), resources = [], errors = [], pending = new Set(), cancelledRequests = new Set();
   const observed = [];
   let injected = 0;
   await client.send('Network.enable');
   await client.send('Network.setCacheDisabled', { cacheDisabled: true });
-  await client.send('Fetch.enable', { patterns: [{ urlPattern: '*' }] });
+  client.on('Network.loadingFailed', event => {
+    if (event.canceled || event.errorText === 'net::ERR_ABORTED') cancelledRequests.add(event.requestId);
+  });
+  await client.send('Fetch.enable', { patterns: [{ urlPattern: '*', requestStage: 'Request' },
+    ...(!fault ? [{ urlPattern: '*bridge-style.json*', requestStage: 'Response' },
+      { urlPattern: '*Inter-Regular.woff2*', requestStage: 'Response' }] : [])] });
   client.on('Fetch.requestPaused', event => {
     const operation = (async () => {
       const url = new URL(event.request.url);
+      if (event.responseStatusCode !== undefined) {
+        const id = fixtureResource(url, event.resourceType);
+        if (id) {
+          // Read while Fetch owns the response: Network bodies can be evicted on
+          // navigation or a MapLibre host remount before loadingFinished fires.
+          const { value: body } = await client.send('Fetch.getResponseBody', { requestId: event.requestId });
+          resources.push({ id, status: event.responseStatusCode, sha256: sha256(Buffer.from(body.body, body.base64Encoded ? 'base64' : 'utf8')) });
+        }
+        await client.send('Fetch.continueRequest', { requestId: event.requestId });
+        return;
+      }
       if (url.pathname.endsWith('/bridge-style.json') || url.pathname.endsWith('/Inter-Regular.woff2')) {
         observed.push({ path: url.pathname + url.search, resourceType: event.resourceType });
       }
@@ -82,19 +98,9 @@ export async function observeNetwork(page, origin, fault) {
         });
         // A held resource remains pending until the adapter's own initialization deadline.
       } else await client.send('Fetch.continueRequest', { requestId: event.requestId });
-    })().catch(error => errors.push(String(error)));
-    pending.add(operation); void operation.finally(() => pending.delete(operation));
-  });
-  client.on('Network.responseReceived', event => {
-    const id = fixtureResource(event.response.url, event.type);
-    if (id) requests.set(event.requestId, { id, status: event.response.status });
-  });
-  client.on('Network.loadingFinished', event => {
-    if (!requests.has(event.requestId)) return;
-    // Remotion 4.0.542 wraps CDP results in { value, size }.
-    const operation = client.send('Network.getResponseBody', { requestId: event.requestId }).then(({ value: body }) => {
-      resources.push({ ...requests.get(event.requestId), sha256: sha256(Buffer.from(body.body, body.base64Encoded ? 'base64' : 'utf8')) });
-    }).catch(error => errors.push(String(error)));
+    })().catch(error => {
+      if (!(event.networkId && cancelledRequests.has(event.networkId) && /Invalid InterceptionId/.test(String(error)))) errors.push(`${event.request.url} (${event.responseStatusCode ?? 'request'}): ${String(error)}`);
+    });
     pending.add(operation); void operation.finally(() => pending.delete(operation));
   });
   return {
@@ -258,3 +264,4 @@ export async function verifyFault(session, host, fault) {
   }
   return diagnostic;
 }
+

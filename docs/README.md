@@ -1,18 +1,21 @@
 # Storytelling Studio documentation
 
-You can review the proposed application, choose a bounded implementation task,
-or understand an unfamiliar term using this index. The application is not
-implemented; [implementation status](implementation-status.md) is the canonical
-record of what has actually been built and verified.
+You can run the integrated application, inspect its evidence, or review the
+remaining product requirements using this index. [Implementation status](implementation-status.md)
+is the canonical record of verified behavior. The [integrated delivery](planning/integrated-delivery.md)
+replaces issue-by-issue execution for the current branch.
 
 ## Start with your task
 
 | Your task | Start here |
 | --- | --- |
+| Make a geographic story | [User guide](user-guides/how-to-make-a-story.md) |
+| Run and verify the application | [Repository quickstart](../README.md) |
+| Assess the integrated deliverable | [Delivery and remaining production inputs](planning/integrated-delivery.md) |
 | Review the planning package | [Planning overview](planning/README.md) |
 | Check coverage of the requested handoff | [Deliverables map](planning/deliverables.md) |
 | Understand the product and scope | [Product specification](planning/product-specification.md) |
-| Implement the next approved task | [Agent rules](../AGENTS.md), then [issue backlog](planning/issue-backlog.md) |
+| Continue implementation | [Agent rules](../AGENTS.md), then [integrated delivery](planning/integrated-delivery.md) |
 | Coordinate continuous parallel work | [Controller contract](planning/agent-controller.md), [execution schedule](planning/execution-schedule.md), and [activation plan](planning/orchestration-activation.md) |
 | Understand the technology boundaries | [System architecture](architecture/system-architecture.md) |
 | Check a term | [Glossary](glossary.md) |
@@ -21,8 +24,9 @@ record of what has actually been built and verified.
 
 ## Four-day runbooks
 
-The runbooks describe work to be performed after an explicit implementation
-kickoff; their acceptance criteria are not claims of completed work.
+The runbooks preserve the original sprint requirements. Implementation now
+continues as one integrated change; their acceptance criteria are not themselves
+claims of completed work.
 
 - [Day 1: Functional MVP](planning/day-1-mvp.md)
 - [Day 2: Geographic storytelling](planning/day-2-geographic-storytelling.md)
@@ -60,10 +64,9 @@ contracts and historical evidence.
 
 ## User guides and screenshots
 
-There are no application user guides or verified screenshots yet. Each feature
-issue requires the corresponding guide to be written or updated when its
-controls and behavior can be verified; the documentation plan assigns those
-guides alongside implementation work.
+[Make a geographic story](user-guides/how-to-make-a-story.md) covers the current
+authoring, research, roadway, recovery, and export controls. The delivery record
+identifies the synthetic walkthrough and its limits.
 
 The architecture contains Mermaid diagrams for system boundaries, user journeys,
 and project lifecycle. Each diagram has a prose explanation so that its meaning

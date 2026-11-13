@@ -4,3 +4,9 @@ dist/
 .quasar/
 coverage/
 *.log
+
+**/dist/
+
+.env
+**/.quasar/
+**/quasar.config.*.temporary.compiled*
