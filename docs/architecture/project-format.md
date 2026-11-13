@@ -5,10 +5,11 @@ exports, and another person's computer. A `.gstory` file contains project data,
 permitted assets, research snapshots, and source records; a rendered video is a
 separate output of that project.
 
-**Status: planned, not implemented.** The format begins at version 1 when its
-validator, package tests, and first import/export implementation exist. The
-examples describe the intended contract and are not files the repository can
-already open.
+**Status: bounded bridge schema implemented; portable format planned.** The
+version 1 bridge parser includes the research records described below. The full
+portable format, package tests, and import/export implementation remain
+planned. The illustrative excerpt describes the intended format, not an
+importable bridge document.
 
 - [Document and revision identities](#document-and-revision-identities)
 - [Project document records](#project-document-records)
@@ -234,6 +235,15 @@ origin and the author's chosen geographic definition.
 
 ## Source records and lineage
 
+The D3-01 bridge parser accepts `author-origin` sources and dataset sources.
+A dataset has an ID, title, publisher, nullable version, reference period,
+boundary vintage, content SHA-256 and universe, plus separate `localUse`,
+`publication`, and `redistribution` rights states (`unknown`, `allowed`, or
+`restricted`). Unknown rights remain unknown; the parser does not enforce
+publication or redistribution rights. The broader source lineage below is
+planned. See the [D3-01 receipt](../planning/receipts/D3-01/D3-01-20261113-01.md)
+for verification and limits.
+
 The `SourceRecord` object must identify the exact evidence used by a feature,
 measure, or asset. A URL is a locator, not a frozen source identity; a corrected
 file published at the same URL and vintage must receive a distinct content hash
@@ -273,6 +283,24 @@ preparation step must still appear in lineage rather than becoming an invisible
 change to the source.
 
 ## Research snapshots
+
+The optional `researchSnapshots` collection in the bridge schema uses `inputs`,
+`result`, `status`, and `reviews`. Inputs identify a feature revision and its
+matching geometry hash, dataset source inputs matching their source records,
+method ID and positive integer version, and JSON parameters. Results distinguish
+`raw-input`, `estimate`, and `unavailable`; statuses are `draft`, `approved`,
+`stale`, and `unavailable`. An unavailable result has a null value and must
+have unavailable status, and conversely.
+
+For an approved snapshot, the parser requires at least one dataset input with
+content hash, version, reference period, and source universe; a non-null result
+with a universe; and an approving review with matching copies of the inputs and
+result. Reviews include reviewer, UTC time, decision, and independently
+validated input and result copies. Historical copies may differ from current
+records, but cannot approve a changed snapshot. Approval does not change an
+estimate into a fact. The parser checks hash syntax and matching references; it
+does not recompute hashes, authenticate reviewers, or derive staleness. The
+canonical digest protocol and richer fields described below remain planned.
 
 A `ResearchSnapshot` must preserve enough context to explain a measure after
 its source website changes. Its identity must include the geometry hash, source
