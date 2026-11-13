@@ -1,6 +1,7 @@
 import type { Geometry, Position, ProjectDocument } from '../../project-schema/src/index.ts';
 import { evaluateCamera, type CameraState } from './camera.ts';
 import { copyGeometry, tracePath } from './geometry.ts';
+import { evaluateFocus, type FocusState } from './focus.ts';
 
 type VariantId = keyof ProjectDocument['outputVariants'];
 type Scene = ProjectDocument['scenes'][number];
@@ -28,7 +29,7 @@ export type FrameState = Immutable<{
   variantId: VariantId;
   viewport: { width: number; height: number; pixelRatio: 1 };
   camera: CameraState;
-  focus: { featureRevisionId: string; geometry: Geometry };
+  focus: { featureRevisionId: string; geometry: Geometry } | FocusState | null;
   outsideDimming?: {
     featureRevisionId: string;
     geometry: Extract<Geometry, { type: 'Polygon' }>;
@@ -114,16 +115,20 @@ export function evaluateFrame(
     .map(layer => evaluateLayer(layer, geometries.get(layer.featureRevisionId)!, frame))
     .sort((a, b) => a.order - b.order || Number(a.id > b.id) - Number(a.id < b.id));
 
+  const sequence = scene.focusSteps === undefined ? null
+    : evaluateFocus(scene.focusSteps, variantId, localFrame, geometries);
+  const focus = scene.focusSteps === undefined ? {
+    featureRevisionId: scene.focusFeatureRevisionId,
+    geometry: copyGeometry(geometries.get(scene.focusFeatureRevisionId)!),
+  } : sequence?.focus ?? null;
+
   return freeze({
     frame,
     sceneId: scene.id,
     variantId,
     viewport: { ...project.outputVariants[variantId], pixelRatio: 1 as const },
-    camera: evaluateCamera(scene.cameraTrack, localFrame),
-    focus: {
-      featureRevisionId: scene.focusFeatureRevisionId,
-      geometry: copyGeometry(geometries.get(scene.focusFeatureRevisionId)!),
-    },
+    camera: sequence?.camera ?? evaluateCamera(scene.cameraTrack, localFrame),
+    focus,
     ...(scene.outsideDimming ? {
       outsideDimming: {
         ...scene.outsideDimming,
