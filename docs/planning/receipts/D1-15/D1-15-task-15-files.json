@@ -1,0 +1,44 @@
+{
+  "issue": "D1-15",
+  "localReceiptId": "D1-15-task-15",
+  "base": "cf1be995073e276f63aae34709aaf893bc4c2dbb",
+  "state": "uncommitted; local checks passed with test-isolation host workaround; owner approval pending",
+  "files": [
+    {
+      "path": "apps/local-service/eslint.config.mjs",
+      "sha256": "546e9b0b460fd2bb56d9197c4ed982d0cf165041ef0723723b3c94c52d036d76"
+    },
+    {
+      "path": "apps/local-service/package.json",
+      "sha256": "86ed1197ff68b0ea017dc0e599bc55bc45e918382e0cb764e0ff2f53ac71fbc5"
+    },
+    {
+      "path": "apps/local-service/src/server.mjs",
+      "sha256": "71116992589b4cfafced2a62c455c8684a84b9a0183d83b917f98c06c4c17ead"
+    },
+    {
+      "path": "apps/local-service/src/server.ts",
+      "sha256": "56bd29519bd1f9657d4013dfa2875f6474f0280475efbffde2cd47354d5bd6d0"
+    },
+    {
+      "path": "apps/local-service/src/security.ts",
+      "sha256": "9929383915ae44410cd1cf389775367f9e6318f83cb00ea47216333a00466092"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "sha256": "22af3a98dae0986da4cb842897983a10f22a6cda6db0e365c36f756400b48887"
+    },
+    {
+      "path": "tests/persistence/package.json",
+      "sha256": "4ae935ef906a8954168983d48aaca9acbb0d53232a095d20a32e0baf373b1dcd"
+    },
+    {
+      "path": "tests/persistence/security.test.ts",
+      "sha256": "52af6b64fc30f06da2c9f60d9ee6643104d7daa5aa305986aec01940319dd8c0"
+    },
+    {
+      "path": "docs/planning/receipts/D1-15/D1-15-task-15.md",
+      "sha256": "661889ceeb8cb1c1b1067ae65434f153974823e60224afedddc106344f1f5639"
+    }
+  ]
+}
