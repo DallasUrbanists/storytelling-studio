@@ -35,6 +35,28 @@ const collection = (v: unknown, path: string): RecordValue[] => {
 const ref = (v: unknown, items: RecordValue[], path: string): RecordValue => {
   const key = id(v, path); return items.find(item => item.id === key) ?? fail(`${path}: missing reference`);
 };
+const researchInputs = (value: unknown, path: string): RecordValue => {
+  const inputs = object(value, path); fields(inputs, ['featureRevisionId','geometrySha256','sourceInputs','methodId','methodVersion','parameters'], path);
+  id(inputs.featureRevisionId, `${path}.featureRevisionId`); digest(inputs.geometrySha256, `${path}.geometrySha256`);
+  string(inputs.methodId, `${path}.methodId`); if (integer(inputs.methodVersion, `${path}.methodVersion`) < 1) fail(`${path}.methodVersion`);
+  json(object(inputs.parameters, `${path}.parameters`), `${path}.parameters`);
+  const seenSources = new Set<string>();
+  for (const item of array(inputs.sourceInputs, `${path}.sourceInputs`)) {
+    const input = object(item, `${path}.sourceInput`); fields(input, ['sourceId','contentSha256','version','referencePeriod','boundaryVintage'], `${path}.sourceInput`);
+    const sourceId = id(input.sourceId, `${path}.sourceInput.sourceId`);
+    if (seenSources.has(sourceId)) fail(`${path}.sourceInput duplicate`); seenSources.add(sourceId);
+    if (input.contentSha256 !== null) digest(input.contentSha256, `${path}.sourceInput.contentSha256`);
+    for (const key of ['version','referencePeriod','boundaryVintage']) nullableString(input[key], `${path}.sourceInput.${key}`);
+  }
+  return inputs;
+};
+const researchResult = (value: unknown, path: string): RecordValue => {
+  const result = object(value, path); fields(result, ['kind','value','universe','note'], path);
+  if (!['raw-input','estimate','unavailable'].includes(result.kind as string)) fail(`${path}.kind`);
+  json(result.value, `${path}.value`); nullableString(result.universe, `${path}.universe`); string(result.note, `${path}.note`);
+  if (result.kind === 'unavailable' && result.value !== null) fail(`${path} unavailable value`);
+  return result;
+};
 const interval = (start: unknown, end: unknown, limit: number, path: string) => {
   const a = integer(start, path), b = integer(end, path); if (a < 0 || a >= b || b > limit) fail(path);
 };
@@ -101,26 +123,18 @@ export function parseProject(value: unknown): ProjectDocument {
   for (const snapshot of p.researchSnapshots === undefined ? [] : collection(p.researchSnapshots, 'researchSnapshots')) {
     fields(snapshot, ['id','inputs','result','status','reviews'], 'researchSnapshot');
     if (!['draft','approved','stale','unavailable'].includes(snapshot.status as string)) fail('snapshot.status');
-    const inputs = object(snapshot.inputs, 'inputs'); fields(inputs, ['featureRevisionId','geometrySha256','sourceInputs','methodId','methodVersion','parameters'], 'inputs');
+    const inputs = researchInputs(snapshot.inputs, 'inputs');
     const revision = ref(inputs.featureRevisionId, revisions, 'inputs.featureRevisionId');
     digest(inputs.geometrySha256, 'inputs.geometrySha256'); if (inputs.geometrySha256 !== revision.geometrySha256) fail('input geometry hash mismatch');
-    string(inputs.methodId, 'methodId'); if (integer(inputs.methodVersion, 'methodVersion') < 1) fail('methodVersion');
-    json(object(inputs.parameters, 'parameters'), 'parameters');
-    const sourceInputs = array(inputs.sourceInputs, 'sourceInputs'); const seenSources = new Set<string>();
+    const sourceInputs = array(inputs.sourceInputs, 'sourceInputs');
     for (const item of sourceInputs) {
-      const input = object(item, 'sourceInput'); fields(input, ['sourceId','contentSha256','version','referencePeriod','boundaryVintage'], 'sourceInput');
+      const input = object(item, 'sourceInput');
       const source = ref(input.sourceId, sources, 'sourceInput.sourceId');
-      if (source.sourceKind !== 'dataset' || seenSources.has(input.sourceId as string)) fail('sourceInput duplicate or unsupported source');
-      seenSources.add(input.sourceId as string);
-      if (input.contentSha256 !== null) digest(input.contentSha256, 'sourceInput.contentSha256');
-      for (const key of ['version','referencePeriod','boundaryVintage']) nullableString(input[key], `sourceInput.${key}`);
+      if (source.sourceKind !== 'dataset') fail('sourceInput unsupported source');
       for (const key of ['contentSha256','version','referencePeriod','boundaryVintage']) if (input[key] !== source[key]) fail(`sourceInput.${key} mismatch`);
       if (snapshot.status === 'approved' && (!input.contentSha256 || !input.version || !input.referencePeriod || !source.universe)) fail('approved source missing provenance');
     }
-    const result = object(snapshot.result, 'result'); fields(result, ['kind','value','universe','note'], 'result');
-    if (!['raw-input','estimate','unavailable'].includes(result.kind as string)) fail('result.kind');
-    json(result.value, 'result.value'); nullableString(result.universe, 'result.universe'); string(result.note, 'result.note');
-    if (result.kind === 'unavailable' && result.value !== null) fail('unavailable result value');
+    const result = researchResult(snapshot.result, 'result');
     if ((snapshot.status === 'unavailable') !== (result.kind === 'unavailable')) fail('unavailable status');
     const reviews = array(snapshot.reviews, 'reviews'); let matched = false;
     for (const item of reviews) {
@@ -128,7 +142,7 @@ export function parseProject(value: unknown): ProjectDocument {
       string(review.reviewer, 'reviewer'); const date = string(review.reviewedAt, 'reviewedAt');
       if (!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(date) || !Number.isFinite(Date.parse(date))) fail('reviewedAt');
       if (!['approved','rejected','reviewed'].includes(review.decision as string)) fail('review.decision');
-      json(object(review.inputs, 'review.inputs'), 'review.inputs'); json(object(review.result, 'review.result'), 'review.result');
+      researchInputs(review.inputs, 'review.inputs'); researchResult(review.result, 'review.result');
       if (review.decision === 'approved' && canonical(review.inputs) === canonical(inputs) && canonical(review.result) === canonical(result)) matched = true;
     }
     if (snapshot.status === 'approved' && (!matched || !sourceInputs.length || result.kind === 'unavailable' || result.value === null || !result.universe)) fail('approved snapshot requires matching review and complete inputs');
