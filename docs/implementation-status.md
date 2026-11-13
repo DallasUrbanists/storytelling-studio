@@ -31,6 +31,7 @@ should replace a status only with linked commit and verification evidence.
 | Geographic storytelling and transit | Planned | Day 2 source, focus, visibility, and export evidence |
 | Network walkshed import | Planned | Documented 600-second network method and route barrier checks |
 | Portable `.gstory` exchange | Planned | Complete, missing-asset, tampered, and round-trip tests |
+| Bounded research geometry | Verified locally with synthetic inputs; integration acceptance pending | [D3-04 receipt](planning/receipts/D3-04/D3-04-task-44.md) and [method contract](architecture/research-methods.md#d3-04-bounded-geometry-implementation) |
 | Research and approved snapshots | Planned | Day 3 reproducibility, overlap, review, and comparability evidence |
 | Cleared aerial imagery | Conditional; no assets approved by this plan | Per-asset metadata and reuse/export rights |
 | Top-down roadway editor | Planned | Day 4 dimensional, lock, segment, and transition tests |
@@ -200,3 +201,25 @@ Remotion integration, cross-host parity, and video export remain pending.
 The D1-06 PR review follow-up prevents a failed or pending preview request from
 showing a stale frame. The Chromium regression passed invalid and cleared input,
 recovery, retained dimensions, and keyboard input; see the D1-06 receipt.
+
+## D3-04 local geometry: verified locally
+
+Issue #44, receipt `D3-04-task-44`, on `orchestrator/github-issue-44` adds
+bounded Polygon/MultiPolygon validation, spherical square-meter areas, and
+source-relative no/full/partial intersections. The
+[receipt](planning/receipts/D3-04/D3-04-task-44.md) records the original Windows
+checks with Node 24.22.1 and npm 11.19.1: lint, strict TypeScript, documentation,
+60 core/schema tests, and 31 research tests including 15 geometry cases passed
+with process-local `NODE_OPTIONS=--test-isolation=none`. The default subprocess
+run failed with `spawn EPERM`; that limitation remains recorded.
+
+The [method contract](architecture/research-methods.md#d3-04-bounded-geometry-implementation)
+now documents the pinned libraries, spherical approximation, bounds, validation,
+precision, and explicit numerical errors in the same change. This documentation
+repair starts from `56d0871` and creates no commit. Its checks are recorded in
+the receipt separately from the original implementation evidence; dependencies
+are absent in this repair checkout, so runtime checks require host verification.
+Final integration acceptance remains pending. The integrated research workflow,
+real Maple population calculation, factual review, and publication approval
+remain planned or unverified; this synthetic geometry evidence completes none
+of those gates. D3-05 becomes eligible only after both D3-04 and D3-02 are accepted.
