@@ -240,3 +240,4 @@ test('a following segment owns the transition end boundary and can explicitly br
   assert.equal(result.segmentId, 'second'); assert.equal(result.transition, false);
   assert.equal(result.curbToCurbMeters, 9); assert.equal(result.atSegmentStart, true);
 });
+

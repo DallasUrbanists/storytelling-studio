@@ -29,3 +29,4 @@ rejects('reversed segment', r => { r.segments[0].startMeters = 100; });
 rejects('outside bands cannot interrupt pavement', r => { r.segments[0].proposed.bands[3].location = 'outside-curbs'; });
 rejects('right of way needs documented evidence', r => { r.segments[0].existing.envelope = { kind: 'right-of-way', width: assumed() }; });
 rejects('turn lane requires both directions', r => { r.segments[0].proposed.bands[4].direction = 'forward'; });
+

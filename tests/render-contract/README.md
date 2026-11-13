@@ -117,3 +117,4 @@ editor expansion stays blocked while Gate B is unproven.
 The [rendering contract](../../docs/architecture/rendering-contract.md) defines
 the tolerances, and the [Gate B procedure](../../docs/planning/testing-and-gates.md#gate-b-deterministic-render-bridge)
 defines the required acceptance work.
+

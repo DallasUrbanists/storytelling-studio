@@ -154,3 +154,4 @@ Actual roadway dimensions and rights remain separate evidence requirements.
 D4-03 is the next verification issue after D4-02 acceptance and merge; D4-04
 and D4-07 also depend on accepted solver behavior. This local handoff releases
 no dependent work by itself.
+

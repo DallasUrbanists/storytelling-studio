@@ -272,3 +272,4 @@ test('a deterministic mixed-unit sweep conserves both envelopes and all locks', 
     assert.ok(result.bands.every(b => b.width.meters > 0));
   }
 });
+

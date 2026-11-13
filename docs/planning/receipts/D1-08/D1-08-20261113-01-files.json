@@ -26,3 +26,4 @@
   ],
   "notes": "Manifest covers the four implementation files, including untracked source; excludes receipts and generated artifacts. Coordinator must record committed head after review."
 }
+

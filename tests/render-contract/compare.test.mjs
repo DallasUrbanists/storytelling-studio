@@ -158,3 +158,4 @@ test('seek plan includes boundaries, repeated frames, and the required shuffle',
   }
   assert.deepEqual([...orderedFrames].sort((a, b) => a - b), orderedFrames);
 });
+

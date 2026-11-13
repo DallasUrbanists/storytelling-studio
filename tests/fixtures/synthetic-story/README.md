@@ -32,3 +32,4 @@ repository-authored geometry.
 
 The fixture supports browser adapter checks. Preview/export parity, video
 export, and portable package import require their own evidence.
+

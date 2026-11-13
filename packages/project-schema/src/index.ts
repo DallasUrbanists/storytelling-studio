@@ -2,3 +2,4 @@ export type { CameraKeyframe, Geometry, LeaderLine, OutsideDimming, Position, Pr
 export { parseProject } from './validation.ts';
 export type { FocusCamera, FocusExtent, FocusTransition, FocusVariantOverride, FocusStep, SceneFocus, FocusErrorCode } from './focus.ts';
 export { FocusValidationError } from './focus.ts';
+

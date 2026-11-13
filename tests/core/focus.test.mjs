@@ -181,3 +181,4 @@ test('point extents and one-frame cut steps are valid', () => {
   assert.equal(evaluateFrame(document, 'portrait', 0).focus.stepId, 'step-0');
   assert.equal(evaluateFrame(document, 'portrait', 1).focus, null);
 });
+

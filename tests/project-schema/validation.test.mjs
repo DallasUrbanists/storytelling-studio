@@ -66,3 +66,4 @@ for (const offset of [[], [1], [10, 20, 30], [NaN, 10], [10, Infinity], ['10', 2
 rejects('unsupported leader field', p => { p.scenes[0].annotations[1].leaderLine.width = 5; });
 rejects('null dim', p => { p.scenes[0].outsideDimming = null; });
 rejects('null leader', p => { p.scenes[0].annotations[1].leaderLine = null; });
+

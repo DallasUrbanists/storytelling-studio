@@ -108,3 +108,4 @@ export function validateFocusSteps(value: unknown, revisionIds: ReadonlySet<stri
     previousEnd = end;
   }
 }
+

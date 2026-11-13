@@ -201,3 +201,4 @@ test('validation bounds work and returns independent copies', () => {
   assert.throws(() => validateGeographicPolygon(large), /position limit/);
   assert.throws(() => validateGeographicPolygon({ type: 'Polygon', coordinates: Array(129).fill(geometry.coordinates[0]) }), /ring limit/);
 });
+

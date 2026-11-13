@@ -190,3 +190,4 @@ export function verifyCompletion(receipt) {
   assert.deepEqual(receipt.variants, ['portrait', 'landscape']);
   assert.equal(receipt.formatsCompleted, 2);
 }
+

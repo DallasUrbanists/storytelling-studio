@@ -26,3 +26,4 @@
   ],
   "notes": "Current implementation hashes supersede attempt 01. Manifest digest covers compact UTF-8 JSON of the ordered files array. Tracked diff is git diff --no-ext-diff --no-textconv --binary HEAD written with --output. Receipts and generated artifacts are excluded. Full composition verification remains blocked by sandbox child-process EPERM."
 }
+

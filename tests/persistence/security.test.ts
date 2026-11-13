@@ -263,3 +263,4 @@ test('storage uses startup configuration and rejects path components and links',
   assert.throws(() => storageDirectory(temporary, 'jobs', 'job-1'), /links/);
   assert.throws(() => storageRoot(checkout, path.join(temporary, 'jobs')), /links/);
 });
+

@@ -63,3 +63,4 @@ The [roadway contract](../../../docs/architecture/roadway-editor.md#dimension-ev
 defines these requirements. Numerical balance supplies no measurement accuracy
 or professional approval. Geometry, segment interpolation, animation, rendered
 output and real dimension review require their later issue-specific evidence.
+

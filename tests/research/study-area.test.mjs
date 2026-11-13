@@ -79,3 +79,4 @@ test('rejects non-JSON derived inputs before writing a revision', async () => {
     await rm(directory, { recursive: true, force: true });
   }
 });
+
