@@ -7,6 +7,10 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@turf/helpers": "7.4.0"
+    "@turf/area": "7.4.0",
+    "@turf/difference": "7.4.0",
+    "@turf/helpers": "7.4.0",
+    "@turf/intersect": "7.4.0",
+    "robust-predicates": "3.0.2"
   }
 }
