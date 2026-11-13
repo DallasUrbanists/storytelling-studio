@@ -3,10 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:input": "node --test --test-isolation=none ../../tests/renderer/input.test.mjs",
+    "test:stills": "node --test --test-isolation=none ../../tests/renderer/stills.test.mjs"
+  },
   "dependencies": {
+    "@gstory/map-adapter": "0.0.0",
+    "@gstory/project-schema": "0.0.0",
+    "@gstory/story-core": "0.0.0",
+    "@remotion/renderer": "4.0.542",
+    "maplibre-gl": "6.17.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "remotion": "4.0.542",
-    "@remotion/renderer": "4.0.542"
+    "remotion": "4.0.542"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0"
   }
 }
