@@ -8,7 +8,7 @@ async function markdownFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
-    if (entry.isDirectory() && !['node_modules', '.git', '.local', '.worktrees'].includes(entry.name)) files.push(...await markdownFiles(path.join(directory, entry.name)));
+    if (entry.isDirectory() && !['node_modules', '.git', '.local', '.worktrees', 'out', 'dist', '.quasar'].includes(entry.name)) files.push(...await markdownFiles(path.join(directory, entry.name)));
     else if (entry.isFile() && entry.name.endsWith('.md')) files.push(path.join(directory, entry.name));
   }
   return files;

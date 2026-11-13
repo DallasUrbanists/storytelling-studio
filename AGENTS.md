@@ -1,5 +1,23 @@
 # Contributor and agent instructions
 
+## Integrated delivery direction, November 13, 2026
+
+The repository owner replaced issue-by-issue implementation with one integrated
+application deliverable on `codex/integrated-delivery` and one pull request.
+For this delivery, the following direction supersedes the issue scheduling,
+per-issue branches, leases, timeboxes, intermediate reviews, merges, and closure
+rules below. Use all published requirements as a coverage checklist; do not
+wait for prerequisite tickets or create more implementation tickets or PRs.
+Keep ordinary checkpoints on this branch and verify the combined user workflows.
+Do not run the issue dispatcher for this delivery. Existing worker directories
+and investigation evidence must remain intact.
+
+Keep the approved application architecture, local-only core, source provenance,
+immutable saves, factual accuracy, and honest verification records. A production
+fact, asset permission, or human approval must still have actual evidence.
+Missing production inputs do not prevent independent application implementation.
+The owner requested implementation now; no further routine kickoff is needed.
+
 You can use these instructions to make small, reviewable changes to Storytelling
 Studio without losing the distinction between a written plan and working
 software. The repository starts with a planning package; implementation has not

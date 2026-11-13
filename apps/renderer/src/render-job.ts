@@ -1,3 +1,4 @@
+import { openSandboxedBrowser } from './sandboxed-browser.ts';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
@@ -190,7 +191,7 @@ export async function runFixture(root: string, args: string[]) {
     assert.ok(browserPath && isAbsolute(browserPath), 'Set GSTORY_CHROME to an absolute installed Chromium path');
     assert.ok((await stat(browserPath)).isFile(), 'GSTORY_CHROME must identify a file');
     const { bundle } = await import('@remotion/bundler');
-    const { getCompositions, openBrowser, renderMedia, renderStill } = await import('@remotion/renderer');
+    const { getCompositions, renderMedia, renderStill } = await import('@remotion/renderer');
     const publicDir = join(output, 'public');
     await mkdir(join(publicDir, 'assets'), { recursive: true });
     for (const name of ['bridge-style.json', 'Inter-Regular.woff2', 'OFL-Inter.txt']) {
@@ -206,9 +207,7 @@ export async function runFixture(root: string, args: string[]) {
       enableCaching: false, gitSource: null,
     });
     receipt.stage = 'browser';
-    browser = await openBrowser('chrome', {
-      browserExecutable: browserPath, chromiumOptions: { gl: 'swangle' }, logLevel: 'error',
-    });
+    browser = await openSandboxedBrowser(browserPath);
     const informationPage = await browser.newPage({
       context: () => null, logLevel: 'error', indent: false, pageIndex: 0,
       onBrowserLog: null, onLog: () => undefined,

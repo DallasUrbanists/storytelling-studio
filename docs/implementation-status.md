@@ -4,6 +4,17 @@ You can use this record to distinguish inspected repository facts, proposed
 behavior, and verified implementation. A written acceptance criterion does not
 mean the feature or its test exists.
 
+## Current integrated candidate — November 13, 2026
+
+The owner authorized one integrated implementation branch and PR. The
+[delivery record](planning/integrated-delivery.md) and
+[acceptance receipt](planning/receipts/integrated-delivery.json) describe the
+current software, verified checks, and remaining Maple production inputs.
+The complete automated software checks and frozen rendering gate passed;
+the actual Maple film and named factual/editorial approvals remain incomplete.
+The original sprint and controller records below are historical; their
+per-issue dispatch and closure workflow does not govern this delivery.
+
 ## Inspected baseline
 
 The planning session inspected the following baseline on November 11, 2026.
@@ -19,26 +30,20 @@ The planning session inspected the following baseline on November 11, 2026.
 
 ## Capability ledger
 
-The following ledger records the initial implementation state. Contributors
-should replace a status only with linked commit and verification evidence.
-
-| Capability | Status | Required evidence |
+| Capability | Current status | Evidence or remaining requirement |
 | --- | --- | --- |
-| Planning package | Approved and published | Owner's November 11 approval and the baseline commit in the publication record |
-| Workspace and local lifecycle | Planned | D1-01 and D1-02 checks on a clean checkout |
-| Vue/Remotion deterministic bridge | Planned; critical path | D1-03 through D1-09 frame and export receipts |
-| Map editor and local revisions | Planned | D1-10 through D1-19; reopening and conflict checks |
-| Geographic storytelling and transit | Planned | Day 2 source, focus, visibility, and export evidence |
-| Network walkshed import | Planned | Documented 600-second network method and route barrier checks |
-| Portable `.gstory` exchange | Planned | Complete, missing-asset, tampered, and round-trip tests |
-| Bounded research geometry | Verified locally with synthetic inputs; integration acceptance pending | [D3-04 receipt](planning/receipts/D3-04/D3-04-task-44.md) and [method contract](architecture/research-methods.md#d3-04-bounded-geometry-implementation) |
-| Research and approved snapshots | Planned | Day 3 reproducibility, overlap, review, and comparability evidence |
-| Cleared aerial imagery | Conditional; no assets approved by this plan | Per-asset metadata and reuse/export rights |
-| Top-down roadway editor | Planned | Day 4 dimensional, lock, segment, and transition tests |
-| Final Maple pilot | Planned; no research claims or dimensions verified here | Both decoded videos, editable package, approvals, and playback review |
-| GitHub backlog | Published and verified; awaiting implementation kickoff | All 81 complete bodies, dependency links, dispatch rows, labels, and four milestones checked against the approved files |
-| Persistent execution controller | Planned separately; not built or activated | Complete readiness receipt, approved configuration, and explicit implementation kickoff |
-| Parallel scheduling manifest | Prepared for the 81 application issues | Reviewed schedule hash, matched issue metadata, and verified dependency/resource handling |
+| Local Vue/Quasar studio and lifecycle | Implemented in integrated candidate | Browser walkthrough and CLI build in acceptance record |
+| Deterministic Vue/Remotion bridge | Implemented; bounded inline-GeoJSON profile | Full comparison and render receipt; no remote tile readiness claim |
+| Map authoring and immutable revisions | Implemented | Import/replace, multipart, source revisions, CAS/retry/reopen tests |
+| Geographic storytelling | Implemented controls | Scenes, focus, annotations, layer scopes, cameras, both formats |
+| Network walkshed import | Implemented evidence validation | Real Maple routing evidence and technical approval remain missing |
+| Portable .gstory exchange | Implemented | Strict ZIP, checksums, rights, missing assets and round-trip checks |
+| Population research and review | Implemented with synthetic verification | Real study area and named factual review remain missing |
+| Cleared aerial imagery | Conditional and unavailable in this profile | No cleared production imagery or compositing implementation |
+| Top-down roadway transformation | Implemented | Width/mapping/segment tests and synthetic exported film |
+| Final Maple pilot | Incomplete | Actual geography, routing, dimensions, source rights, editorial approval and playback review |
+| GitHub issue-by-issue execution | Superseded for this delivery | One integrated branch and PR; no issue closures |
+| Persistent execution controller | Outside this application change | No activation or dispatch performed |
 
 ## Planning validation
 

@@ -7,5 +7,8 @@
     "lint": "eslint --config eslint.config.mjs src/*.ts",
     "test": "node --test ../../tests/persistence/security.test.ts",
     "typecheck": "tsc --noEmit --strict --allowJs --checkJs --target es2022 --module nodenext --moduleResolution nodenext --allowImportingTsExtensions --skipLibCheck src/server.ts ../../tests/persistence/security.test.ts"
+  },
+  "dependencies": {
+    "fflate": "0.8.3"
   }
 }

@@ -27,15 +27,14 @@ function protocolPage(respond) {
 
 test('resource observer hashes text and binary bodies from pinned CDP replies', async () => {
   const style = Buffer.from('{"version":8}'), font = Buffer.from([0, 255, 1, 128]);
-  const page = protocolPage((method, params) => method === 'Network.getResponseBody'
+  const page = protocolPage((method, params) => method === 'Fetch.getResponseBody'
     ? params.requestId === 'style'
       ? { body: style.toString('utf8'), base64Encoded: false }
       : { body: font.toString('base64'), base64Encoded: true }
     : {});
   const network = await observeNetwork(page, 'http://localhost');
   for (const [requestId, path] of [['style', 'bridge-style.json'], ['font', 'Inter-Regular.woff2']]) {
-    page.session.emit('Network.responseReceived', { requestId, type: 'Fetch', response: { url: `http://localhost/${path}`, status: 200 } });
-    page.session.emit('Network.loadingFinished', { requestId });
+    page.session.emit('Fetch.requestPaused', { requestId, resourceType: 'Fetch', responseStatusCode: 200, request: { url: `http://localhost/${path}` } });
   }
   await network.settled();
   assert.deepEqual(network.resources, [
@@ -62,7 +61,7 @@ test('resource faults preserve URL modules without depending on CDP resource cla
     await network.settled();
     assert.deepEqual(page.commands.filter(c => c.method === 'Fetch.continueRequest').map(c => c.params.requestId),
       ['module-0', 'module-1', 'module-2', 'module-3', 'script']);
-    assert.equal(page.commands.some(c => c.method === 'Fetch.fulfillRequest' || c.method === 'Network.getResponseBody'), false);
+    assert.equal(page.commands.some(c => c.method === 'Fetch.fulfillRequest' || c.method === 'Fetch.getResponseBody'), false);
     assert.deepEqual(network.resources, [], 'URL module source must not count as pinned asset bytes');
     assert.throws(() => network.assertInjected(), /was not exercised/);
 
@@ -88,9 +87,8 @@ test('resource observer hashes raw responses with alternate CDP types and report
   const fault = faultCases[0];
   const network = await observeNetwork(page, 'http://localhost', fault);
   for (const type of ['XHR', 'Other']) {
-    page.session.emit('Network.responseReceived', { requestId: type, type,
-      response: { url: 'http://localhost/bridge-style.json', status: 200 } });
-    page.session.emit('Network.loadingFinished', { requestId: type });
+    page.session.emit('Fetch.requestPaused', { requestId: type, resourceType: type, responseStatusCode: 200,
+      request: { url: 'http://localhost/bridge-style.json' } });
   }
   page.session.emit('Fetch.requestPaused', { requestId: 'module', resourceType: 'Script',
     request: { url: 'http://localhost/bridge-style.json?import&url' } });
@@ -110,4 +108,20 @@ test('capture decodes pinned CDP screenshot replies for full and isolated overla
   assert.equal(captures.length, 2);
   assert.deepEqual(captures[0].params.clip, { x: 0, y: 0, width: 2, height: 1, scale: 1 });
   assert.deepEqual(page.commands.at(-1), { method: 'Emulation.setDefaultBackgroundColorOverride', params: undefined });
+});
+
+
+test('only confirmed cancelled interceptions can be discarded', async () => {
+  for (const cancelled of [true, false]) {
+    const session = new (require('node:events').EventEmitter)();
+    session.send = async method => {
+      if (method === 'Fetch.continueRequest') throw new Error('Protocol error: Invalid InterceptionId.');
+      return { value: {} };
+    };
+    const network = await observeNetwork({ _client: () => session }, 'http://localhost');
+    if (cancelled) session.emit('Network.loadingFailed', { requestId: 'aborted', canceled: true });
+    session.emit('Fetch.requestPaused', { requestId: 'interception', networkId: 'aborted', resourceType: 'Fetch', request: { url: 'http://localhost/font' } });
+    if (cancelled) await network.settled();
+    else await assert.rejects(network.settled(), /Invalid InterceptionId/);
+  }
 });

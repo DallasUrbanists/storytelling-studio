@@ -1,9 +1,15 @@
 # Remotion bridge host
 
-You can inspect the D1-07 composition inputs and run the renderer's static and
-input checks from the repository root. The host is implemented, but browser
-readiness, PNG output, and the deliberate missing-font render remain unverified
-in this attempt. This diagnostic host is not the completed video exporter.
+The renderer exports an immutable saved project in portrait and landscape at
+30 fps. The local service prepares the input and retained assets, then starts
+an owned render process. Output is published only after metadata validation
+and a complete independent decode.
+
+The [integrated delivery record](../../docs/planning/integrated-delivery.md)
+contains current evidence and limits. The diagnostic fixture procedures below
+remain useful for isolating shared-host behavior. Configure the installed
+browser in the root .env file; the sandbox-preserving adapter is pinned to
+Remotion 4.0.542 and never downloads or disables the browser sandbox.
 
 ## Composition inputs
 

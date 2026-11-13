@@ -1,63 +1,77 @@
 # Dallas Urbanists Storytelling Studio
 
-Storytelling Studio is a planned local application for researching places and
-making editable geographic explainer videos. Its Explore, Research, and Animate
-workspaces are designed to reuse the same geographic features and source-backed
-research.
+Storytelling Studio is a local application for importing geographic evidence,
+estimating population, and making editable map and roadway explainer videos.
+Explore, Research, and Animate share one project and its source records.
 
-The repository contains an **approved planning package**. There is no application
-to run yet, and the four-day implementation sprint has not begun. See
-[implementation status](docs/implementation-status.md) for the publication record.
-The first production target is a Maple Avenue explainer covering Mockingbird
-Lane to Oak Lawn Avenue in Dallas.
+This branch delivers the application as one integrated change. The owner
+authorized this approach on November 13, 2026. The
+[delivery record](docs/planning/integrated-delivery.md) distinguishes verified
+software from the remaining factual and publication work for the Maple Avenue
+pilot. Individual backlog closures are not required to use or develop this
+branch.
 
-## Review the implementation plan
+## Run the studio
 
-The [planning overview](docs/planning/README.md) introduces the architecture,
-four-day sequence, risks, unresolved decisions, and proposed issue backlog.
-The sprint dates are November 11–14, 2026, in America/Chicago.
+Use Windows x64, Node 24.22.1, and npm 11.19.1. Install the pinned dependencies
+from the repository root:
 
-Contributors can start with these documents:
+```powershell
+npm ci
+```
 
-- [Documentation index](docs/README.md)
-- [Product specification](docs/planning/product-specification.md)
-- [System architecture](docs/architecture/system-architecture.md)
-- [Issue backlog](docs/planning/issue-backlog.md)
-- [Persistent controller plan](docs/planning/agent-controller.md)
-- [Implementation status](docs/implementation-status.md)
-- [Contributor and agent rules](AGENTS.md)
-- [Glossary](docs/glossary.md)
+Copy `.env.example` to `.env` and set `GSTORY_CHROME` to an installed Chrome or
+Chromium executable for video export. The editor does not need a cloud account
+or API key. Start the application:
 
-The planned authoring interface uses Vue, TypeScript, Quasar, and MapLibre.
-An isolated React and Remotion package renders videos from shared TypeScript
-contracts. Local SQLite persistence and portable `.gstory` project packages
-support work without a cloud backend, account, or required AI subscription.
+```powershell
+npm run dev
+```
 
-The development runbooks support parallel Terra/Sol workers with GitHub decision
-replies and one merge coordinator. The controller is a separate proposed
-development tool; it is not an application feature or an already running
-service.
+Open the loopback URL printed by the command (port 4173 by default).
+[Make your first story](docs/user-guides/how-to-make-a-story.md) explains the
+controls. The development server stays in the foreground. In another terminal,
+you can inspect or stop this checkout's services:
 
-## Contribute
+```powershell
+npm run dev:status
+npm run dev:stop
+```
 
-Beginners can use the [documentation plan](docs/planning/documentation-plan.md)
-to find the intended learning path and the
-[documentation style guide](docs/contributor-guides/documentation-style-guide.md)
-to write or review an improvement. Application setup instructions will be added
-alongside working code; proposed command contracts are explicitly marked in the
-[testing and completion gates](docs/planning/testing-and-gates.md).
+Saved projects, original assets, job receipts, and videos remain under
+`.local/storytelling-studio` after shutdown. Browser recovery copies preserve unsaved edits
+on the same browser origin. Keep the default port stable when using recovery.
+A portable `.gstory` download is the supported way to transfer a project.
 
-The owner approved publication of the planning package and backlog. A later
-explicit implementation kickoff is required before application work begins;
-controller development and activation require separate authorization.
+## Verify and contribute
 
-Questions and proposals belong in the
-[repository's issues](https://github.com/DallasUrbanists/storytelling-studio/issues).
-Contributors should distinguish a proposed feature from a working capability and
-include the relevant plan or issue reference.
+```powershell
+npm run check
+npm run build:studio
+npm run test:render-contract:unit
+npm run test:render-contract
+```
+
+The last command needs the configured local browser and performs full-size
+preview/export comparisons and two complete video decodes. It is separate from
+the ordinary checks because rendering takes longer.
+
+The Vue/Quasar authoring app, local SQLite service, and React/Remotion renderer
+share serializable contracts and deterministic frame evaluation. See the
+[documentation index](docs/README.md), [agent rules](AGENTS.md), and
+[implementation status](docs/implementation-status.md) for scope and evidence.
+The earlier sprint and controller documents remain historical requirements;
+this delivery does not launch an orchestrator or require ticket scheduling.
+
+The authoring and export profile currently supports retained GeoJSON and local
+vector styling. Remote tile services, aerial-media compositing, historical
+comparisons without compatible source evidence, and a local network-routing
+engine are not available in this candidate. Import an externally generated
+600-second network walkshed with its evidence packet when that feature is needed.
 
 ## License
 
-The owner selected the [MIT license](LICENSE) for original Storytelling Studio
-work. Adapted documentation, dependencies, geographic data, and imagery retain
-their own terms; see [third-party notices](THIRD_PARTY_NOTICES.md).
+Original Storytelling Studio code is [MIT licensed](LICENSE).
+Dependencies, fonts, geographic data, and imagery retain their own terms; see
+[third-party notices](THIRD_PARTY_NOTICES.md). Importing a file does not grant
+publication or redistribution rights.

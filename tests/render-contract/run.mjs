@@ -1,3 +1,4 @@
+import { openSandboxedBrowser } from '../../apps/renderer/src/sandboxed-browser.ts';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, rename, writeFile } from 'node:fs/promises';
@@ -27,10 +28,10 @@ async function sourceManifest() {
   const files = ['package.json', 'package-lock.json'];
   const visit = async directory => {
     for (const entry of (await readdir(join(root, directory), { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
-      if (entry.name === 'node_modules') continue;
+      if (['node_modules','dist','.quasar'].includes(entry.name)) continue;
       const path = `${directory}/${entry.name}`;
       if (entry.isDirectory()) await visit(path);
-      else if (/\.(?:mjs|js|ts|tsx|vue|json|woff2|txt|html)$/.test(path)) files.push(path);
+      else if (/\.(?:mjs|js|ts|tsx|vue|css|json|woff2|txt|html)$/.test(path)) files.push(path);
     }
   };
   for (const directory of ['apps/studio', 'apps/renderer', 'packages', 'tests/render-contract', 'tests/fixtures/synthetic-story']) await visit(directory);
@@ -119,8 +120,7 @@ async function run() {
       outDir: join(output, 'bundle'), publicDir, rootDir: root, enableCaching: false, gitSource: null });
     receipt.stage = 'host-setup'; await save();
     vue = await previewServer(join(output, 'vite-cache'));
-    browser = await renderer.openBrowser('chrome', { browserExecutable: process.env.GSTORY_CHROME,
-      chromiumOptions: { gl: 'swangle' }, logLevel: 'error' });
+    browser = await openSandboxedBrowser(process.env.GSTORY_CHROME);
     // Keep one actual render page alive throughout each seek sequence. Use the
     // pinned renderer's own setup and seek APIs rather than mocking React time.
     server = await renderer.RenderInternals.prepareServer({ webpackConfigOrServeUrl: serveUrl,

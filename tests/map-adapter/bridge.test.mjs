@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp } from 'node:fs/promises';
 import { test } from 'node:test';
-import { openBrowser } from '@remotion/renderer';
+import { openSandboxedBrowser } from '../../apps/renderer/src/sandboxed-browser.ts';
 import { createServer } from 'vite';
 
 test('MapLibre bridge in Chromium', { timeout: 90_000 }, async t => {
@@ -15,7 +15,7 @@ test('MapLibre bridge in Chromium', { timeout: 90_000 }, async t => {
     // The browser imports this native ESM graph through a diagnostic route.
     // Do not scan unrelated application entries or wait for dependency discovery.
     optimizeDeps: { noDiscovery: true, include: [], exclude: ['maplibre-gl'] },
-    server: { host: '127.0.0.1', port: 0, hmr: false },
+    server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
     plugins: [{
       name: 'bridge-test-routes',
       configureServer(server) {
@@ -38,11 +38,7 @@ test('MapLibre bridge in Chromium', { timeout: 90_000 }, async t => {
   await vite.listen();
   const url = new URL('/__bridge', vite.resolvedUrls.local[0]);
 
-  browser = await openBrowser('chrome', {
-    browserExecutable: process.env.GSTORY_CHROME,
-    chromiumOptions: { gl: 'swangle' },
-    logLevel: 'error',
-  });
+  browser = await openSandboxedBrowser(process.env.GSTORY_CHROME);
   const page = await browser.newPage({
     context: () => Promise.resolve(null),
     indent: false,

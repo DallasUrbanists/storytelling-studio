@@ -4,7 +4,8 @@ import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { getCompositions, openBrowser, renderStill } from '@remotion/renderer';
+import { getCompositions, renderStill } from '@remotion/renderer';
+import { openSandboxedBrowser } from '../../apps/renderer/src/sandboxed-browser.ts';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 
@@ -40,10 +41,7 @@ test('Remotion renders independent first/middle/last frames and rejects a missin
       }
     });
     try {
-      browser = await openBrowser('chrome', {
-        browserExecutable: process.env.GSTORY_CHROME,
-        chromiumOptions: { gl: 'swangle' }, logLevel: 'error',
-      });
+      browser = await openSandboxedBrowser(process.env.GSTORY_CHROME);
       const options = {
         serveUrl: bundle, puppeteerInstance: browser,
         chromiumOptions: { gl: 'swangle' }, logLevel: 'error',

@@ -6,7 +6,8 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { bundle } from '@remotion/bundler';
-import { getCompositions, openBrowser, renderStill } from '@remotion/renderer';
+import { getCompositions, renderStill } from '@remotion/renderer';
+import { openSandboxedBrowser } from '../../apps/renderer/src/sandboxed-browser.ts';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const require = createRequire(import.meta.url);
@@ -44,10 +45,7 @@ test('existing Remotion hosts render the synthetic prerequisite in both formats'
         outDir: join(output, 'bundle'), publicDir, rootDir: root,
         enableCaching: false, gitSource: null,
       });
-      browser = await openBrowser('chrome', {
-        browserExecutable: process.env.GSTORY_CHROME,
-        chromiumOptions: { gl: 'swangle' }, logLevel: 'error',
-      });
+      browser = await openSandboxedBrowser(process.env.GSTORY_CHROME);
       const options = { serveUrl, puppeteerInstance: browser,
         chromiumOptions: { gl: 'swangle' }, logLevel: 'error' };
       const compositions = await getCompositions(serveUrl, options);

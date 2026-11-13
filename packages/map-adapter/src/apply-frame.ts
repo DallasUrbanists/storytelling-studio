@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from 'maplibre-gl';
 import type { FrameState } from '../../story-core/src/index.ts';
+import { drawStoryPanels } from './story-panels.ts';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 type Position = FrameState['camera']['center'];
@@ -42,13 +43,13 @@ export function drawOverlay(
       const { x, y } = project(coordinate);
       return `${index === 0 ? 'M' : 'L'}${x},${y}`;
     }).join(' ');
-  const drawLine = (group: SVGGElement, coordinates: readonly Position[]) => {
+  const drawLine = (group: SVGGElement, coordinates: readonly Position[], style?: FrameState['layers'][number]['style']) => {
     if (coordinates.length < 2) return;
     group.append(element(owner, 'path', {
       d: path(coordinates),
       fill: 'none',
-      stroke: '#0f766e',
-      'stroke-width': 4,
+      stroke: style?.stroke ?? '#0f766e',
+      'stroke-width': style?.width ?? 4,
       'stroke-linecap': 'round',
       'stroke-linejoin': 'round',
     }));
@@ -62,7 +63,7 @@ export function drawOverlay(
     content.append(element(owner, 'path', {
       'data-outside-dimming': featureRevisionId,
       d: `M0,0 H${width} V${height} H0 Z `
-        + geometry.coordinates.map(ring => `${path(ring)} Z`).join(' '),
+        + (geometry.type === 'Polygon' ? geometry.coordinates : geometry.coordinates.flat()).map(ring => `${path(ring)} Z`).join(' '),
       fill: '#000000',
       'fill-opacity': opacity,
       'fill-rule': 'evenodd',
@@ -71,27 +72,37 @@ export function drawOverlay(
 
   for (const layer of state.layers) {
     if (!layer.visible) continue;
-    const group = element(owner, 'g', { 'data-layer': layer.id });
+    const group = element(owner, 'g', { 'data-layer': layer.id, opacity: layer.style?.opacity ?? 1 });
     const { geometry, trace } = layer;
     switch (geometry.type) {
       case 'Point': {
         const { x, y } = project(geometry.coordinates);
         group.append(element(owner, 'circle', {
-          cx: x, cy: y, r: 7, fill: '#0f766e', stroke: 'white', 'stroke-width': 2,
+          cx: x, cy: y, r: 7, fill: layer.style?.stroke ?? '#0f766e', stroke: 'white', 'stroke-width': 2,
         }));
         break;
       }
       case 'LineString':
-        drawLine(group, trace?.coordinates ?? geometry.coordinates);
+        drawLine(group, trace?.coordinates ?? geometry.coordinates, layer.style);
+        break;
+      case 'MultiLineString':
+        for (const coordinates of trace?.paths ?? geometry.coordinates) drawLine(group, coordinates, layer.style);
         break;
       case 'Polygon':
         group.append(element(owner, 'path', {
           d: geometry.coordinates.map(ring => `${path(ring)} Z`).join(' '),
-          fill: '#5eead4',
-          'fill-opacity': 0.26,
+          fill: layer.style?.fill ?? '#5eead4',
+          'fill-opacity': layer.style?.fillOpacity ?? 0.26,
           'fill-rule': 'evenodd',
         }));
-        drawLine(group, trace?.coordinates ?? geometry.coordinates[0]);
+        drawLine(group, trace?.coordinates ?? geometry.coordinates[0], layer.style);
+        break;
+      case 'MultiPolygon':
+        for (const [part, rings] of geometry.coordinates.entries()) {
+          group.append(element(owner, 'path', { d: rings.map(ring => path(ring) + ' Z').join(' '),
+            fill: layer.style?.fill ?? '#5eead4', 'fill-opacity': layer.style?.fillOpacity ?? 0.26, 'fill-rule': 'evenodd' }));
+          drawLine(group, trace?.paths?.[part] ?? (trace ? [] : rings[0]), layer.style);
+        }
         break;
     }
     content.append(group);
@@ -121,7 +132,7 @@ export function drawOverlay(
       x: x + offsetX,
       y: y + offsetY,
       'font-family': fontFamily,
-      'font-size': 30,
+      'font-size': annotation.fontSize ?? 30,
       fill: '#134e4a',
       stroke: 'white',
       'stroke-width': 4,
@@ -133,5 +144,6 @@ export function drawOverlay(
     content.append(group);
   }
 
+  drawStoryPanels(content, owner, state, fontFamily);
   svg.replaceChildren(content);
 }

@@ -214,6 +214,10 @@ export function copyGeometry(geometry: Geometry): Geometry {
       return { type: 'LineString', coordinates: copyPath(geometry.coordinates) };
     case 'Polygon':
       return { type: 'Polygon', coordinates: geometry.coordinates.map(copyPath) };
+    case 'MultiLineString':
+      return { type: 'MultiLineString', coordinates: geometry.coordinates.map(copyPath) };
+    case 'MultiPolygon':
+      return { type: 'MultiPolygon', coordinates: geometry.coordinates.map(rings => rings.map(copyPath)) };
   }
 }
 
@@ -235,6 +239,17 @@ function rhumbDistance(from: Position, to: Position): number {
     ? Math.cos(latitude)
     : latitudeChange / projectedChange;
   return Math.hypot(latitudeChange, longitudeScale * longitudeChange);
+}
+
+/** Reveal disconnected parts by their total length without drawing a gap connector. */
+export function traceParts(paths: readonly (readonly Position[])[], progress: number): Position[][] {
+  const lengths = paths.map(path => path.slice(1).reduce((sum, point, i) => sum + rhumbDistance(path[i], point), 0));
+  let remaining = lengths.reduce((a, b) => a + b, 0) * Math.max(0, Math.min(1, progress));
+  return paths.map((path, i) => {
+    const fraction = lengths[i] === 0 ? 0 : Math.min(1, remaining / lengths[i]);
+    remaining = Math.max(0, remaining - lengths[i]);
+    return tracePath(path, fraction);
+  });
 }
 
 function traceEndpoint(from: Position, to: Position, progress: number): Position {

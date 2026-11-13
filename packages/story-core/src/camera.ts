@@ -32,7 +32,8 @@ export function evaluateCamera(
   if (nextIndex === 0 || frame === to.frame) return savedCamera(to);
 
   const from = track[nextIndex - 1];
-  const progress = (frame - from.frame) / (to.frame - from.frame);
+  const linear = (frame - from.frame) / (to.frame - from.frame);
+  const progress = to.easing === 'ease-in-out' ? linear * linear * (3 - 2 * linear) : linear;
   const unwrappedEnd: Position = [
     from.center[0] + shortestTurn(from.center[0], to.center[0]),
     to.center[1],
