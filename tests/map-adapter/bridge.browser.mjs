@@ -1,5 +1,6 @@
 import { Map as MapLibreMap, setWorkerUrl } from 'maplibre-gl';
 import { mount } from '../../packages/map-adapter/src/mount.ts';
+import { createOverlay, drawOverlay } from '../../packages/map-adapter/src/apply-frame.ts';
 import { parseProject } from '../../packages/project-schema/src/index.ts';
 import { evaluateFrame } from '../../packages/story-core/src/index.ts';
 import fixture from '../fixtures/synthetic-story/project.json';
@@ -94,6 +95,86 @@ export async function seekAndRecreate() {
     const canvas = container.querySelector('canvas');
     assert(canvas.width === 1920 && canvas.height === 1080, 'Landscape canvas dimensions are wrong');
   }, 'landscape');
+}
+
+export async function fixturePrerequisite() {
+  for (const variant of ['portrait', 'landscape']) {
+    await withSurface(async ({ container, surface, frame }) => {
+      let snapshot;
+      for (const number of [149, 299, 0, 45, 149, 1, 299, 149]) {
+        await surface.applyFrame(frame(number), `fixture-${number}`);
+        const svg = container.querySelector('svg[viewBox]');
+        const dim = svg.querySelector('[data-outside-dimming]');
+        assert(svg.firstElementChild === dim, 'Dim must precede the feature layers');
+        assert(dim.getAttribute('fill-rule') === 'evenodd', 'Dim must preserve polygon interiors');
+        assert(dim.getAttribute('fill-opacity') === '0.45', 'Dim opacity changed with trace progress');
+        assert([...svg.querySelectorAll('[data-layer]')].map(g => g.dataset.layer).join(',')
+          === 'point-layer,line-layer,area-layer', 'Feature layer order changed');
+        const label = svg.querySelector('[data-annotation="fictional-point-label"]');
+        if ([0, 1, 299].includes(number)) {
+          assert(!label, 'Point label survived outside its visibility interval');
+        } else {
+          assert(label.getAttribute('opacity') === (number === 45 ? '0.5' : '1'), 'Leader fade differs from label');
+          const [casing, ink] = label.querySelectorAll('line');
+          assert(casing?.getAttribute('stroke') === 'white' && ink?.getAttribute('stroke-width') === '2',
+            'Expected a visible cased leader');
+          const dot = label.querySelector('circle');
+          const text = label.querySelector('text');
+          assert(ink.getAttribute('x1') === dot.getAttribute('cx')
+            && ink.getAttribute('y1') === dot.getAttribute('cy'), 'Leader is detached from the point');
+          assert(Math.abs(Number(ink.getAttribute('x2')) - Number(ink.getAttribute('x1')) - 100) < 1e-6
+            && Math.abs(Number(ink.getAttribute('y2')) - Number(ink.getAttribute('y1')) + 70) < 1e-6,
+          'Leader offset changed');
+          assert(text.getAttribute('x') === ink.getAttribute('x2')
+            && text.getAttribute('y') === ink.getAttribute('y2'), 'Text is detached from its leader');
+          assert(document.fonts.check(`30px ${text.getAttribute('font-family')}`), 'Bundled font is unavailable');
+        }
+        if (number === 149) {
+          if (snapshot) assert(svg.innerHTML === snapshot, 'Dim/leader depends on seek history');
+          snapshot = svg.innerHTML;
+        }
+      }
+      const withoutDim = { ...frame(149) };
+      delete withoutDim.outsideDimming;
+      await surface.applyFrame(withoutDim, 'no-dim');
+      assert(!container.querySelector('[data-outside-dimming]'), 'Dim survived a scene without dimming');
+    }, variant);
+  }
+
+  // Rasterize the actual SVG builder with a known projection to sample the
+  // complement, polygon body, hole, and leader without antialiasing boundaries.
+  const documentWithHole = structuredClone(fixture);
+  documentWithHole.featureRevisions[2].geometry.coordinates.push([
+    [0.005, 0.005], [0.005, 0.015], [0.015, 0.015], [0.015, 0.005], [0.005, 0.005],
+  ]);
+  const state = evaluateFrame(parseProject(documentWithHole), 'portrait', 149);
+  const svg = createOverlay(document, state.viewport);
+  const projection = { project: ([x, y]) => ({ x: 100 + x * 10000, y: 400 - y * 10000 }) };
+  drawOverlay(svg, projection, { ...state, layers: [], annotations: [] }, 'sans-serif');
+  const raster = async () => {
+    const img = new Image();
+    img.src = `data:image/svg+xml,${encodeURIComponent(new XMLSerializer().serializeToString(svg))}`;
+    await img.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = state.viewport.width;
+    canvas.height = state.viewport.height;
+    const context = canvas.getContext('2d');
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(img, 0, 0);
+    return (x, y) => [...context.getImageData(x, y, 1, 1).data];
+  };
+  const pixel = await raster();
+  const outside = pixel(50, 50), hole = pixel(200, 300), body = pixel(125, 250);
+  assert(body.join() === '255,255,255,255', `Polygon body was dimmed: ${body}`);
+  assert(outside.join() === hole.join() && outside[0] >= 139 && outside[0] <= 141,
+    `Expected equal outside/hole dimming: ${outside}; ${hole}`);
+  drawOverlay(svg, projection, {
+    ...state, layers: [], annotations: state.annotations.filter(a => a.id === 'fictional-point-label'),
+  }, 'sans-serif');
+  const leaderPixel = (await raster())(150, 365);
+  assert(leaderPixel[0] < 100 && leaderPixel[1] < 130 && leaderPixel[2] < 130,
+    `Leader ink is not visible: ${leaderPixel}`);
 }
 
 export async function supersededAndDisposed() {

@@ -1,13 +1,20 @@
 import assert from 'node:assert/strict';
+import { mkdir, mkdtemp } from 'node:fs/promises';
 import { test } from 'node:test';
 import { openBrowser } from '@remotion/renderer';
 import { createServer } from 'vite';
 
 test('MapLibre bridge in Chromium', { timeout: 90_000 }, async t => {
   assert.ok(process.env.GSTORY_CHROME, 'Set GSTORY_CHROME to an installed Chromium executable');
+  const cacheRoot = new URL('../../.local/d1-09-prerequisite/', import.meta.url);
+  await mkdir(cacheRoot, { recursive: true });
+  const cacheDir = await mkdtemp(new URL('adapter-vite-', cacheRoot));
   const vite = await createServer({
     configFile: false,
-    optimizeDeps: { exclude: ['maplibre-gl'] },
+    cacheDir,
+    // The browser imports this native ESM graph through a diagnostic route.
+    // Do not scan unrelated application entries or wait for dependency discovery.
+    optimizeDeps: { noDiscovery: true, include: [], exclude: ['maplibre-gl'] },
     server: { host: '127.0.0.1', port: 0, hmr: false },
     plugins: [{
       name: 'bridge-test-routes',
@@ -56,10 +63,11 @@ test('MapLibre bridge in Chromium', { timeout: 90_000 }, async t => {
   await page.goto({ url: url.href, timeout: 30_000 });
 
   for (const name of [
-    'seekAndRecreate', 'supersededAndDisposed', 'fixedViewport', 'constrainedCamera',
+    'seekAndRecreate', 'fixturePrerequisite', 'supersededAndDisposed', 'fixedViewport', 'constrainedCamera',
     'resourceFailures', 'contextLoss', 'timeouts',
   ]) {
     await t.test(name, async () => {
+      t.diagnostic(`Browser case: ${name}`);
       await page.evaluate(async name => {
         const cases = await import('/tests/map-adapter/bridge.browser.mjs');
         await cases[name]();
