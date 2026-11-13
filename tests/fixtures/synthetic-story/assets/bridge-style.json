@@ -1,0 +1,45 @@
+{
+  "version": 8,
+  "name": "Fictional bridge basemap",
+  "transition": { "duration": 0, "delay": 0 },
+  "sources": {
+    "fictional-context": {
+      "type": "geojson",
+      "attribution": "Synthetic test geometry",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [[-0.08, 0.005], [-0.015, 0.005], [0.04, 0.024], [0.1, 0.024]]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [[0.005, -0.08], [0.005, 0.006], [0.028, 0.035], [0.028, 0.1]]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "layers": [
+    {
+      "id": "ground",
+      "type": "background",
+      "paint": { "background-color": "#f5f4ed" }
+    },
+    {
+      "id": "fictional-context",
+      "type": "line",
+      "source": "fictional-context",
+      "paint": { "line-color": "#acb9ab", "line-width": 4 }
+    }
+  ]
+}

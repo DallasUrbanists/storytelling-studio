@@ -22,6 +22,18 @@
       "path": "note.txt",
       "mediaType": "text/plain",
       "sha256": "263e2b429c1ef8cb8e1d02814170514be1647caf1030101cf7cdbfcaaac9e7fa"
+    },
+    {
+      "id": "fixture-style",
+      "path": "assets/bridge-style.json",
+      "mediaType": "application/json",
+      "sha256": "87b53302a82a40b593f66a990ce46cefe852770dafac64ee0f0276703a6a6e0e"
+    },
+    {
+      "id": "fixture-font",
+      "path": "assets/Inter-Regular.woff2",
+      "mediaType": "font/woff2",
+      "sha256": "e06f6b1bc553aaea4e4668023ed0ab0a147129c3107f511bc7d03d361b0ae085"
     }
   ],
   "sources": [
