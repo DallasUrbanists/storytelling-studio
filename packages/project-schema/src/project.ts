@@ -1,3 +1,26 @@
+/** A width with explicit evidence; unknown widths make no numeric assertion. */
+export type RoadwayDimension =
+  | { status: 'unknown' }
+  | { status: 'assumed'; value: number; unit: 'm' | 'ft'; meters: number; rationale: string }
+  | { status: 'documented' | 'estimated'; value: number; unit: 'm' | 'ft'; meters: number; sourceIds: string[]; date: string; location: string; method: string; uncertainty: string };
+/** A left-to-right band in a roadway cross-section. */
+export type RoadwayBand = {
+  id: string; kind: 'through-lane' | 'center-turn-lane' | 'bike-lane' | 'buffer' | 'sidewalk' | 'parking' | 'median' | 'other';
+  direction: 'forward' | 'reverse' | 'both' | 'none'; location: 'between-curbs' | 'outside-curbs';
+  width: RoadwayDimension; locked: boolean; label?: string;
+};
+/** An ordered arrangement, with an explicitly classified envelope. */
+export type RoadwayCrossSection = {
+  role: 'existing' | 'proposed'; curbToCurb: RoadwayDimension;
+  envelope: { kind: 'illustrated' | 'right-of-way' | 'unknown'; width: RoadwayDimension };
+  bands: RoadwayBand[]; proposalDescription?: string;
+};
+/** A corridor's ordered, nonoverlapping station segments in meters. */
+export type Roadway = {
+  id: string; title: string; corridorFeatureRevisionId: string; stationOrigin: string;
+  stationDirection: string; stationExtentMeters: number; sourceIds: string[];
+  segments: { id: string; name: string; startMeters: number; endMeters: number; existing: RoadwayCrossSection; proposed: RoadwayCrossSection }[];
+};
 export type Position = [number, number];
 export type Geometry =
   | { type: 'Point'; coordinates: Position }
@@ -17,6 +40,7 @@ export type ProjectDocument = {
   schemaVersion: 1; id: string; title: string; createdAt: string; updatedAt: string;
   fps: 30; projection: 'mercator';
   outputVariants: { portrait: { width: 1080; height: 1920 }; landscape: { width: 1920; height: 1080 } };
+  roadways?: Roadway[];
   assets: { id: string; path: string; mediaType: string; sha256: string }[];
   sources: ({ id: string; title: string; sourceKind: 'author-origin' } | ResearchSource)[];
   researchSnapshots?: ResearchSnapshot[];
