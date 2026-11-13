@@ -74,7 +74,7 @@ onBeforeUnmount(() => {
 
 <template>
   <p role="status" aria-live="polite">{{ status }}</p>
-  <div class="viewport" :class="variant"><div ref="host" class="surface" :style="{ visibility: status === 'Frame ready' ? 'visible' : 'hidden' }" /></div>
+  <div class="viewport" :class="variant"><div ref="host" class="surface" :class="{ concealed: status !== 'Frame ready' }" :inert="status !== 'Frame ready'" /></div>
 </template>
 
 <style scoped>
@@ -82,4 +82,5 @@ onBeforeUnmount(() => {
 .viewport.landscape { width: 480px; height: 270px; }
 .viewport.portrait { width: 270px; height: 480px; }
 .surface { transform: scale(0.25); transform-origin: top left; }
+.surface.concealed { opacity: 0; pointer-events: none; }
 </style>
