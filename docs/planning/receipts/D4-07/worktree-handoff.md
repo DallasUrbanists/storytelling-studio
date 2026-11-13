@@ -165,4 +165,3 @@ and record the final integration commit. D4-08 depends additionally on D4-06;
 D4-09 depends additionally on D4-04. They become eligible only when all their
 prerequisites are accepted and merged. This local receipt releases no dependent
 work by itself. No human decision or unresolved implementation blocker remains.
-

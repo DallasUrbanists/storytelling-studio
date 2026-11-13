@@ -16,4 +16,3 @@ if (process.argv.slice(2).some(argument => argument === '--help' || argument ===
       process.exitCode = 1;
     });
 }
-

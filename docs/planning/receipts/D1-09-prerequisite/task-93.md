@@ -156,4 +156,3 @@ outside dimming, and the readable point label/leader. Only after this
 prerequisite is accepted can its owning parity issue use the extended fixture;
 the complete Gate B comparison and export procedure remain outstanding.
 No human decision key is needed for this tooling blocker.
-

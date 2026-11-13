@@ -264,4 +264,3 @@ export async function verifyFault(session, host, fault) {
   }
   return diagnostic;
 }
-

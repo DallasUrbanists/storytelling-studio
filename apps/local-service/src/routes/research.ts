@@ -91,4 +91,3 @@ export async function loadResearchRequest(path: string, currentMethod: Method, c
   const saved: ResearchRequest = JSON.parse(await readFile(path, 'utf8'));
   return reopenResearchRequest(saved, currentMethod, currentMethodSha256);
 }
-

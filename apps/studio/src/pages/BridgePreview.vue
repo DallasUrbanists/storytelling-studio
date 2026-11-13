@@ -26,4 +26,3 @@ const variant = ref('landscape');
 <style scoped>
 .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 1rem; }
 </style>
-

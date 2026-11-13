@@ -67,4 +67,3 @@ export type ProjectDocument = {
   layers: { id: string; featureRevisionId: string; order: number; startFrame: number; endFrameExclusive: number; style?: LayerStyle; group?: 'context' | 'rail' | 'bus' | 'stop' | 'station' | 'service-area' | 'walkshed'; sceneRange?: { from: string; through: string }; fillFade?: { startFrame: number; endFrameExclusive: number }; trace?: { startFrame: number; endFrameExclusive: number; mode: 'line' | 'outer-ring' } }[];
   scenes: ({ id: string; kind: 'map'; durationFrames: number; outsideDimming?: OutsideDimming; cameraTrack: CameraKeyframe[]; annotations: Annotation[] } & SceneFocus & ScenePresentation)[];
 };
-

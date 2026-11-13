@@ -358,4 +358,3 @@ require source references and provenance.
 
 The schema tests use synthetic roadway layouts. The width solver, editor,
 rendering, and verification of real-world measurements remain future work.
-

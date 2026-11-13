@@ -72,4 +72,3 @@ test('MapLibre bridge in Chromium', { timeout: 90_000 }, async t => {
   }
   assert.deepEqual(external, []);
 });
-

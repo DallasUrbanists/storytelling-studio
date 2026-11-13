@@ -500,4 +500,3 @@ available when the current request is ready. A pending or failed request hides
 the surface. Changing dimensions disposes the old surface; leaving the page
 also disposes it. This route is a fixture diagnostic. Browser
 accessibility, visual parity, and export remain subject to their own checks.
-

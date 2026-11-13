@@ -1,5 +1,1419 @@
 {
-  "status": "verification-in-progress",
-  "scope": "integrated application; synthetic evidence only",
-  "date": "2026-11-13"
+  "schemaVersion": 1,
+  "date": "2026-11-13",
+  "status": "software-verification-passed",
+  "scope": "Integrated local application; acceptance inputs are synthetic and do not approve Maple Avenue factual or editorial claims.",
+  "pullRequest": "https://github.com/DallasUrbanists/storytelling-studio/pull/105",
+  "branch": "codex/integrated-delivery",
+  "implementationCommit": "4047d1e7ed0e6ee57d8c067f929b17746208c975",
+  "environment": {
+    "node": "24.22.1",
+    "npm": "11.19.1",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26300",
+    "browser": "Chrome 157.0.8103.52",
+    "browserSandbox": "enabled",
+    "renderer": "ANGLE SwiftShader; pixel ratio 1; concurrency 1"
+  },
+  "versions": {
+    "@remotion/bundler": "4.0.542",
+    "@remotion/renderer": "4.0.542",
+    "remotion": "4.0.542",
+    "maplibre-gl": "6.17.0",
+    "vue": "3.5.45",
+    "quasar": "2.35.3",
+    "vite": "8.3.8",
+    "react": "19.3.1",
+    "typescript": "5.9.3",
+    "@quasar/app-vite": "3.10.4"
+  },
+  "checks": [
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund",
+      "status": "passed",
+      "context": "Fresh disposable checkout with actual workspace links; installation followed by checks, production build, and start/save/stop smoke test."
+    },
+    {
+      "command": "npm run check",
+      "status": "passed",
+      "log": ".local/publication-check.log",
+      "suites": {
+        "core": 190,
+        "research": 31,
+        "roadway": 96,
+        "persistence": 13,
+        "integrated": 13
+      },
+      "note": "Suite counts overlap; they are not a unique-test total. Lint, TypeScript, Vue scripts/templates, and documentation links also passed.",
+      "beforeFormattingLog": ".local/final-acceptance-check.log"
+    },
+    {
+      "command": "npm run build:studio",
+      "status": "passed",
+      "log": ".local/final-build.log",
+      "freshCheckoutLog": ".local/clean-build.log"
+    },
+    {
+      "command": "node --test --test-isolation=none tests/render-contract/compare.test.mjs tests/render-contract/browser.test.mjs tests/renderer/input.test.mjs",
+      "status": "passed",
+      "tests": 19,
+      "log": ".local/final-bridge-unit.log"
+    },
+    {
+      "command": "node --env-file=.local/acceptance.env --test --test-concurrency=1 tests/map-adapter/bridge.test.mjs tests/map-adapter/vue-preview.test.mjs tests/map-adapter/remotion-fixture.test.mjs",
+      "status": "passed",
+      "tests": 11,
+      "log": ".local/legacy-browser-checks.log",
+      "environment": "GSTORY_CHROME points to the installed sandboxed browser; machine-specific environment file is untracked."
+    },
+    {
+      "command": "node --env-file=.local/stills.env --test tests/renderer/stills.test.mjs",
+      "status": "passed",
+      "tests": 1,
+      "log": ".local/renderer-stills.log",
+      "environment": "GSTORY_CHROME and GSTORY_REMOTION_BUNDLE point to the local browser and already built fixture bundle."
+    },
+    {
+      "command": "git diff --check 526e5d3a98e0aa0b78cdf7c6cb247e3e7592e0a8",
+      "status": "passed",
+      "scope": "Complete integrated diff including final formatting and documentation"
+    }
+  ],
+  "integratedAcceptance": {
+    "freshStartSaveStop": {
+      "status": "passed",
+      "pageStatus": 200,
+      "createStatus": 201,
+      "preflight": [],
+      "stopExit": 0
+    },
+    "portableRoundTrip": {
+      "status": "passed",
+      "bytes": 129181,
+      "framesCompared": 12,
+      "projectId": "a42ce8db-398d-4556-97ab-4b2c201aafae",
+      "importedProjectId": "93ff075f-6f93-43b7-a8d2-14771dd700a1"
+    },
+    "cancellation": {
+      "status": "passed",
+      "id": "50b2250b-2fb1-47b4-8a61-ccf97d31f11f",
+      "jobStatus": "cancelled",
+      "outputStatus": 404,
+      "restartedJobId": "cadaec60-e9a0-47f3-ab86-785f2549549e"
+    },
+    "authoredVideo": {
+      "status": "completed",
+      "version": "4.0.542",
+      "node": "v24.22.1",
+      "outputs": [
+        {
+          "variant": "portrait",
+          "file": "portrait.mp4",
+          "width": 1080,
+          "height": 1920,
+          "frames": 90,
+          "fps": 30,
+          "decodedFrames": 90,
+          "codec": "h264",
+          "pixelFormat": "yuv420p",
+          "colorSpace": "bt709",
+          "sha256": "0d251d180f5bc360c52d1c4e22c84870614a55ca75e3e555665722ca4c53729c"
+        },
+        {
+          "variant": "landscape",
+          "file": "landscape.mp4",
+          "width": 1920,
+          "height": 1080,
+          "frames": 90,
+          "fps": 30,
+          "decodedFrames": 90,
+          "codec": "h264",
+          "pixelFormat": "yuv420p",
+          "colorSpace": "bt709",
+          "sha256": "b53d08012eb595c3f6e79728e16e12164ce3985b9a79c054dd8cd1be90555bb4"
+        }
+      ],
+      "projectId": "a42ce8db-398d-4556-97ab-4b2c201aafae",
+      "revisionId": "578e751c-263c-4a28-88dc-d25ac6524ae1",
+      "inputSha256": "7e4f2347e6d5cc4a1f96ce707e22e07abdb809a509db88223095d557aeb7e218"
+    },
+    "browserWalkthrough": {
+      "status": "passed",
+      "flows": [
+        "create and save project",
+        "import retained multipart GeoJSON",
+        "save and reopen revision",
+        "edit scenes and both camera formats",
+        "edit roadway bands and direction markings",
+        "preview and export both formats"
+      ],
+      "visualReview": "Agent inspected synthetic editor and exported stills; final human production playback review is not claimed."
+    }
+  },
+  "source": {
+    "manifestSha256": "e1e16aa0c70a125e154ea4940e537a0595cd4de06d8163f217710aee3f0ba37f",
+    "manifestEncoding": "SHA-256 of JSON.stringify(files)",
+    "files": [
+      {
+        "path": "apps/local-service/eslint.config.mjs",
+        "sha256": "9322c122dc6950c6b37f8362b4982eb4bcd16f840a36ff1524cc0dcdc66fed67"
+      },
+      {
+        "path": "apps/local-service/package.json",
+        "sha256": "5b12bcd838f8a9d45aee93f6d7cc484970257472e5c26c5e8e398e67e2d48642"
+      },
+      {
+        "path": "apps/local-service/src/db/project-repository.ts",
+        "sha256": "3d5f1a3c1716d11884c7bafba884b76cfdf34601d1c57f1b2a79e1ad099a8726"
+      },
+      {
+        "path": "apps/local-service/src/packaging/gstory.ts",
+        "sha256": "5646835ecd53dbc0af5e29d0417dbe633ac8bf2bd79cdf3c371bf6005ab854b6"
+      },
+      {
+        "path": "apps/local-service/src/routes/research.ts",
+        "sha256": "1f701420d8998c82e679d593c29efcbc262d1b33404c85601f7d151abf8402a1"
+      },
+      {
+        "path": "apps/local-service/src/security.ts",
+        "sha256": "6d0143b49306c233e0ab953cdd44a0cad52e1075c16e90f87d101c06d7cf711d"
+      },
+      {
+        "path": "apps/local-service/src/server.mjs",
+        "sha256": "9adb2ac008cc169d713f878bfafdb30ffcb10b94beda2d8dcc70f4d0f6120902"
+      },
+      {
+        "path": "apps/local-service/src/server.ts",
+        "sha256": "59399965990e716d773424ad06f94a616a06f3dcc2026195ffbab74dad97e753"
+      },
+      {
+        "path": "apps/local-service/src/services/application.ts",
+        "sha256": "4cba54d3646560d8ec0db0ff605465d8bc0de1ea0e18a677c43cbe19b2519aec"
+      },
+      {
+        "path": "apps/local-service/src/services/preflight.ts",
+        "sha256": "ce4b4c5611bb2fe19b649ed6ddb3d1dfb59082934f094c70d9c6155f9617dc13"
+      },
+      {
+        "path": "apps/local-service/src/services/render-runner.ts",
+        "sha256": "157cad548eb48a1956ebb90c534bef0a7ddcf934a6715c58cfbcf808b49ff721"
+      },
+      {
+        "path": "apps/local-service/src/services/research-worker.ts",
+        "sha256": "d11c18cbe5a374a477b97fd20cf7f133780e880f378a9da9038382e738f845f6"
+      },
+      {
+        "path": "apps/renderer/eslint.config.mjs",
+        "sha256": "546e9b0b460fd2bb56d9197c4ed982d0cf165041ef0723723b3c94c52d036d76",
+        "committedSha256": "5290fe74e2b258b46ca314fda487a4684f0ce14f8b825107fd382491b72f89fd",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/package.json",
+        "sha256": "b59c4ae8a5bd226df04201239b3d078178e3326ba05f97a943d92c5623d1222e",
+        "committedSha256": "4fa7c8eead48019800b6e67ebd9f6eb992e18fdeceaa85468e5dbf13f6954d2e",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/src/MapFrameHost.tsx",
+        "sha256": "bd4bbe7083cc567895658f91aaea7ab60186a3094efba78cc21cef167c104350",
+        "committedSha256": "4e6b05474a800f766a2baf697650203e9e0acfb639574ef36ea56ad34c5fa218",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/src/StoryComposition.tsx",
+        "sha256": "06878310e6d856c740082748c08b0c9cf24977f0761c101f6c794aa089161f81",
+        "committedSha256": "0e1c9bf49ab123f356b50aca7d28a9aa17e5cdf5d7f7644744d10a6b92c918a2",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/src/diagnostics.ts",
+        "sha256": "1eedd9427cf745f2a6094172647ac8e6ecd84de2c90caaeab6fb624f4e515718",
+        "committedSha256": "74cef2c1fae36d7a253a109e7137b3f6e02b2596b2295b23dbce39cce28aa657",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/src/index.tsx",
+        "sha256": "4bb3568321d68cb276fe845f57cae422a07e8386e33096f5c2e01254728e0fa6",
+        "committedSha256": "cc9e68cb89ef6587076be0ce03646b304ddb1298a04770901543089d7f043097",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/src/render-input.ts",
+        "sha256": "d11ebd19c68e85495390fa8fbb111d102c0d84fe39bce79b6a2070c35b6913ab",
+        "committedSha256": "fb179c15dd1adba6e891a1072641029b388d1708e8e35a6445705b37c9eec6ab",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/renderer/src/render-job.ts",
+        "sha256": "4f272676864a9549e0641ef51b3aa5a2a995ef64e816606cf1b0042cb99ca414"
+      },
+      {
+        "path": "apps/renderer/src/render-saved.ts",
+        "sha256": "cb00131212da99523dab0d0be59b356e4238396c29f7beefd2391e1b4b416ac4"
+      },
+      {
+        "path": "apps/renderer/src/sandboxed-browser.ts",
+        "sha256": "9ed6a0c1276ab002cc9b08fa4605c20d7a80e6538c6c1f6ae442ff080801e483"
+      },
+      {
+        "path": "apps/renderer/tsconfig.json",
+        "sha256": "15df569854722be10646f3eef2b0dc6b3d64f52a1dd09ef4a07f53d828f4a214",
+        "committedSha256": "6e4917df44874f896feb01c4e6fc5426c08ebb40a81b308cff8b7549db27726f",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "apps/studio/index.dev.html",
+        "sha256": "9a0db9b1e75edbc89666a87cc97f9845a12375a3c24aa9da92c3e223337af273"
+      },
+      {
+        "path": "apps/studio/index.html",
+        "sha256": "b656674611fe354e9782bfcc488562294cd46c3bee48f57dc6da832fad85d1e4"
+      },
+      {
+        "path": "apps/studio/package.json",
+        "sha256": "5f5c7ec32ca5bedf611f65b0d70393b5e7ed07e1f7a557ae25932b840f447040"
+      },
+      {
+        "path": "apps/studio/quasar.config.js",
+        "sha256": "71137e17886ed25cd9bdae7dbd8ddca84e6a783fb73b7b17c0fdded2655c8279"
+      },
+      {
+        "path": "apps/studio/src/App.vue",
+        "sha256": "8024d4517e332dbef6c6b53386bb0b4908f093c45b3aa1dff64b1dcf3be718c0"
+      },
+      {
+        "path": "apps/studio/src/boot/icons.ts",
+        "sha256": "ab8ac20b0672aae40d0b5cbc6837293d530f37b786da57e92d1dc5c3237a4b4b"
+      },
+      {
+        "path": "apps/studio/src/components/ExploreMap.vue",
+        "sha256": "ee4deccf7ad4245816f0499230a61d5afcf3c09f0fc707078c1b55c76f60157a"
+      },
+      {
+        "path": "apps/studio/src/components/ExportDialog.vue",
+        "sha256": "db31c372a241290337d8427c1ceae1f51f3dc1ea3de5eca92fb92f6dea8658ce"
+      },
+      {
+        "path": "apps/studio/src/components/ImportDialog.vue",
+        "sha256": "9869b28b06a8826bab4677c98479fc534b488a51a04c2fcd61cc5e18845c9588"
+      },
+      {
+        "path": "apps/studio/src/components/MapSurface.vue",
+        "sha256": "314c76338fc5d066298582825a0bf555a3103fc59c105111d7479e685b127c8e"
+      },
+      {
+        "path": "apps/studio/src/components/ResearchPanel.vue",
+        "sha256": "bcab22c91b788dcd23b4b1b01f1d50f1be9b2d46445104393d3963ef499d5f0d"
+      },
+      {
+        "path": "apps/studio/src/components/ResearchStudyArea.vue",
+        "sha256": "db56a54c828628433be206351bbb8e90f79f1639ff4e2182578adcc24fe66f2a"
+      },
+      {
+        "path": "apps/studio/src/components/ResourcesDialog.vue",
+        "sha256": "0d55a72500ee74f6885ed4e15283899155c9a461de83684f953a74bddd44d82e"
+      },
+      {
+        "path": "apps/studio/src/components/RoadwayEditor.vue",
+        "sha256": "799fbeb1e951257d2882ab4f7816afdc9995840829e6030f09a2bc7e61237d41"
+      },
+      {
+        "path": "apps/studio/src/components/SceneInspector.vue",
+        "sha256": "a409dfe7040ebfe5d6f849a90e1657475e6642c09c366ade9d02f118e08ca746"
+      },
+      {
+        "path": "apps/studio/src/components/StoryPreview.vue",
+        "sha256": "4ba41b8164268322a66de0f81ba3f874e30eddfcb343aefa1d15c75d0824a1ae"
+      },
+      {
+        "path": "apps/studio/src/components/WalkshedPanel.vue",
+        "sha256": "47c87fc844cc69617e81b88097ee397d4e74c46e1c6a1993d7a537f0f05a18dd"
+      },
+      {
+        "path": "apps/studio/src/css/app.css",
+        "sha256": "ba12090489cc874eca396cf27e8af49275d9ae38122dea3fa25770a8747eecdd"
+      },
+      {
+        "path": "apps/studio/src/icons.ts",
+        "sha256": "edcc96f20214aacc622c8fded56ed8388bdc8ffefb431ab4c2d3e41714054f57"
+      },
+      {
+        "path": "apps/studio/src/main.js",
+        "sha256": "418356c44aaa5c8105df2d5b2b04ff0e5ea7a970fd3840e16ae67c5aad7a1e48"
+      },
+      {
+        "path": "apps/studio/src/pages/BridgePreview.vue",
+        "sha256": "28d111da0f664285eb281204a9960f4af57fb5485445afff3f2409706f077281"
+      },
+      {
+        "path": "apps/studio/src/router/index.ts",
+        "sha256": "71da8ed42da0078005e9557f69c92a818a5b5fcbf0b082122052cd73de02f29c"
+      },
+      {
+        "path": "apps/studio/src/server.mjs",
+        "sha256": "a334bf9a551cef0dc97c5b69006842503f8a412c92ba943733b9252606d07543"
+      },
+      {
+        "path": "apps/studio/src/services/local-api.ts",
+        "sha256": "edc11c8a6da462b9b826139411bff9627aced842940b58f21c1f99f00fe060bd"
+      },
+      {
+        "path": "apps/studio/src/stores/project-store.ts",
+        "sha256": "0f4708fdd49ed785ddce86abdcf2bc7b432ffa64c60dfedad3c21b266b9ee3ea"
+      },
+      {
+        "path": "apps/studio/src/studio.css",
+        "sha256": "4f63a39a3efae0b67009758f73708fd4648562c88f76f08cf0fca38bc6a224dd"
+      },
+      {
+        "path": "eslint.config.mjs",
+        "sha256": "5ca76efbebaf4e8e41a0a5e5f0e022b2e05dadff8d5119f5bbb85ab75eb22da9"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "b32d9298ac4ac04e20d82d88917cfdb34135fe02c0e4fd1d0591942fa8490829"
+      },
+      {
+        "path": "package.json",
+        "sha256": "542440c1140c4bb3147ac599cf2d3f970cb23c78ac95b6abe427d2eb1991332b"
+      },
+      {
+        "path": "packages/map-adapter/package.json",
+        "sha256": "081a232969a097ccae44bda3e13feee49ca77e7d3d744d41c3478c47e38d54c3",
+        "committedSha256": "be5e50c4abf030e37c36c52c03b304140f2eb472a7fc6d858f43d43c2653bcd1",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "packages/map-adapter/src/apply-frame.ts",
+        "sha256": "f069f6e4aae6746957fcf17946e2c21173c29d48a140b40abffa377cecef3d06"
+      },
+      {
+        "path": "packages/map-adapter/src/mount.ts",
+        "sha256": "9f6bbdb1cca13ab3d7df54a29ec2e88626415200ad21b33d4d1f65d2c333e1bd",
+        "committedSha256": "c2d4583680ecf3190038415f390854ebd12f56623f591a241cbca3d84e09e031",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "packages/map-adapter/src/readiness.ts",
+        "sha256": "cc8a23ab9b94a05d697b45a1d32134fffc4d2150706d3fab1f894ccaf56345fb",
+        "committedSha256": "7ac8b731ad300c2786a1d625cbc7955d4f2e65984c9639566df84058a82df00a",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "packages/map-adapter/src/story-panels.ts",
+        "sha256": "79bd9cb4dad349f18de8efeeab5208b437b49965152289916e73423e0c64f180"
+      },
+      {
+        "path": "packages/project-schema/package.json",
+        "sha256": "d91a0e4532cfc32c74d0f676daa778fad8f16a88bb3bd3aab8aa46947dace0d9",
+        "committedSha256": "6f8601585480fdda298a3b186e808f83323e3a4d80cf0b833b0f322b234a909c",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "packages/project-schema/src/authoring.ts",
+        "sha256": "5c1c7ad900021bac99073afac5f3b113e30c65c58c537b62210d7249d6030514"
+      },
+      {
+        "path": "packages/project-schema/src/canonical.ts",
+        "sha256": "b17a2115d3774aa7d633e449f9a1473d3f7d8f7a35a98689c26fdec39bac6e71"
+      },
+      {
+        "path": "packages/project-schema/src/focus.ts",
+        "sha256": "bd060a398d6a6f1d330327a0094d1ca47c5600a8ec48d3865a6047d92099b23e"
+      },
+      {
+        "path": "packages/project-schema/src/index.ts",
+        "sha256": "a45033e32a04dc4abc74e268aebc5c8279249896ed0bd964f8ad5bc491844c5d"
+      },
+      {
+        "path": "packages/project-schema/src/project.ts",
+        "sha256": "877a0f274f275ab1f33631954dc85caa5d484cc6af7ab304a0dfa1e0e91862af"
+      },
+      {
+        "path": "packages/project-schema/src/validation.ts",
+        "sha256": "d6d114a05a45b6846a9d2ec8c05f5b6322a2e82ee6643873c8af750cb85705ac"
+      },
+      {
+        "path": "packages/story-core/package.json",
+        "sha256": "d64a4c3458274ed6a75cefba9ddc834bbdd2b3ce2399b65d9e5f8dc86039fdb3"
+      },
+      {
+        "path": "packages/story-core/src/authoring.ts",
+        "sha256": "8a51e628b8aaba88585e77d30bc5abc1db4f0994ed8279ed87f9fdfee2300430"
+      },
+      {
+        "path": "packages/story-core/src/camera.ts",
+        "sha256": "b6b8611bc247835c7a4181c1b92b57412f209c9e3bc2f352c4fd50abb5e7fc57"
+      },
+      {
+        "path": "packages/story-core/src/evaluate-frame.ts",
+        "sha256": "a0dfbd81f2f91d7ef5c90195539ef52772b367b9087ae3250e2af42b116ebfa6"
+      },
+      {
+        "path": "packages/story-core/src/focus.ts",
+        "sha256": "e91a3253cf4700a011d1302a45a61036fc2d87ec5700cde1de8c7932f12b9769"
+      },
+      {
+        "path": "packages/story-core/src/geometry.ts",
+        "sha256": "db8849e2b766d6b3bd8fcb71c43b6af74869115552edb34bcdd8d64468f346cb"
+      },
+      {
+        "path": "packages/story-core/src/index.ts",
+        "sha256": "85f857d7a20d35daefc6d8a110f1262b10645c642e719d05fc91d04cb6d37912",
+        "committedSha256": "c7887891c35b9ce404fef58b59b8d4f357d125d28382c4afbcc648e86e120399",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "packages/story-core/src/mercator.ts",
+        "sha256": "9966698c079426a53753ece37f95b44ba2888fb6d36d5d9ae57c89b1daa2544c",
+        "committedSha256": "6e36f4e50389ae9eb8148da7350e1f380672af3c71498f6be344b41b60a4ce0d",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "packages/story-core/src/population.ts",
+        "sha256": "ae6f5532754af8a0716bc6dbd79ee4e22648a95c60658fc1ad41d9b3eceef79d"
+      },
+      {
+        "path": "packages/story-core/src/roadway-animation.ts",
+        "sha256": "3d4ebf19574a183dbf51fd692f648973a132cc621b621a56ab84a14a116eea08"
+      },
+      {
+        "path": "packages/story-core/src/roadway.ts",
+        "sha256": "1cc5335400cd0eff3f3bc646c4288bb0d38fa30dcff89c89a973aeeb02ef89a5"
+      },
+      {
+        "path": "scripts/check-docs.mjs",
+        "sha256": "bd51cfd228415efd3b52ac93903851e962842bd72093f89b44a621aea2f9ca85"
+      },
+      {
+        "path": "scripts/check-studio.mjs",
+        "sha256": "a7f860eac421837fd807185317c27a828c90dff81dd193baf4333f566d7314fd"
+      },
+      {
+        "path": "scripts/dev.mjs",
+        "sha256": "befb57d5be160a7ccac267bba22506bb7913c79c8aec5a63ff2b8ab60e41f295"
+      },
+      {
+        "path": "scripts/render-fixture.mjs",
+        "sha256": "adbb52e620b5ae9bd01a489b46f29556325a6745d662fb88a343a310f2ec99b8"
+      },
+      {
+        "path": "tests/core/evaluate-frame.test.mjs",
+        "sha256": "60e0f4b49580e34ef743be73594d4e4da451e26c325c23f7722cb0745e719334"
+      },
+      {
+        "path": "tests/core/focus.test.mjs",
+        "sha256": "6bd4b0380c27eba261248fb4e68ed9ab4d6c8b8b94586ef22b4fdd0e0767d7ad"
+      },
+      {
+        "path": "tests/fixtures/roadway/constraint-cases.ts",
+        "sha256": "f7bcaccd6571303462556213df4f27a963edcb336bcc19f851fd97600790d70d"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/assets/bridge-style.json",
+        "sha256": "87b53302a82a40b593f66a990ce46cefe852770dafac64ee0f0276703a6a6e0e"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/project.json",
+        "sha256": "8b8d25a6fb60c659ffda3c53ecf6f529b38cdfd00e47ecfb1d149d0e0c7d5e8e"
+      },
+      {
+        "path": "tests/integrated/authoring.test.mjs",
+        "sha256": "db65a35635179d35cbbd25a3b06f1d15ee94d438f00bdf49f407ce5ce330925d"
+      },
+      {
+        "path": "tests/integrated/service.test.mjs",
+        "sha256": "b01d401789b73902ebd76100fadd1adbd61c19cbf69530bea11ed55ec5777138"
+      },
+      {
+        "path": "tests/map-adapter/bridge.browser.mjs",
+        "sha256": "8a98df5586e396548876ffb92ce09f8fb3546b88d1efc51c0fb5183f6ad0e66c"
+      },
+      {
+        "path": "tests/map-adapter/bridge.test.mjs",
+        "sha256": "960180dffe4b521e0025d17fa56722ce702eb77b4335f6f63cc0f020a3471979"
+      },
+      {
+        "path": "tests/map-adapter/remotion-fixture.test.mjs",
+        "sha256": "e2e937f7ef4d8c93e9bc7f4a6ed07de57afa74b717c5123a6e99da757b4ca2f1"
+      },
+      {
+        "path": "tests/map-adapter/vue-preview.test.mjs",
+        "sha256": "7f165646601d320f2017715fb87f1ad3d7423d89232f89fb628d2674838c16bf"
+      },
+      {
+        "path": "tests/persistence/package.json",
+        "sha256": "b7d5803b9ae85dd2a308677f2089b99289dd40dd055006a36d3d95b0fee2313b"
+      },
+      {
+        "path": "tests/persistence/repository.test.mjs",
+        "sha256": "5be61e0f03a19a2886430b030d1cfcbc8ddab76d1e0f4e74fbd8861c12aef324"
+      },
+      {
+        "path": "tests/persistence/security.test.ts",
+        "sha256": "97439ce35648fbb2400871ee79c632b5f9101f01ef287d394b0317b3b734d028"
+      },
+      {
+        "path": "tests/project-schema/validation.test.mjs",
+        "sha256": "2e5af6e76af12faf8b0cf33fb46c6bbbf11e806dc83eba2e7a2bae404a387ce1"
+      },
+      {
+        "path": "tests/render-contract/browser.mjs",
+        "sha256": "c152f27b58d42e7e9f3b0d9e112a31849dfc55b0ab9e81f29a74e825bfcc01a9"
+      },
+      {
+        "path": "tests/render-contract/browser.test.mjs",
+        "sha256": "0986940c36434e276a00fce3f6ebf49bacd8956e827306f1126a6504c83991a2"
+      },
+      {
+        "path": "tests/render-contract/compare.mjs",
+        "sha256": "b5aa7df5ed6c2d3c1fcbe993d0df255e8382d7d71645098c9b686333a3dbced4"
+      },
+      {
+        "path": "tests/render-contract/compare.test.mjs",
+        "sha256": "067a2350b4f6e72a06566ca1f404f6ecdb01732cc68ba900e8e087c1055db564"
+      },
+      {
+        "path": "tests/render-contract/run.mjs",
+        "sha256": "70996a25b2e0c51412fc7ebe071c59fba2b7d7b64f91cb86875c25e2c9ccfe5a"
+      },
+      {
+        "path": "tests/renderer/input.test.mjs",
+        "sha256": "0d4dc1ffa69419b96978bea66095811d81b5f040ef1ab149ab43cdf202d89926",
+        "committedSha256": "f2790e71974a733b252f2952f46b595b754645f06df1cccd59d292ac75134509",
+        "difference": "Windows checkout CRLF/LF only"
+      },
+      {
+        "path": "tests/renderer/stills.test.mjs",
+        "sha256": "47bb201609ac4ba98b2111366cf14c73cf3af7ba09903728155416f2aa0725a7"
+      },
+      {
+        "path": "tests/research/intersections.test.mjs",
+        "sha256": "ba6b9cb6f9451d16733d0562eb265aee79ab76383b8eceeb58fca71ad0b3781d"
+      },
+      {
+        "path": "tests/research/provenance.test.mjs",
+        "sha256": "fb44fe554f6fd64f2966ad015822da8cec2104bd6bc95ee0df6bc6620005db6d"
+      },
+      {
+        "path": "tests/research/study-area.test.mjs",
+        "sha256": "a00428c5b73f826f0e5b0f6ef5451f00b185dcc17d6deec6958c13203b0b6429"
+      },
+      {
+        "path": "tests/roadway/constraints.test.ts",
+        "sha256": "da74874304e905a5fd4d1aebee5afadd191ac107907b5f5863606230b468906b"
+      },
+      {
+        "path": "tests/roadway/schema.test.mjs",
+        "sha256": "3e34867d8899475b10d47e8a09350a9f305af9f5f9f93cb7f6e00e640644832d"
+      },
+      {
+        "path": "tests/roadway/segments.test.mjs",
+        "sha256": "350033c701918377cd6f0785ef56a96501a1b1ff96688bb5a8939fca5065f3e5"
+      },
+      {
+        "path": "tests/roadway/width-solver.test.mjs",
+        "sha256": "87a8b58aee19eddf89be65295555aa7f9fdb6c8475cbd539582a50e324f9c2fa"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "2bac7cdb579eae4fa66a11c3c4953126f43a8d6845502308b5841967335e0cf7"
+      }
+    ],
+    "checkoutNote": "Working-tree hashes retain Windows checkout line endings. Where committed bytes differ only by CRLF/LF, both hashes are recorded. All normalized source bytes match the implementation commit."
+  },
+  "limitations": [
+    "Windows x64 was exercised; other operating systems and GPUs are unverified.",
+    "Render resource profile supports retained GeoJSON, inline styles, and local font assets. Remote tiles, sprites, glyph services, aerial compositing, and local routing are unavailable.",
+    "Project documents and geographic imports have explicit size and feature limits; these checks do not establish unlimited project capacity.",
+    "Research uses retained inputs and explicit reviews. Historical comparisons require compatible periods; spatial aggregation of medians is rejected.",
+    "Actual Maple geography, network evidence, dimensions, publication rights, factual review, editorial approval, and final human playback review remain missing.",
+    "No individual issue closure, controller activation, merge, or production milestone acceptance is included."
+  ],
+  "productionReadiness": "Maple Avenue production inputs and named approvals remain incomplete",
+  "renderGate": {
+    "command": "node --env-file=.local/acceptance.env tests/render-contract/run.mjs",
+    "documentedAlias": "npm run test:render-contract",
+    "status": "passed",
+    "runId": "D1-09-2026-11-13T23-14-25-378Z-a5ff4c03-cf52-4243-bbcb-8c69eca3fe4a",
+    "startedAt": "2026-11-13T23:14:25.381Z",
+    "finishedAt": "2026-11-13T23:24:45.605Z",
+    "elapsedMilliseconds": 620224,
+    "receipt": ".local/render-contract/D1-09-2026-11-13T23-14-25-378Z-a5ff4c03-cf52-4243-bbcb-8c69eca3fe4a/receipt.json",
+    "sourceUnchangedDuringRun": true,
+    "sourceManifestSha256": "fbba58b7d818d1bacdc4db349735420388575cc7ed9953f434e5229c761c8cd2",
+    "source": [
+      {
+        "path": "apps/renderer/eslint.config.mjs",
+        "sha256": "546e9b0b460fd2bb56d9197c4ed982d0cf165041ef0723723b3c94c52d036d76"
+      },
+      {
+        "path": "apps/renderer/package.json",
+        "sha256": "b59c4ae8a5bd226df04201239b3d078178e3326ba05f97a943d92c5623d1222e"
+      },
+      {
+        "path": "apps/renderer/src/MapFrameHost.tsx",
+        "sha256": "bd4bbe7083cc567895658f91aaea7ab60186a3094efba78cc21cef167c104350"
+      },
+      {
+        "path": "apps/renderer/src/StoryComposition.tsx",
+        "sha256": "06878310e6d856c740082748c08b0c9cf24977f0761c101f6c794aa089161f81"
+      },
+      {
+        "path": "apps/renderer/src/diagnostics.ts",
+        "sha256": "1eedd9427cf745f2a6094172647ac8e6ecd84de2c90caaeab6fb624f4e515718"
+      },
+      {
+        "path": "apps/renderer/src/index.tsx",
+        "sha256": "4bb3568321d68cb276fe845f57cae422a07e8386e33096f5c2e01254728e0fa6"
+      },
+      {
+        "path": "apps/renderer/src/render-input.ts",
+        "sha256": "d11ebd19c68e85495390fa8fbb111d102c0d84fe39bce79b6a2070c35b6913ab"
+      },
+      {
+        "path": "apps/renderer/src/render-job.ts",
+        "sha256": "4f272676864a9549e0641ef51b3aa5a2a995ef64e816606cf1b0042cb99ca414"
+      },
+      {
+        "path": "apps/renderer/src/render-saved.ts",
+        "sha256": "cb00131212da99523dab0d0be59b356e4238396c29f7beefd2391e1b4b416ac4"
+      },
+      {
+        "path": "apps/renderer/src/sandboxed-browser.ts",
+        "sha256": "9ed6a0c1276ab002cc9b08fa4605c20d7a80e6538c6c1f6ae442ff080801e483"
+      },
+      {
+        "path": "apps/renderer/tsconfig.json",
+        "sha256": "15df569854722be10646f3eef2b0dc6b3d64f52a1dd09ef4a07f53d828f4a214"
+      },
+      {
+        "path": "apps/studio/index.dev.html",
+        "sha256": "9a0db9b1e75edbc89666a87cc97f9845a12375a3c24aa9da92c3e223337af273"
+      },
+      {
+        "path": "apps/studio/index.html",
+        "sha256": "b656674611fe354e9782bfcc488562294cd46c3bee48f57dc6da832fad85d1e4"
+      },
+      {
+        "path": "apps/studio/package.json",
+        "sha256": "5f5c7ec32ca5bedf611f65b0d70393b5e7ed07e1f7a557ae25932b840f447040"
+      },
+      {
+        "path": "apps/studio/quasar.config.js",
+        "sha256": "71137e17886ed25cd9bdae7dbd8ddca84e6a783fb73b7b17c0fdded2655c8279"
+      },
+      {
+        "path": "apps/studio/src/App.vue",
+        "sha256": "8024d4517e332dbef6c6b53386bb0b4908f093c45b3aa1dff64b1dcf3be718c0"
+      },
+      {
+        "path": "apps/studio/src/boot/icons.ts",
+        "sha256": "ab8ac20b0672aae40d0b5cbc6837293d530f37b786da57e92d1dc5c3237a4b4b"
+      },
+      {
+        "path": "apps/studio/src/components/ExploreMap.vue",
+        "sha256": "ee4deccf7ad4245816f0499230a61d5afcf3c09f0fc707078c1b55c76f60157a"
+      },
+      {
+        "path": "apps/studio/src/components/ExportDialog.vue",
+        "sha256": "db31c372a241290337d8427c1ceae1f51f3dc1ea3de5eca92fb92f6dea8658ce"
+      },
+      {
+        "path": "apps/studio/src/components/ImportDialog.vue",
+        "sha256": "9869b28b06a8826bab4677c98479fc534b488a51a04c2fcd61cc5e18845c9588"
+      },
+      {
+        "path": "apps/studio/src/components/MapSurface.vue",
+        "sha256": "314c76338fc5d066298582825a0bf555a3103fc59c105111d7479e685b127c8e"
+      },
+      {
+        "path": "apps/studio/src/components/ResearchPanel.vue",
+        "sha256": "bcab22c91b788dcd23b4b1b01f1d50f1be9b2d46445104393d3963ef499d5f0d"
+      },
+      {
+        "path": "apps/studio/src/components/ResearchStudyArea.vue",
+        "sha256": "db56a54c828628433be206351bbb8e90f79f1639ff4e2182578adcc24fe66f2a"
+      },
+      {
+        "path": "apps/studio/src/components/ResourcesDialog.vue",
+        "sha256": "0d55a72500ee74f6885ed4e15283899155c9a461de83684f953a74bddd44d82e"
+      },
+      {
+        "path": "apps/studio/src/components/RoadwayEditor.vue",
+        "sha256": "799fbeb1e951257d2882ab4f7816afdc9995840829e6030f09a2bc7e61237d41"
+      },
+      {
+        "path": "apps/studio/src/components/SceneInspector.vue",
+        "sha256": "a409dfe7040ebfe5d6f849a90e1657475e6642c09c366ade9d02f118e08ca746"
+      },
+      {
+        "path": "apps/studio/src/components/StoryPreview.vue",
+        "sha256": "4ba41b8164268322a66de0f81ba3f874e30eddfcb343aefa1d15c75d0824a1ae"
+      },
+      {
+        "path": "apps/studio/src/components/WalkshedPanel.vue",
+        "sha256": "47c87fc844cc69617e81b88097ee397d4e74c46e1c6a1993d7a537f0f05a18dd"
+      },
+      {
+        "path": "apps/studio/src/css/app.css",
+        "sha256": "ba12090489cc874eca396cf27e8af49275d9ae38122dea3fa25770a8747eecdd"
+      },
+      {
+        "path": "apps/studio/src/icons.ts",
+        "sha256": "edcc96f20214aacc622c8fded56ed8388bdc8ffefb431ab4c2d3e41714054f57"
+      },
+      {
+        "path": "apps/studio/src/main.js",
+        "sha256": "418356c44aaa5c8105df2d5b2b04ff0e5ea7a970fd3840e16ae67c5aad7a1e48"
+      },
+      {
+        "path": "apps/studio/src/pages/BridgePreview.vue",
+        "sha256": "28d111da0f664285eb281204a9960f4af57fb5485445afff3f2409706f077281"
+      },
+      {
+        "path": "apps/studio/src/router/index.ts",
+        "sha256": "71da8ed42da0078005e9557f69c92a818a5b5fcbf0b082122052cd73de02f29c"
+      },
+      {
+        "path": "apps/studio/src/server.mjs",
+        "sha256": "a334bf9a551cef0dc97c5b69006842503f8a412c92ba943733b9252606d07543"
+      },
+      {
+        "path": "apps/studio/src/services/local-api.ts",
+        "sha256": "edc11c8a6da462b9b826139411bff9627aced842940b58f21c1f99f00fe060bd"
+      },
+      {
+        "path": "apps/studio/src/stores/project-store.ts",
+        "sha256": "0f4708fdd49ed785ddce86abdcf2bc7b432ffa64c60dfedad3c21b266b9ee3ea"
+      },
+      {
+        "path": "apps/studio/src/studio.css",
+        "sha256": "4f63a39a3efae0b67009758f73708fd4648562c88f76f08cf0fca38bc6a224dd"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "b32d9298ac4ac04e20d82d88917cfdb34135fe02c0e4fd1d0591942fa8490829"
+      },
+      {
+        "path": "package.json",
+        "sha256": "542440c1140c4bb3147ac599cf2d3f970cb23c78ac95b6abe427d2eb1991332b"
+      },
+      {
+        "path": "packages/map-adapter/package.json",
+        "sha256": "081a232969a097ccae44bda3e13feee49ca77e7d3d744d41c3478c47e38d54c3"
+      },
+      {
+        "path": "packages/map-adapter/src/apply-frame.ts",
+        "sha256": "f069f6e4aae6746957fcf17946e2c21173c29d48a140b40abffa377cecef3d06"
+      },
+      {
+        "path": "packages/map-adapter/src/mount.ts",
+        "sha256": "9f6bbdb1cca13ab3d7df54a29ec2e88626415200ad21b33d4d1f65d2c333e1bd"
+      },
+      {
+        "path": "packages/map-adapter/src/readiness.ts",
+        "sha256": "cc8a23ab9b94a05d697b45a1d32134fffc4d2150706d3fab1f894ccaf56345fb"
+      },
+      {
+        "path": "packages/map-adapter/src/story-panels.ts",
+        "sha256": "79bd9cb4dad349f18de8efeeab5208b437b49965152289916e73423e0c64f180"
+      },
+      {
+        "path": "packages/project-schema/package.json",
+        "sha256": "d91a0e4532cfc32c74d0f676daa778fad8f16a88bb3bd3aab8aa46947dace0d9"
+      },
+      {
+        "path": "packages/project-schema/src/authoring.ts",
+        "sha256": "5c1c7ad900021bac99073afac5f3b113e30c65c58c537b62210d7249d6030514"
+      },
+      {
+        "path": "packages/project-schema/src/canonical.ts",
+        "sha256": "b17a2115d3774aa7d633e449f9a1473d3f7d8f7a35a98689c26fdec39bac6e71"
+      },
+      {
+        "path": "packages/project-schema/src/focus.ts",
+        "sha256": "bd060a398d6a6f1d330327a0094d1ca47c5600a8ec48d3865a6047d92099b23e"
+      },
+      {
+        "path": "packages/project-schema/src/index.ts",
+        "sha256": "a45033e32a04dc4abc74e268aebc5c8279249896ed0bd964f8ad5bc491844c5d"
+      },
+      {
+        "path": "packages/project-schema/src/project.ts",
+        "sha256": "877a0f274f275ab1f33631954dc85caa5d484cc6af7ab304a0dfa1e0e91862af"
+      },
+      {
+        "path": "packages/project-schema/src/validation.ts",
+        "sha256": "d6d114a05a45b6846a9d2ec8c05f5b6322a2e82ee6643873c8af750cb85705ac"
+      },
+      {
+        "path": "packages/story-core/package.json",
+        "sha256": "d64a4c3458274ed6a75cefba9ddc834bbdd2b3ce2399b65d9e5f8dc86039fdb3"
+      },
+      {
+        "path": "packages/story-core/src/authoring.ts",
+        "sha256": "8a51e628b8aaba88585e77d30bc5abc1db4f0994ed8279ed87f9fdfee2300430"
+      },
+      {
+        "path": "packages/story-core/src/camera.ts",
+        "sha256": "b6b8611bc247835c7a4181c1b92b57412f209c9e3bc2f352c4fd50abb5e7fc57"
+      },
+      {
+        "path": "packages/story-core/src/evaluate-frame.ts",
+        "sha256": "a0dfbd81f2f91d7ef5c90195539ef52772b367b9087ae3250e2af42b116ebfa6"
+      },
+      {
+        "path": "packages/story-core/src/focus.ts",
+        "sha256": "e91a3253cf4700a011d1302a45a61036fc2d87ec5700cde1de8c7932f12b9769"
+      },
+      {
+        "path": "packages/story-core/src/geometry.ts",
+        "sha256": "db8849e2b766d6b3bd8fcb71c43b6af74869115552edb34bcdd8d64468f346cb"
+      },
+      {
+        "path": "packages/story-core/src/index.ts",
+        "sha256": "85f857d7a20d35daefc6d8a110f1262b10645c642e719d05fc91d04cb6d37912"
+      },
+      {
+        "path": "packages/story-core/src/mercator.ts",
+        "sha256": "9966698c079426a53753ece37f95b44ba2888fb6d36d5d9ae57c89b1daa2544c"
+      },
+      {
+        "path": "packages/story-core/src/population.ts",
+        "sha256": "ae6f5532754af8a0716bc6dbd79ee4e22648a95c60658fc1ad41d9b3eceef79d"
+      },
+      {
+        "path": "packages/story-core/src/roadway-animation.ts",
+        "sha256": "3d4ebf19574a183dbf51fd692f648973a132cc621b621a56ab84a14a116eea08"
+      },
+      {
+        "path": "packages/story-core/src/roadway.ts",
+        "sha256": "1cc5335400cd0eff3f3bc646c4288bb0d38fa30dcff89c89a973aeeb02ef89a5"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/assets/Inter-Regular.woff2",
+        "sha256": "e06f6b1bc553aaea4e4668023ed0ab0a147129c3107f511bc7d03d361b0ae085"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/assets/OFL-Inter.txt",
+        "sha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/assets/bridge-style.json",
+        "sha256": "87b53302a82a40b593f66a990ce46cefe852770dafac64ee0f0276703a6a6e0e"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/note.txt",
+        "sha256": "263e2b429c1ef8cb8e1d02814170514be1647caf1030101cf7cdbfcaaac9e7fa"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/project.json",
+        "sha256": "8b8d25a6fb60c659ffda3c53ecf6f529b38cdfd00e47ecfb1d149d0e0c7d5e8e"
+      },
+      {
+        "path": "tests/render-contract/browser.mjs",
+        "sha256": "c152f27b58d42e7e9f3b0d9e112a31849dfc55b0ab9e81f29a74e825bfcc01a9"
+      },
+      {
+        "path": "tests/render-contract/browser.test.mjs",
+        "sha256": "0986940c36434e276a00fce3f6ebf49bacd8956e827306f1126a6504c83991a2"
+      },
+      {
+        "path": "tests/render-contract/compare.mjs",
+        "sha256": "b5aa7df5ed6c2d3c1fcbe993d0df255e8382d7d71645098c9b686333a3dbced4"
+      },
+      {
+        "path": "tests/render-contract/compare.test.mjs",
+        "sha256": "067a2350b4f6e72a06566ca1f404f6ecdb01732cc68ba900e8e087c1055db564"
+      },
+      {
+        "path": "tests/render-contract/run.mjs",
+        "sha256": "70996a25b2e0c51412fc7ebe071c59fba2b7d7b64f91cb86875c25e2c9ccfe5a"
+      }
+    ],
+    "assetManifestSha256": "634869d508988861b5cc395702a4ff17b235c25ae065d9ae9bc85f2c85bf7bcc",
+    "assets": [
+      {
+        "id": "fictional-note",
+        "path": "note.txt",
+        "sha256": "263e2b429c1ef8cb8e1d02814170514be1647caf1030101cf7cdbfcaaac9e7fa"
+      },
+      {
+        "id": "fixture-style",
+        "path": "assets/bridge-style.json",
+        "sha256": "87b53302a82a40b593f66a990ce46cefe852770dafac64ee0f0276703a6a6e0e"
+      },
+      {
+        "id": "fixture-font",
+        "path": "assets/Inter-Regular.woff2",
+        "sha256": "e06f6b1bc553aaea4e4668023ed0ab0a147129c3107f511bc7d03d361b0ae085"
+      }
+    ],
+    "framesCaptured": 272,
+    "comparisons": 304,
+    "failureCases": 20,
+    "formats": [
+      "portrait",
+      "landscape"
+    ],
+    "freshSessionsPerHostAndFormat": 2,
+    "tolerances": {
+      "channel": 8,
+      "matchingPixels": 0.995,
+      "edgePixels": 1
+    },
+    "browserSha256": "969c36b4e5a38c56bf78d94ec95f69992e9d397e7f92ec666911514364f1f2a9",
+    "workerSha256": "73d7a024a4efe1a46e49db193e18cfe33271e3ecc652ec7542c281a4ef5f0f04",
+    "parity": "passed",
+    "readiness": "passed",
+    "videoGate": "passed",
+    "videoReceipt": "out/verification/2026-11-13T23-22-51-730Z-71fd1ac1-a300-49e5-a981-c8c80d7ba5b4/receipt.json",
+    "videoOutputs": [
+      {
+        "variant": "portrait",
+        "status": "verified",
+        "sha256": "12b13e0f458cddcc040b0e42f9f3c5e29944cd947e4a1d9d9a383597a583699f",
+        "bytes": 510332,
+        "width": 1080,
+        "height": 1920,
+        "frames": 300,
+        "decodedFrames": 300,
+        "codec": "h264",
+        "pixelFormat": "yuv420p",
+        "colorSpace": "bt709",
+        "frameRate": "30/1"
+      },
+      {
+        "variant": "landscape",
+        "status": "verified",
+        "sha256": "3454bf2e1944e4d19e93582f32a09276aff31c660c6d10e5976febe162cc86a2",
+        "bytes": 499506,
+        "width": 1920,
+        "height": 1080,
+        "frames": 300,
+        "decodedFrames": 300,
+        "codec": "h264",
+        "pixelFormat": "yuv420p",
+        "colorSpace": "bt709",
+        "frameRate": "30/1"
+      }
+    ],
+    "mediaTools": {
+      "ffmpeg": {
+        "version": "ffmpeg version n7.1 Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "5d1aa3706022b2f1814993c7108ca689a0a2e6fe9af91ec15dbf0bc05d6d39e4"
+      },
+      "ffprobe": {
+        "version": "ffprobe version n7.1 Copyright (c) 2007-2024 the FFmpeg developers",
+        "sha256": "66468651d02cec1beac8003fcb4aec42363390810ca4435165ef3cf1439c7261"
+      }
+    }
+  },
+  "supersededRun": {
+    "runId": "D1-09-2026-11-13T23-02-45-857Z-cc26baef-9221-40c1-b550-1beb8ddfd63b",
+    "status": "failed",
+    "reason": "Source changed during that run. The final run froze source and repeated the entire gate; no failure was waived."
+  },
+  "publicationNormalization": {
+    "kind": "Removal of redundant terminal blank lines after the frozen rendering run; no source tokens or internal line endings changed.",
+    "files": [
+      {
+        "path": "apps/local-service/eslint.config.mjs",
+        "testedSha256": "9322c122dc6950c6b37f8362b4982eb4bcd16f840a36ff1524cc0dcdc66fed67",
+        "publishedSha256": "5290fe74e2b258b46ca314fda487a4684f0ce14f8b825107fd382491b72f89fd"
+      },
+      {
+        "path": "apps/local-service/src/routes/research.ts",
+        "testedSha256": "1f701420d8998c82e679d593c29efcbc262d1b33404c85601f7d151abf8402a1",
+        "publishedSha256": "2f067bdf16f1b597525139fe94d103152a7284769b661a95b4d098e9cc87fe7d"
+      },
+      {
+        "path": "apps/local-service/src/security.ts",
+        "testedSha256": "6d0143b49306c233e0ab953cdd44a0cad52e1075c16e90f87d101c06d7cf711d",
+        "publishedSha256": "cb8ecdcfec733472552628c2248104c7287a8684cd7f1209d2e2371cc2b2460e"
+      },
+      {
+        "path": "apps/local-service/src/server.mjs",
+        "testedSha256": "9adb2ac008cc169d713f878bfafdb30ffcb10b94beda2d8dcc70f4d0f6120902",
+        "publishedSha256": "3df1e6c5d8157781dab31c173a4780610a7151e1e9f4ab043e2d8b79bb9bd9be"
+      },
+      {
+        "path": "apps/local-service/src/server.ts",
+        "testedSha256": "59399965990e716d773424ad06f94a616a06f3dcc2026195ffbab74dad97e753",
+        "publishedSha256": "619f536b4536cd9411d5c52986ec9ed76d6033fdb4367aa39665b501c3776974"
+      },
+      {
+        "path": "apps/renderer/src/render-job.ts",
+        "testedSha256": "4f272676864a9549e0641ef51b3aa5a2a995ef64e816606cf1b0042cb99ca414",
+        "publishedSha256": "e15514507c656c7fab49c1312dfb7275d1d992eb6b104dae8332a68da1239f15"
+      },
+      {
+        "path": "apps/studio/index.dev.html",
+        "testedSha256": "9a0db9b1e75edbc89666a87cc97f9845a12375a3c24aa9da92c3e223337af273",
+        "publishedSha256": "77b8676974b6361a287e4832565da1dd8575e01bcf987021f1cff491152aa3c3"
+      },
+      {
+        "path": "apps/studio/src/components/MapSurface.vue",
+        "testedSha256": "314c76338fc5d066298582825a0bf555a3103fc59c105111d7479e685b127c8e",
+        "publishedSha256": "b74aa1912f288980d6e5c9cf482534a879f9410e9486371ea6ab32da7ccc2c76"
+      },
+      {
+        "path": "apps/studio/src/components/ResearchStudyArea.vue",
+        "testedSha256": "db56a54c828628433be206351bbb8e90f79f1639ff4e2182578adcc24fe66f2a",
+        "publishedSha256": "6de2c11bb042064a46822800ccfc9aa92a5babe0bf5cb7ae4456046de048d776"
+      },
+      {
+        "path": "apps/studio/src/main.js",
+        "testedSha256": "418356c44aaa5c8105df2d5b2b04ff0e5ea7a970fd3840e16ae67c5aad7a1e48",
+        "publishedSha256": "47a0367259974209e0d185cec2910294ace759fa979bd2a67e8d079a45ff7209"
+      },
+      {
+        "path": "apps/studio/src/pages/BridgePreview.vue",
+        "testedSha256": "28d111da0f664285eb281204a9960f4af57fb5485445afff3f2409706f077281",
+        "publishedSha256": "7cbf99eae8c1ce627a0debbc880cb11f80a893b60f8e59d830dac25cb3055aca"
+      },
+      {
+        "path": "apps/studio/src/server.mjs",
+        "testedSha256": "a334bf9a551cef0dc97c5b69006842503f8a412c92ba943733b9252606d07543",
+        "publishedSha256": "6f0a57bd343b287d2a865b3c6706da073ca66002d20b41c2557d7f38cc1683a5"
+      },
+      {
+        "path": "docs/architecture/project-format.md",
+        "testedSha256": "ce70ccfa7e19276cabb90b9d791a47914426cb5abc7386dada2c52686cca5b32",
+        "publishedSha256": "e7dd1fd1be917f04f422524a452aff3fb696c39fbc1077f925c94aa930e0569b"
+      },
+      {
+        "path": "docs/architecture/rendering-contract.md",
+        "testedSha256": "8429ca5a6772c27b2e53680b65527706bec5645fa3eb8be8458f38ac293f5cb6",
+        "publishedSha256": "7213a8ae10a4ef72629e25c219e46523162e79ca450be6e20f2d8d5dab31043d"
+      },
+      {
+        "path": "docs/architecture/research-methods.md",
+        "testedSha256": "932221338f09735268a825c9043fb22854087d1fa0f2b655cfa84217b9e89346",
+        "publishedSha256": "b122c9d1794bc167898bcecf64dedea0f417c43f34ab77e491d8d7d4c533cba6"
+      },
+      {
+        "path": "docs/architecture/roadway-editor.md",
+        "testedSha256": "b7fe58a90facd1a9f29ed17272fd7f7686bd93d05f9d29bee07ecbb1c11a79e3",
+        "publishedSha256": "ddab0d93f1df583da46e769fbe9901fff083a1a01413aec0d01b36eb6d9f8b23"
+      },
+      {
+        "path": "docs/implementation-status.md",
+        "testedSha256": "2d662caf9dbed24d49bcd8464d971474c80c8d25905d0f125e1e478f5673e2a0",
+        "publishedSha256": "f08db75316bcf17b03fee44c3ab7552fb2911cd51158b1585068f146b9adc73e"
+      },
+      {
+        "path": "docs/planning/receipts/D1-06/D1-06-20261113-01.md",
+        "testedSha256": "35dcbba949974ebe571bdb03c5d5e1db64f83d2441097d678c93d415bc432e07",
+        "publishedSha256": "a3fad56e6cbb9fb9603e8e6f590e9db1995e4d2fe024626e57ba1d5470586c3c"
+      },
+      {
+        "path": "docs/planning/receipts/D1-08/D1-08-20261113-01-files.json",
+        "testedSha256": "1a30b55ff58d26728a94b239671dfdbbbac2fe1b8bdfdc53c7747ae918d620cd",
+        "publishedSha256": "1643fdbba14c86ca5ef77331bf17adecaf58a5ca6aedc3ab84b810c7efa8bbfb"
+      },
+      {
+        "path": "docs/planning/receipts/D1-08/D1-08-20261113-01.md",
+        "testedSha256": "ee9c9056e7cacf2130e5d6eb9fc57995203b82ad40b4a4c50dc85b12be068c04",
+        "publishedSha256": "209bd63b4b103a64a5819f142e8ff94c10a076a67ad5fdb3ff8cccd9562b3d14"
+      },
+      {
+        "path": "docs/planning/receipts/D1-08/D1-08-20261113-02-files.json",
+        "testedSha256": "f3c4e862e2d70efc179b333fd2e8a5ea580fc1d25ef36b2ebc59678d51ec1fc2",
+        "publishedSha256": "3ce69be9cab091f7cca47157876ec5d2912b020717e63b436f5365b6c0882987"
+      },
+      {
+        "path": "docs/planning/receipts/D1-08/D1-08-20261113-02.md",
+        "testedSha256": "1fe80f0b373c5d6a8a47509ae4804f445fab76aa1ad3dcdeebcedfbbb505516b",
+        "publishedSha256": "2457f140b16780fb16e88e0a7f30093232566256b0929cb5c90f5ae0ce599cca"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09-prerequisite/task-93.md",
+        "testedSha256": "68c3a7d53417984eea5e64a82b42217040e87909d580ad4c22b6aa5fdefebf2f",
+        "publishedSha256": "c5b899e112a739aaa51121edfe157f3386932c12366be1b00577f24c180c93ac"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09-prerequisite/verification.json",
+        "testedSha256": "72db8e71cebebe16b152a1f51de7b5f56525eecb2353c94d31259334358d6bd0",
+        "publishedSha256": "cc20b27d29351bfa04587c78cb97dcd04586e06f6abaea59bd192ddcbae08f2e"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09/D1-09-20261113-01.md",
+        "testedSha256": "f3c4cf489d8db68119e5a3b5e16450e362149940811dab5564747b48e4e7ccaf",
+        "publishedSha256": "1dbb59b63469f079fc8088f7c94baea6fb78a147acea1fcce9572a0c51a68d1b"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09/D1-09-20261113-02-files.json",
+        "testedSha256": "5afe258f7887ee4ef5f02ca7e98f23991d30a3cdda2be1661db466b847a1cc1f",
+        "publishedSha256": "3ac1a020aadd8658874851f19ac40059d3513ba9a6a1ea0ab2611d876068910b"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09/D1-09-20261113-02.md",
+        "testedSha256": "40303cac81ed3aa70ca71120ba1da668761a5eaa1051e86360f6b44b675c02ac",
+        "publishedSha256": "d8bdce6b5045b5c846f7af03bf536603cb76eac38bd5bad50f5060dcb4ec6312"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09/D1-09-20261113-03.md",
+        "testedSha256": "01553a9a037d486f65ed67f4a3bb21b34292a6517184b689aeee21ec7b6c75d7",
+        "publishedSha256": "3a02711dd08d6f1a711f596a727697c47ed37b2da8d27d6997fe6c039c9192b1"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09/D1-09-20261113-04.md",
+        "testedSha256": "83ba42f027a45750d5e9fe4350efaf8869f45c3a7427871e359d5b44a5493f8e",
+        "publishedSha256": "abb384e1b34b9ff77d0ef6946dd7fbb19bde9d19c7e2c6c5a0b91f459f5fc1b8"
+      },
+      {
+        "path": "docs/planning/receipts/D1-09/conflict-repair.md",
+        "testedSha256": "b8085acb31063511b19d7802f2cd67c221c1c5729e2481897e77c25a50ea61a6",
+        "publishedSha256": "04d8e0867874459314801db92f276796634de04c25d2f89698a4f6fc6c4d703b"
+      },
+      {
+        "path": "docs/planning/receipts/D1-15/D1-15-task-15-files.json",
+        "testedSha256": "22a1a2153a51ed99cd321cebe019fd3e5fe6c3f34b9815fd327ffe02b797a765",
+        "publishedSha256": "3a089e3d4a89987caa75d36c4c40ce47dda72697544f3986a57b20e0a70c0279"
+      },
+      {
+        "path": "docs/planning/receipts/D1-15/D1-15-task-15.md",
+        "testedSha256": "88b3a15f27a376988fe3e0b695f291da0f540a98817015b8d576962d2ca05669",
+        "publishedSha256": "c38ea0faedb8bb9ed3eb42519a99a2e096daa33fddf42feb317987bf10ec60d6"
+      },
+      {
+        "path": "docs/planning/receipts/D2-01/D2-01-20261113-01.md",
+        "testedSha256": "f620bdf8e5fcd3f3b12c8cf42500cf567e8b46f8ee7a7dbe601bb13d8bcd525b",
+        "publishedSha256": "7afa5d43014e99920fa35cc8984ccb156c4e57c7aa0a9a2a3a5d5282a9af4a5a"
+      },
+      {
+        "path": "docs/planning/receipts/D3-01/D3-01-20261113-01.md",
+        "testedSha256": "4947960c9128552ba811b8cce2462b589cd8a9546ddc19b738625fc24ad9083a",
+        "publishedSha256": "05139e125a3f0002d63f4f9a419879a0c4f2c2806ae5fb9306ae357d66277aa8"
+      },
+      {
+        "path": "docs/planning/receipts/D3-03/D3-03-20261113-01.md",
+        "testedSha256": "a511e4a3eb41deee4d153db5cb68fc5333a34401c791405605de58133e7cd90d",
+        "publishedSha256": "37bc2506bb002dcd47daf37170115719c45ba511221fc26d646058238e5ad604"
+      },
+      {
+        "path": "docs/planning/receipts/D3-04/D3-04-task-44.md",
+        "testedSha256": "f69a26043f67a600421e8708e75dd00f92bd909e02f17831d936b30d5e03d51c",
+        "publishedSha256": "e16d4125b1da198da08778ec149917d05006a4662e4334e4aa8e28fec15c32e0"
+      },
+      {
+        "path": "docs/planning/receipts/D4-01/worktree-handoff.md",
+        "testedSha256": "3d63210c97be3e8b57b8270eb38a92f58b5dab0454f4f6e17f06c946f0dd3a68",
+        "publishedSha256": "57e4fda1063eb1bb50a69f0e3315b64597bb883e16e23bf9688b7d92f7ff4bd6"
+      },
+      {
+        "path": "docs/planning/receipts/D4-02/worktree-handoff.md",
+        "testedSha256": "7c16220cb57e50950da509e255aef4dfa90a949f1c55a1b26bdd47218554e65a",
+        "publishedSha256": "4c19b7968577001ec1bca145b2b03154c831ef9be7514780c9c31eef37a53d2a"
+      },
+      {
+        "path": "docs/planning/receipts/D4-03/worktree-handoff.md",
+        "testedSha256": "aa03e190b9223d25a7bfb039af163f0c9ed7b76af8a4f6efae3c3d297a19d46c",
+        "publishedSha256": "316bad4638050a7eac384779a3e838fc6f1a254e4e3713c3c614766b2c7b0ef3"
+      },
+      {
+        "path": "docs/planning/receipts/D4-07/worktree-handoff.md",
+        "testedSha256": "db3a2486d6f58ff913849971b80f9953086cef4297dbaa49cd77e6d9a878f2dc",
+        "publishedSha256": "3fe2ad309b36f893a36a09cc97f1996beba613c954d88145cadd700b2c6b9c02"
+      },
+      {
+        "path": "eslint.config.mjs",
+        "testedSha256": "5ca76efbebaf4e8e41a0a5e5f0e022b2e05dadff8d5119f5bbb85ab75eb22da9",
+        "publishedSha256": "664b797430f1314d395ad6581449ea536577558f1d815fef38b147b82863fe7c"
+      },
+      {
+        "path": "packages/map-adapter/src/apply-frame.ts",
+        "testedSha256": "f069f6e4aae6746957fcf17946e2c21173c29d48a140b40abffa377cecef3d06",
+        "publishedSha256": "957c68c20f53ef4cb0efd0422394ea912fa1002345331f145d1d822ef233017e"
+      },
+      {
+        "path": "packages/project-schema/src/focus.ts",
+        "testedSha256": "bd060a398d6a6f1d330327a0094d1ca47c5600a8ec48d3865a6047d92099b23e",
+        "publishedSha256": "df1ecd4e46d7a9ed97840c2b6ece0e961f7a5dbc7e8e8b3b6afe992a83b465c2"
+      },
+      {
+        "path": "packages/project-schema/src/index.ts",
+        "testedSha256": "a45033e32a04dc4abc74e268aebc5c8279249896ed0bd964f8ad5bc491844c5d",
+        "publishedSha256": "6a0a204eba07b99f797ee7c73447fd4d24314200e7fdeca67d723c2c17f6c1a0"
+      },
+      {
+        "path": "packages/project-schema/src/project.ts",
+        "testedSha256": "877a0f274f275ab1f33631954dc85caa5d484cc6af7ab304a0dfa1e0e91862af",
+        "publishedSha256": "ca3c534a1663a727991ec95e6c24e0b30903a58d2979c2e34d8f3a6292f2ea76"
+      },
+      {
+        "path": "packages/project-schema/src/validation.ts",
+        "testedSha256": "d6d114a05a45b6846a9d2ec8c05f5b6322a2e82ee6643873c8af750cb85705ac",
+        "publishedSha256": "e7664faf3c2c75fb3fda0cb3d8118249ddc26c20d8d1146b7d8fd34ca12a62f6"
+      },
+      {
+        "path": "packages/story-core/package.json",
+        "testedSha256": "d64a4c3458274ed6a75cefba9ddc834bbdd2b3ce2399b65d9e5f8dc86039fdb3",
+        "publishedSha256": "82f7655b3310e689b8bf31a00449b794d95bfe5d5ef6b4ff25b3f1922282b913"
+      },
+      {
+        "path": "packages/story-core/src/evaluate-frame.ts",
+        "testedSha256": "a0dfbd81f2f91d7ef5c90195539ef52772b367b9087ae3250e2af42b116ebfa6",
+        "publishedSha256": "8e65cd0a1d2c45bcdb9e99d9809027061a14be57ad983cc6b400d1ca702c5396"
+      },
+      {
+        "path": "packages/story-core/src/focus.ts",
+        "testedSha256": "e91a3253cf4700a011d1302a45a61036fc2d87ec5700cde1de8c7932f12b9769",
+        "publishedSha256": "512bf694e8531e70984bebaa7694acda45cc3488846158ff5598b3fd6e72e4af"
+      },
+      {
+        "path": "packages/story-core/src/geometry.ts",
+        "testedSha256": "db8849e2b766d6b3bd8fcb71c43b6af74869115552edb34bcdd8d64468f346cb",
+        "publishedSha256": "112182950f17494bf6366b7f6f73706d098b399b221cbf1351d238b973c27ff6"
+      },
+      {
+        "path": "packages/story-core/src/roadway.ts",
+        "testedSha256": "1cc5335400cd0eff3f3bc646c4288bb0d38fa30dcff89c89a973aeeb02ef89a5",
+        "publishedSha256": "ae01acadc1b70d4e5a53a30cd9a602a018cf7bcd7689f10982445e1f26229cdb"
+      },
+      {
+        "path": "scripts/render-fixture.mjs",
+        "testedSha256": "adbb52e620b5ae9bd01a489b46f29556325a6745d662fb88a343a310f2ec99b8",
+        "publishedSha256": "892c0cca04f9f9f0a5cd151532eebe55ead6871c39e482ce66dcc5c86ad9f1af"
+      },
+      {
+        "path": "tests/core/evaluate-frame.test.mjs",
+        "testedSha256": "60e0f4b49580e34ef743be73594d4e4da451e26c325c23f7722cb0745e719334",
+        "publishedSha256": "a233bd55852854499b509cbb7f241e8eccd17dd87276197014daca675445c917"
+      },
+      {
+        "path": "tests/core/focus.test.mjs",
+        "testedSha256": "6bd4b0380c27eba261248fb4e68ed9ab4d6c8b8b94586ef22b4fdd0e0767d7ad",
+        "publishedSha256": "11887f6bbc26fafef8535417693afe6400d120865c3224723d804ba052e726c3"
+      },
+      {
+        "path": "tests/fixtures/roadway/README.md",
+        "testedSha256": "34897e8a73ed5cbc289ed72d43910bc0b918776eaa5c2206dccb0f1a2615a63f",
+        "publishedSha256": "ebdca165a550940055b421d6f5963cf7b9717b1efc6c4c81a6294cbeb1594dbe"
+      },
+      {
+        "path": "tests/fixtures/roadway/constraint-cases.ts",
+        "testedSha256": "f7bcaccd6571303462556213df4f27a963edcb336bcc19f851fd97600790d70d",
+        "publishedSha256": "35ac56f76023f73dd614048e63f2e269b4c6eb5ae780135185708e03c3ba7261"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/README.md",
+        "testedSha256": "dd49b45695fb7d324495c2299e9388d5ec1f8a373247b1c326f061b359813939",
+        "publishedSha256": "442381e96614a4010d6cb076a59d61ef14dec8ee3ec7ebe9174069061547bd30"
+      },
+      {
+        "path": "tests/fixtures/synthetic-story/project.json",
+        "testedSha256": "8b8d25a6fb60c659ffda3c53ecf6f529b38cdfd00e47ecfb1d149d0e0c7d5e8e",
+        "publishedSha256": "8cc76b6e445d2e8f892e477bb03e99f610796f60b107f77ff95ef81c5dc62866"
+      },
+      {
+        "path": "tests/map-adapter/bridge.browser.mjs",
+        "testedSha256": "8a98df5586e396548876ffb92ce09f8fb3546b88d1efc51c0fb5183f6ad0e66c",
+        "publishedSha256": "269f641b70623f6e252a487f2456ddd42a594999dbd8788fb5ea262cbae2f31a"
+      },
+      {
+        "path": "tests/map-adapter/bridge.test.mjs",
+        "testedSha256": "960180dffe4b521e0025d17fa56722ce702eb77b4335f6f63cc0f020a3471979",
+        "publishedSha256": "811776dfd63fb06ff1aa26a4f78966327c7320ccd0abbac30183f6e46b677092"
+      },
+      {
+        "path": "tests/map-adapter/remotion-fixture.test.mjs",
+        "testedSha256": "e2e937f7ef4d8c93e9bc7f4a6ed07de57afa74b717c5123a6e99da757b4ca2f1",
+        "publishedSha256": "12278739ac8c40fde6e5e235ce8bebd1f4ea50f61c2a61638c30087c3778a63d"
+      },
+      {
+        "path": "tests/map-adapter/vue-preview.test.mjs",
+        "testedSha256": "7f165646601d320f2017715fb87f1ad3d7423d89232f89fb628d2674838c16bf",
+        "publishedSha256": "a28a7a6cc00d8db236a01c6e3eff8c294f2bf39f12d50b390e127ef849699172"
+      },
+      {
+        "path": "tests/persistence/package.json",
+        "testedSha256": "b7d5803b9ae85dd2a308677f2089b99289dd40dd055006a36d3d95b0fee2313b",
+        "publishedSha256": "609158e6c5fbc237939fa3ddf7faab80ab690bdc0c8d584414a885130103c4e8"
+      },
+      {
+        "path": "tests/persistence/security.test.ts",
+        "testedSha256": "97439ce35648fbb2400871ee79c632b5f9101f01ef287d394b0317b3b734d028",
+        "publishedSha256": "8666103ee2531c7c18936b5c3456a643ff077d7e2bc772216d0d814cde9599f6"
+      },
+      {
+        "path": "tests/project-schema/validation.test.mjs",
+        "testedSha256": "2e5af6e76af12faf8b0cf33fb46c6bbbf11e806dc83eba2e7a2bae404a387ce1",
+        "publishedSha256": "61a4cbeb8cc2f7e18575d1feaf8977045d7babaec42a49319fa4b13d2565e79b"
+      },
+      {
+        "path": "tests/render-contract/README.md",
+        "testedSha256": "67549719fefaf7d396a62881e32c7f02033190c349a1d427aa9ec58ab336dd3a",
+        "publishedSha256": "f51a2215b792f3df917eee8036846c044400528856f08593fa30f655979ba137"
+      },
+      {
+        "path": "tests/render-contract/browser.mjs",
+        "testedSha256": "c152f27b58d42e7e9f3b0d9e112a31849dfc55b0ab9e81f29a74e825bfcc01a9",
+        "publishedSha256": "97e55acb32dbcbbda49355c08887bd0cc0919cac0ba85f484237ae3ff171a77e"
+      },
+      {
+        "path": "tests/render-contract/compare.mjs",
+        "testedSha256": "b5aa7df5ed6c2d3c1fcbe993d0df255e8382d7d71645098c9b686333a3dbced4",
+        "publishedSha256": "5cd856f63e12a7e988334833b08d1e00026de70ea3f9f3a6943a08331bf162cb"
+      },
+      {
+        "path": "tests/render-contract/compare.test.mjs",
+        "testedSha256": "067a2350b4f6e72a06566ca1f404f6ecdb01732cc68ba900e8e087c1055db564",
+        "publishedSha256": "2e98c616467725e3e8d52e24251edeafbe1b136a5e347c53bdc85f4093684cd0"
+      },
+      {
+        "path": "tests/render-contract/run.mjs",
+        "testedSha256": "70996a25b2e0c51412fc7ebe071c59fba2b7d7b64f91cb86875c25e2c9ccfe5a",
+        "publishedSha256": "e07c8cf0b572c19a05f8b84be94a077bca8563bfd4a342a8cd4eb5746efede14"
+      },
+      {
+        "path": "tests/research/intersections.test.mjs",
+        "testedSha256": "ba6b9cb6f9451d16733d0562eb265aee79ab76383b8eceeb58fca71ad0b3781d",
+        "publishedSha256": "e6dd98253b51a192430dadbe084b33358fc0312d32aa78ff1ee97070a8597725"
+      },
+      {
+        "path": "tests/research/provenance.test.mjs",
+        "testedSha256": "fb44fe554f6fd64f2966ad015822da8cec2104bd6bc95ee0df6bc6620005db6d",
+        "publishedSha256": "39f383c0472012d2aa28a6f26c077d565f8fcfc551319866c41da554fda81db6"
+      },
+      {
+        "path": "tests/research/study-area.test.mjs",
+        "testedSha256": "a00428c5b73f826f0e5b0f6ef5451f00b185dcc17d6deec6958c13203b0b6429",
+        "publishedSha256": "cb986da20b98d6f718be0676c3f13af32b70bfc22a395ee1a2595f620c149d4e"
+      },
+      {
+        "path": "tests/roadway/constraints.test.ts",
+        "testedSha256": "da74874304e905a5fd4d1aebee5afadd191ac107907b5f5863606230b468906b",
+        "publishedSha256": "28486ad65728157c8787dd1048b762cdceca801ac07c03637f201959e4bf7025"
+      },
+      {
+        "path": "tests/roadway/schema.test.mjs",
+        "testedSha256": "3e34867d8899475b10d47e8a09350a9f305af9f5f9f93cb7f6e00e640644832d",
+        "publishedSha256": "c28db11a3b1237e4d47bc3914b061267cdaa64a6c78268ddd6e4bfcdfcf49264"
+      },
+      {
+        "path": "tests/roadway/segments.test.mjs",
+        "testedSha256": "350033c701918377cd6f0785ef56a96501a1b1ff96688bb5a8939fca5065f3e5",
+        "publishedSha256": "682cc9dbaec5029bf3191f63fad5f41a8ad6bc91197bb89e9726c9d93a996069"
+      },
+      {
+        "path": "tests/roadway/width-solver.test.mjs",
+        "testedSha256": "87a8b58aee19eddf89be65295555aa7f9fdb6c8475cbd539582a50e324f9c2fa",
+        "publishedSha256": "a1b1141f97148f4576cb9e693512178b3a3067a793e88e155cd89d1fd4ed19f5"
+      },
+      {
+        "path": "tsconfig.json",
+        "testedSha256": "2bac7cdb579eae4fa66a11c3c4953126f43a8d6845502308b5841967335e0cf7",
+        "publishedSha256": "eaf64a30d90873bd870d37209a84100cd0e5550182bd3e0272a8626bd86cab18"
+      }
+    ],
+    "finalCheck": "passed",
+    "command": "npm run check",
+    "log": ".local/publication-check.log"
+  },
+  "completedAt": "2026-11-13T23:25:51.332Z"
 }

@@ -49,6 +49,17 @@ project size, accessibility conformance, or every GPU/driver combination.
 
 ## Verification
 
+The fresh installation, complete application checks, production build, and
+browser checks passed on Windows x64. The frozen rendering gate passed 272
+frame captures, 304 comparisons, and 20 deliberate resource failures, then fully
+decoded both 300-frame fixture videos. A separate authored map and roadway
+project exported and decoded all 90 frames in both formats. Package round-trip,
+cancellation, and fresh start/save/stop checks also passed.
+
+The receipt distinguishes the frozen source hashes from subsequent removal of
+redundant terminal blank lines. Full application checks were repeated after
+that formatting cleanup. No source changed during the accepted rendering run.
+
 The [machine-readable acceptance record](receipts/integrated-delivery.json)
 records actual commands, results, source hashes, tool versions, and output
 metadata. Render outputs, browser profiles, caches, and private project files
@@ -81,7 +92,8 @@ the old controller, or claim a production milestone from synthetic fixtures.
 
 ## Handoff
 
-Continue on the integrated branch and PR. Review the application and its
+Continue on `codex/integrated-delivery` and
+[PR #105](https://github.com/DallasUrbanists/storytelling-studio/pull/105). Review the application and its
 acceptance record as one deliverable; keep any fixes in that same change.
 The previous sprint records remain historical evidence. The next useful work
 is the Maple production pass and final human playback review, not another

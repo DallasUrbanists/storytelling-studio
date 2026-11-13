@@ -57,4 +57,3 @@ test('historical review copies may differ from current records', () => {
   assert.doesNotThrow(() => parseProject(p));
   snapshot.status = 'approved'; assert.throws(() => parseProject(p), /Invalid project/);
 });
-

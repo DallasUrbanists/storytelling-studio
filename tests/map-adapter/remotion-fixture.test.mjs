@@ -77,4 +77,3 @@ test('existing Remotion hosts render the synthetic prerequisite in both formats'
       console.log(`Synthetic prerequisite host evidence: ${relative(root, output)}`);
     }
   });
-

@@ -237,4 +237,3 @@ export function createService(options: ServiceOptions = {}): http.Server {
   }
   return server;
 }
-

@@ -10,6 +10,8 @@ The owner authorized one integrated implementation branch and PR. The
 [delivery record](planning/integrated-delivery.md) and
 [acceptance receipt](planning/receipts/integrated-delivery.json) describe the
 current software, verified checks, and remaining Maple production inputs.
+The complete automated software checks and frozen rendering gate passed;
+the actual Maple film and named factual/editorial approvals remain incomplete.
 The original sprint and controller records below are historical; their
 per-issue dispatch and closure workflow does not govern this delivery.
 
@@ -226,4 +228,3 @@ Final integration acceptance remains pending. The integrated research workflow,
 real Maple population calculation, factual review, and publication approval
 remain planned or unverified; this synthetic geometry evidence completes none
 of those gates. D3-05 becomes eligible only after both D3-04 and D3-02 are accepted.
-

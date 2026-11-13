@@ -181,4 +181,3 @@ function researchCard(project: ProjectDocument, id: string) {
     status: snapshot.status,
   };
 }
-

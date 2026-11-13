@@ -322,4 +322,3 @@ export function parseProject(value: unknown): ProjectDocument {
   if (p.roadways !== undefined) roadways(p.roadways, sources, revisions);
   return p as unknown as ProjectDocument;
 }
-

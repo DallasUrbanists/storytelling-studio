@@ -56,4 +56,3 @@ export function createStudio({ proxy = { origin: '', token: '' } } = {}) {
   });
   return server;
 }
-

@@ -108,4 +108,3 @@ export function storageDirectory(root: string, area: 'assets' | 'jobs' | 'import
   rejectLinks(target);
   return target;
 }
-

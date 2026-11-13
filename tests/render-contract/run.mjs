@@ -262,4 +262,3 @@ const args = process.argv.slice(2);
 if (args.length === 1 && ['--help', '-h'].includes(args[0])) console.log(help);
 else if (args.length) { console.error('Unsupported arguments; use --help'); process.exitCode = 1; }
 else await run().catch(error => { console.error(error.message); process.exitCode = 1; });
-

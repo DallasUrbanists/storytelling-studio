@@ -299,4 +299,3 @@ export function tracePath(path: readonly Position[], progress: number): Position
   }
   return copyPath(path);
 }
-

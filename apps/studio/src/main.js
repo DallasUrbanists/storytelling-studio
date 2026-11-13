@@ -10,4 +10,3 @@ const app = createApp(['/bridge-preview','/__parity'].includes(location.pathname
 app.use(Quasar);
 app.config.globalProperties.$q.iconMapFn = iconMapFn;
 app.mount('#app');
-

@@ -369,4 +369,3 @@ function bandWithoutWidth(band: RoadwayBand): Omit<RoadwayBand, 'width'> {
     location: band.location, locked: band.locked,
     ...(band.label === undefined ? {} : { label: band.label }) };
 }
-

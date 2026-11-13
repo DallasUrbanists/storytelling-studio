@@ -175,4 +175,3 @@ for (const [available, expectedStatus, residual] of [
     assert.deepEqual(result.bands, section.bands);
   });
 }
-

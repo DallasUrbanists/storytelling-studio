@@ -147,4 +147,3 @@ export function drawOverlay(
   drawStoryPanels(content, owner, state, fontFamily);
   svg.replaceChildren(content);
 }
-

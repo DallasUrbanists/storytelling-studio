@@ -128,4 +128,3 @@ coverage and dimensional-evidence limits into shared documentation in the same
 PR. This receipt does not release dependent work. D4-06 is the next downstream
 consumer of D4-03 after acceptance; its D4-04 and D1-10 dependencies must also
 be accepted before dispatch.
-

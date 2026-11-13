@@ -92,4 +92,3 @@ test('Vue preview conceals stale frames and recovers', { timeout: 90_000 }, asyn
   await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
   assert.equal(await page.evaluate(() => document.activeElement.value), '2');
 });
-

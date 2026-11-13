@@ -334,4 +334,3 @@ export async function runFixture(root: string, args: string[]) {
   }
   if (failure) throw failure;
 }
-

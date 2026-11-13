@@ -267,4 +267,3 @@ test('point leader offset is immutable, serialized, and uses the annotation fade
   }
   assert.equal(JSON.stringify(project), before);
 });
-

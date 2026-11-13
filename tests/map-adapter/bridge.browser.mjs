@@ -334,4 +334,3 @@ export async function timeouts() {
     await surface.applyFrame(frame(150), 'recovered');
   }, 'portrait', resources, { frameTimeoutMs: 1000 });
 }
-
