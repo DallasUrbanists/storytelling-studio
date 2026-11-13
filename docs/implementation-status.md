@@ -196,3 +196,7 @@ deterministic state hashes, and supported keyboard navigation. The
 [receipt](planning/receipts/D1-06/D1-06-20261113-01.md) records the single
 Terra attempt, its sandbox limitation, and the coordinator's checks.
 Remotion integration, cross-host parity, and video export remain pending.
+
+The D1-06 PR review follow-up prevents a failed or pending preview request from
+showing a stale frame. The Chromium regression passed invalid and cleared input,
+recovery, retained dimensions, and keyboard input; see the D1-06 receipt.
