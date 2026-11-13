@@ -1,0 +1,379 @@
+{
+  "issue": "#93",
+  "scope": "D1-09 synthetic fixture prerequisite",
+  "status": "blocked",
+  "technicalBlocker": "environment",
+  "decisionKey": null,
+  "timestampUtc": "2026-11-13T11:57:13.075Z",
+  "worktree": "task-93",
+  "branch": "orchestrator/task-93",
+  "baseCommit": "cf1be995073e276f63aae34709aaf893bc4c2dbb",
+  "commit": null,
+  "environment": {
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "os": "Windows_NT",
+    "release": "10.0.26300",
+    "arch": "x64",
+    "maplibre": "6.17.0",
+    "remotion": "4.0.542",
+    "typescript": "5.9.3",
+    "chromiumFileVersion": "157.0.8103.52",
+    "chromiumExecution": "blocked: spawn EPERM",
+    "glSetting": "swangle"
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/map-adapter/src/apply-frame.ts",
+      "sha256": "8214f19baa7d8431a73331f3ed472ebf7851687eb0d72acdd961d3102c976ccf"
+    },
+    {
+      "path": "packages/project-schema/src/index.ts",
+      "sha256": "af7e4d338d8adf03c567e70b05ba8d9bb165f86d213228109808001bec80d417"
+    },
+    {
+      "path": "packages/project-schema/src/project.ts",
+      "sha256": "7b01778de5f02bbb160597baf4d489d7c150fa0e10ff3d618d8884ea65534fc4"
+    },
+    {
+      "path": "packages/project-schema/src/validation.ts",
+      "sha256": "9c297a288ef3b28b3a75dca64fa3007646392a24d8665b4055e008928f819467"
+    },
+    {
+      "path": "packages/story-core/src/evaluate-frame.ts",
+      "sha256": "d3d1bb310ace2fe1c41fc6154f5b62dd824064294c1665060204704011d14082"
+    },
+    {
+      "path": "tests/core/evaluate-frame.test.mjs",
+      "sha256": "f1ccdd69f1293840b428f48090c6f112386111eefb34403e5574a6b6c597302f"
+    },
+    {
+      "path": "tests/fixtures/synthetic-story/README.md",
+      "sha256": "8e9718016cceedadcf4aa7584afe8631a276f767fc7719ee21170af2b5dc3c9c"
+    },
+    {
+      "path": "tests/fixtures/synthetic-story/project.json",
+      "sha256": "8cc76b6e445d2e8f892e477bb03e99f610796f60b107f77ff95ef81c5dc62866"
+    },
+    {
+      "path": "tests/map-adapter/bridge.browser.mjs",
+      "sha256": "c8f8bb6bf6b12e4ae3e9a3d8e1c934ed6ac788ef10d3e7d0f424e3efcdf3a675"
+    },
+    {
+      "path": "tests/map-adapter/bridge.test.mjs",
+      "sha256": "eb893dc0c384bc5f4f967cbeed9a7ab313b5a8a1fc80b9a09ba2666dabac0333"
+    },
+    {
+      "path": "tests/map-adapter/remotion-fixture.test.mjs",
+      "sha256": "6a8db8aa434f1b8e7d627ade864b32baa083e1e8fe13d0af5e8af4f237a8f1d4"
+    },
+    {
+      "path": "tests/map-adapter/vue-preview.test.mjs",
+      "sha256": "edaa355466c373b3248949e349ce772a2b177622d6a9a2763cd8768ac7cf7e0d"
+    },
+    {
+      "path": "tests/project-schema/validation.test.mjs",
+      "sha256": "76b40aca6ca0cbe637aa779b45c6db24f7dcf373a63efb1d432163c212995349"
+    }
+  ],
+  "proposedSourceManifestSha256": "138e9ceaa8e1f162efcb01ee1b836e688d4ce2f8150f494bd5a99fb9662412a0",
+  "lockfileSha256": "03563a77f444b6ed2834663a6c8ab39f6c7f27c4d881830923f595db201df1c8",
+  "project": {
+    "id": "synthetic-story",
+    "schemaVersion": 1,
+    "coreVersion": "0.0.0",
+    "revision": "sha256:8cc76b6e445d2e8f892e477bb03e99f610796f60b107f77ff95ef81c5dc62866",
+    "sha256": "8cc76b6e445d2e8f892e477bb03e99f610796f60b107f77ff95ef81c5dc62866"
+  },
+  "assets": [
+    {
+      "id": "fictional-note",
+      "path": "note.txt",
+      "mediaType": "text/plain",
+      "sha256": "263e2b429c1ef8cb8e1d02814170514be1647caf1030101cf7cdbfcaaac9e7fa"
+    },
+    {
+      "id": "fixture-style",
+      "path": "assets/bridge-style.json",
+      "mediaType": "application/json",
+      "sha256": "87b53302a82a40b593f66a990ce46cefe852770dafac64ee0f0276703a6a6e0e"
+    },
+    {
+      "id": "fixture-font",
+      "path": "assets/Inter-Regular.woff2",
+      "mediaType": "font/woff2",
+      "sha256": "e06f6b1bc553aaea4e4668023ed0ab0a147129c3107f511bc7d03d361b0ae085"
+    }
+  ],
+  "assetManifestSha256": "ad9566314966af9b4f52375b6cadd1290022f9c82cea17b6040bd6953ade2840",
+  "frames": [
+    {
+      "variantId": "portrait",
+      "frame": 0,
+      "stateSha256": "ae439a765d0deab44fd0554474ab8321f68bc2afeacba56376c383b5cfecb717"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 1,
+      "stateSha256": "dc2a439368af659e2a7b742310a7a47399d69544b45b86751c62e13668dd6a66"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 29,
+      "stateSha256": "1bd84dbe0ea5467e471d056c06967afa7bd7578172348cceed30961cb193d3b0"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 30,
+      "stateSha256": "253ec7d12e1ce1f6f0371e83dbd8c16e4763dcc5deb737489fab1322b501deab"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 45,
+      "stateSha256": "a29bcca5173b691a7b518745a464af823845f98b450a92caef0c0a5bb73cd74b"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 60,
+      "stateSha256": "90714dab9faa25117bc3bbf917646981b704397e2cbfc95bd6247d81e8c52d6f"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 149,
+      "stateSha256": "33b4cb0c454f2c72454ccba42423f70ff07ee6f49186db027777689f198d2a86"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 150,
+      "stateSha256": "d33a1c807c0b3fc39159d782ca3ecd21604c26c91eb7b3d923c1e517675c5ec3"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 180,
+      "stateSha256": "c1d7bd15c34c5c0695bb3102bf60b9c1fd6eac8b235e3e0ffbda7ef56a9dcdc2"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 240,
+      "stateSha256": "96d9867fbac32db56c9fca45692de3eb30084a186c62ca7acef77edaa58651a9"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 255,
+      "stateSha256": "db4f87d3450653fd4af1c3a1b844dc67166fa7a61df4437fc983d2b697092108"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 269,
+      "stateSha256": "3439c33613b7381d93295be39409d08c0e7c0415c5a597a95fdf1478a9f4d9f1"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 270,
+      "stateSha256": "ddfae9d0379ddca7a4aa11680449f6bd45143c415fac33be0d453ca2a8226b4f"
+    },
+    {
+      "variantId": "portrait",
+      "frame": 299,
+      "stateSha256": "bdaad7c7cc8f983f837414985e9c2e1c7c99482d29692a7e77b9fbd8557429aa"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 0,
+      "stateSha256": "963e37f0dd2d1c1f7dd34d4557d0b9aa77771f95263d7baadf54b838c5d66b2d"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 1,
+      "stateSha256": "022e90898c492a27b21f5086b775773321a0967672836ce688fb77ead70fe75d"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 29,
+      "stateSha256": "ab8c3d7d51fd919fd686876a9f5a5fd8fba954c1f0f6596485575050027e7831"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 30,
+      "stateSha256": "35fee9b8ea0f182d876ae4b1f2fb421e733f60d6258e99357478c8f70e97f072"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 45,
+      "stateSha256": "ffa007c3b67a9d023aa2ce7385a8167f339170c2999fadb03ca04f189d9c348c"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 60,
+      "stateSha256": "fc124ef15c6e7d653634bae434c0eec6c18e1a9cb4073cab207bc1c4f38703e5"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 149,
+      "stateSha256": "8ce25adc1ab43faee79b759a2eeec284fd84b80b21d6b17871801625f2c3b3a3"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 150,
+      "stateSha256": "7c7ad624331cc2bb61167971de7321c0f664825eb558ffdeee1f73921868946b"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 180,
+      "stateSha256": "c04957ddb2955af5d2c8b2b934b42c492da53627d89feb06bad7b0cacfb3d2b0"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 240,
+      "stateSha256": "8585ab07f8388eb5a49c16fec3ef2f1110a8acc41523aad912f455c00bf4a96f"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 255,
+      "stateSha256": "32e39d6872209519a00b7d0deed38410c78b44c0c62bfc3e1092f8b6a3911a27"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 269,
+      "stateSha256": "4efa83f81a846f290d044ba9724d9191cf7fc2088713539a19d63685c1e41b6e"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 270,
+      "stateSha256": "60113ff42614fd09478f75272ba5b2f74e61bc32663ea77ff1625fc033aad454"
+    },
+    {
+      "variantId": "landscape",
+      "frame": 299,
+      "stateSha256": "6016292b1583a377cfb5f6964678a616b34f2274271fb751ea5139788915855a"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node --test --test-isolation=none tests/core/*.test.mjs tests/project-schema/*.test.mjs",
+      "status": "passed",
+      "tests": 60
+    },
+    {
+      "command": "node --test --test-isolation=none tests/renderer/input.test.mjs",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "command": "node node_modules/eslint/bin/eslint.js packages --ext .ts",
+      "status": "passed"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "status": "passed"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit -p apps/renderer/tsconfig.json",
+      "status": "passed"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target es2022 --module esnext --moduleResolution bundler --allowImportingTsExtensions --lib es2022,dom,dom.iterable packages/map-adapter/src/mount.ts",
+      "status": "passed"
+    },
+    {
+      "command": "node scripts/check-docs.mjs",
+      "status": "passed",
+      "markdownFiles": 52
+    },
+    {
+      "command": "node --check tests/map-adapter/bridge.browser.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node --check tests/map-adapter/remotion-fixture.test.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node --check tests/map-adapter/vue-preview.test.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    },
+    {
+      "command": "node --test --test-isolation=none tests/map-adapter/bridge.test.mjs tests/map-adapter/vue-preview.test.mjs tests/map-adapter/remotion-fixture.test.mjs",
+      "status": "blocked",
+      "errors": [
+        "adapter: Chromium spawn EPERM",
+        "Vue: Chromium spawn EPERM",
+        "Remotion: esbuild spawn EPERM"
+      ],
+      "note": "No rendering assertion ran. Final syntax-only test changes require coordinator host execution."
+    }
+  ],
+  "partialArtifactDirectory": ".local/d1-09-prerequisite/33d91d74-9527-4f4e-adfe-c6e90846d110/",
+  "pngHashes": [],
+  "imageComparison": "not run",
+  "videoGate": "not run",
+  "humanVisualReview": "not performed",
+  "independentReview": "not performed",
+  "missingResources": [],
+  "remaining": "Coordinator-approved host rerun of repaired focused checks; prior adapter/Vue host timeouts unresolved. Full parity comparison remains out of scope.",
+  "sourceManifestHashEncoding": "SHA-256 of UTF-8 JSON.stringify(sourceFiles), in recorded order",
+  "retainedHostEvidence": {
+    "log": ".local/fixture-effects-boFuUm/chromium-checks.log",
+    "chromiumProbeVersion": "156.0.8078.4",
+    "remotion": {
+      "status": "passed in retained log",
+      "directory": ".local/d1-09-prerequisite/53862cdf-bd1e-4d20-ad58-b41f0195ef36",
+      "frames": [
+        {
+          "id": "StoryPortrait",
+          "frame": 149,
+          "file": "StoryPortrait-149.png",
+          "width": 1080,
+          "height": 1920,
+          "sha256": "9d2ba492f64418fea6878b59917b69052bf424839bbb5f5d6464c8792ceb969e"
+        },
+        {
+          "id": "StoryLandscape",
+          "frame": 149,
+          "file": "StoryLandscape-149.png",
+          "width": 1920,
+          "height": 1080,
+          "sha256": "38d9ed3ddf27a66fee7bd16c9e387e6f9db5abc46fa88608ffe00e011120b3be"
+        }
+      ],
+      "hashesRechecked": true
+    },
+    "adapter": "parent runner timed out after 90000 ms; later cases lost their browser target",
+    "vue": "navigation timed out after 30000 ms",
+    "authorVisualInspection": "Both retained PNGs show outside dim, clear polygon body, and readable point label with cased leader; no pixel comparison or human approval"
+  },
+  "repair": {
+    "timestampUtc": "2026-11-13T12:05:33.906Z",
+    "changes": [
+      "Isolated per-run Vite caches",
+      "Explicit dependency graph preparation without discovery",
+      "Adapter case-start diagnostics"
+    ],
+    "status": "blocked",
+    "technicalBlocker": "environment",
+    "decisionKey": null,
+    "deterministicTests": {
+      "coreAndSchema": 60,
+      "rendererInputAndHash": 2,
+      "status": "passed"
+    },
+    "staticChecks": [
+      "package ESLint",
+      "root TypeScript",
+      "renderer TypeScript",
+      "strict adapter TypeScript",
+      "browser-module syntax",
+      "documentation links",
+      "git diff --check"
+    ],
+    "browserCommand": "node --test --test-isolation=none --test-concurrency=1 tests/map-adapter/bridge.test.mjs tests/map-adapter/vue-preview.test.mjs tests/map-adapter/remotion-fixture.test.mjs",
+    "browserStatus": "blocked before rendering assertions: Chromium and esbuild spawn EPERM",
+    "browserLog": ".local/d1-09-prerequisite/repair-chromium.log",
+    "partialArtifactDirectory": ".local/d1-09-prerequisite/f39d801c-4a85-4170-8e18-3d06ed3b5a7a/",
+    "limitation": "Harness changes remain unverified in Chromium; retained host timeouts require coordinator rerun"
+  }
+}

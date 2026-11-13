@@ -9,6 +9,10 @@ export type ResearchSource = { id: string; title: string; sourceKind: 'dataset';
 export type ResearchInput = { featureRevisionId: string; geometrySha256: string; sourceInputs: { sourceId: string; contentSha256: string | null; version: string | null; referencePeriod: string | null; boundaryVintage: string | null }[]; methodId: string; methodVersion: number; parameters: { [key: string]: JsonValue } };
 export type ResearchResult = { kind: 'raw-input' | 'estimate' | 'unavailable'; value: JsonValue; universe: string | null; note: string };
 export type ResearchSnapshot = { id: string; inputs: ResearchInput; result: ResearchResult; status: 'draft' | 'approved' | 'stale' | 'unavailable'; reviews: { reviewer: string; reviewedAt: string; decision: 'approved' | 'rejected' | 'reviewed'; inputs: ResearchInput; result: ResearchResult }[] };
+/** Dim the scene outside a saved polygon, including its interior holes. */
+export type OutsideDimming = { featureRevisionId: string; opacity: number };
+/** Screen-pixel offset from the geographic anchor to the leader endpoint/text. */
+export type LeaderLine = { offset: [number, number] };
 export type ProjectDocument = {
   schemaVersion: 1; id: string; title: string; createdAt: string; updatedAt: string;
   fps: 30; projection: 'mercator';
@@ -19,5 +23,5 @@ export type ProjectDocument = {
   features: { id: string; name: string; kind: 'point' | 'line' | 'area'; currentRevisionId: string }[];
   featureRevisions: { id: string; featureId: string; geometry: Geometry; geometrySha256: string; sourceIds: string[] }[];
   layers: { id: string; featureRevisionId: string; order: number; startFrame: number; endFrameExclusive: number; trace?: { startFrame: number; endFrameExclusive: number; mode: 'line' | 'outer-ring' } }[];
-  scenes: { id: string; kind: 'map'; durationFrames: number; focusFeatureRevisionId: string; cameraTrack: CameraKeyframe[]; annotations: { id: string; text: string; anchor: Position; startFrame: number; fadeInEndFrame: number; fadeOutStartFrame: number; endFrameExclusive: number }[] }[];
+  scenes: { id: string; kind: 'map'; durationFrames: number; focusFeatureRevisionId: string; outsideDimming?: OutsideDimming; cameraTrack: CameraKeyframe[]; annotations: { id: string; text: string; anchor: Position; leaderLine?: LeaderLine; startFrame: number; fadeInEndFrame: number; fadeOutStartFrame: number; endFrameExclusive: number }[] }[];
 };

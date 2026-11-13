@@ -29,8 +29,16 @@ export type FrameState = Immutable<{
   viewport: { width: number; height: number; pixelRatio: 1 };
   camera: CameraState;
   focus: { featureRevisionId: string; geometry: Geometry };
+  outsideDimming?: {
+    featureRevisionId: string;
+    geometry: Extract<Geometry, { type: 'Polygon' }>;
+    opacity: number;
+  };
   layers: LayerState[];
-  annotations: { id: string; text: string; anchor: Position; opacity: number }[];
+  annotations: {
+    id: string; text: string; anchor: Position; opacity: number;
+    leaderLine?: { offset: [number, number] };
+  }[];
 }>;
 
 function freeze<T>(value: T): Immutable<T> {
@@ -116,12 +124,22 @@ export function evaluateFrame(
       featureRevisionId: scene.focusFeatureRevisionId,
       geometry: copyGeometry(geometries.get(scene.focusFeatureRevisionId)!),
     },
+    ...(scene.outsideDimming ? {
+      outsideDimming: {
+        ...scene.outsideDimming,
+        geometry: copyGeometry(geometries.get(scene.outsideDimming.featureRevisionId)!) as
+          Extract<Geometry, { type: 'Polygon' }>,
+      },
+    } : {}),
     layers,
     annotations: scene.annotations.map(annotation => ({
       id: annotation.id,
       text: annotation.text,
       anchor: [...annotation.anchor] as Position,
       opacity: labelOpacity(annotation, localFrame),
+      ...(annotation.leaderLine ? {
+        leaderLine: { offset: [...annotation.leaderLine.offset] as [number, number] },
+      } : {}),
     })),
   });
 }

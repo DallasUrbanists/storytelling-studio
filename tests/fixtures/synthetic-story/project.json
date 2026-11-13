@@ -215,8 +215,30 @@
           "fadeInEndFrame": 60,
           "fadeOutStartFrame": 240,
           "endFrameExclusive": 270
+        },
+        {
+          "id": "fictional-point-label",
+          "text": "Fictional point",
+          "anchor": [
+            0,
+            0
+          ],
+          "leaderLine": {
+            "offset": [
+              100,
+              -70
+            ]
+          },
+          "startFrame": 30,
+          "fadeInEndFrame": 60,
+          "fadeOutStartFrame": 240,
+          "endFrameExclusive": 270
         }
-      ]
+      ],
+      "outsideDimming": {
+        "featureRevisionId": "area-revision",
+        "opacity": 0.45
+      }
     }
   ]
 }
