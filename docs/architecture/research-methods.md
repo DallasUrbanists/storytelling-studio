@@ -5,10 +5,10 @@ and reuse that result in a map animation. The goal is to let a local storyteller
 explain what the evidence supports, how the number was calculated, and what
 remains uncertain.
 
-Status: planned architecture, November 11, 2026. No research engine, verified
-Maple dataset, statistical result, or publication approval exists in this
-baseline. The methods in this document are requirements for implementation and
-review, not claims that a feature or dataset has passed them.
+Status: the D3-01 bridge parser implements bounded provenance records and
+validation, documented below. The research methods and workflow remain planned.
+No research engine, verified Maple dataset, statistical result, or publication
+approval is established by this schema work.
 
 - [Claims and immutable inputs](#claims-and-immutable-inputs)
 - [Area geometry](#area-geometry)
@@ -28,6 +28,20 @@ review, not claims that a feature or dataset has passed them.
 - [Acceptance evidence](#acceptance-evidence)
 
 ## Claims and immutable inputs
+
+The implemented bridge schema records dataset identity, nullable vintage and
+universe fields, separate rights states, method inputs and parameters, result
+kind, status, and reviewer copies. The parser checks source and geometry
+references and requires complete source identity and a matching approving review
+for an approved snapshot. It retains `raw-input`, `estimate`, and `unavailable`
+as distinct result kinds; review does not make an estimate a fact. Rights can
+remain unknown and are not enforced as publication authorization by the parser.
+It validates hash syntax and consistency but does not calculate hashes, verify
+reviewer identity, compute research, or automatically derive staleness. See the
+[project format](project-format.md#research-snapshots) and
+[D3-01 receipt](../planning/receipts/D3-01/D3-01-20261113-01.md) for the
+implemented boundary and verification. The following methodology, canonical
+digest protocol, and publication gates remain requirements for future work.
 
 A *research snapshot* is a saved result tied to exact inputs, rather than a
 number that changes whenever a source updates. The
