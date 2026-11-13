@@ -73,7 +73,7 @@ function summaries(value: unknown): ProjectSummary[] {
         || !Number.isFinite(Date.parse(data.updatedAt))) throw new Error('Invalid repository summary.');
     seen.add(id);
     return { id, title: title(data.title), headRevisionId: opaqueId(data.headRevisionId), updatedAt: data.updatedAt };
-  }).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.id.localeCompare(b.id));
+  }).sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt) || a.id.localeCompare(b.id));
 }
 
 function send(response: http.ServerResponse, status: number, value: unknown): void {

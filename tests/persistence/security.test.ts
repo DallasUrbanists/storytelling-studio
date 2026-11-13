@@ -225,6 +225,25 @@ test('readiness is honest; missing and mismatched revisions fail; output errors 
   assert.doesNotMatch((await send()).text, /PRIVATE-DETAIL|aaaaaaaa/);
 });
 
+test('project summaries sort by descending instant, then ID across timestamp precisions', async t => {
+  const repo = repository();
+  const { send } = await running(t, { repository: repo });
+  const summaries = [
+    { id: 'z', title: 'Z', headRevisionId: 'r', updatedAt: '2026-11-13T12:00:00Z' },
+    { id: 'a', title: 'A', headRevisionId: 'r', updatedAt: '2026-11-13T12:00:00.000Z' },
+    { id: 'b', title: 'B', headRevisionId: 'r', updatedAt: '2026-11-13T12:00:00.999Z' },
+    { id: 'c', title: 'C', headRevisionId: 'r', updatedAt: '2026-11-13T12:00:00.001Z' },
+    { id: 'd', title: 'D', headRevisionId: 'r', updatedAt: '2026-11-13T11:59:59.999Z' },
+  ];
+  const expected = [summaries[2], summaries[3], summaries[1], summaries[0], summaries[4]];
+  for (const input of [summaries, [...summaries].reverse()]) {
+    repo.list = () => input;
+    const response = await send();
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.body, expected);
+  }
+});
+
 test('storage uses startup configuration and rejects path components and links', async t => {
   const checkout = fileURLToPath(new URL('../../', import.meta.url));
   const parent = path.join(checkout, '.local');
