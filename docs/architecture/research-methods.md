@@ -6,12 +6,14 @@ explain what the evidence supports, how the number was calculated, and what
 remains uncertain.
 
 Status: the D3-01 bridge parser implements bounded provenance records and
-validation, documented below. The research methods and workflow remain planned.
-No research engine, verified Maple dataset, statistical result, or publication
-approval is established by this schema work.
+validation. D3-04 implements locally verified, synthetic-tested polygon
+validation, intersections, and spherical areas, documented below. The integrated
+research workflow remains planned. These bounded implementations establish no
+verified Maple dataset, population result, or publication approval.
 
 - [Claims and immutable inputs](#claims-and-immutable-inputs)
 - [Area geometry](#area-geometry)
+    - [D3-04 bounded geometry implementation](#d3-04-bounded-geometry-implementation)
 - [Census sources and variables](#census-sources-and-variables)
     - [Selected first population pipeline](#selected-first-population-pipeline)
 - [Initial local vector basemap](#initial-local-vector-basemap)
@@ -106,6 +108,66 @@ Turf is the initial TypeScript geometry library; contributors must validate the
 selected operations against known fixtures before publishing results. A later
 DuckDB Spatial adapter may accelerate a proven method but must not change its
 meaning or its snapshot inputs.
+
+### D3-04 bounded geometry implementation
+
+`packages/story-core/src/geometry.ts` implements the synthetic-tested geometry
+path. It uses `@turf/intersect`, `@turf/difference`, and `@turf/area` 7.4.0,
+with clipping through locked `polyclip-ts` 0.16.8. Topology validation uses
+adaptive orientation predicates from `robust-predicates` 3.0.2. The area method
+is `turf-spherical-area`, version 1: Turf's Chamberlain–Duquette spherical
+approximation with radius 6,371,008.8 meters. It subtracts absolute hole areas
+from the absolute exterior area and sums disjoint polygon components. This is
+a spherical approximation, not an ellipsoidal survey measurement. It uses
+neither square-degree nor Web Mercator area and offers no projected-area
+alternative.
+
+The API accepts RFC 7946 Polygon or MultiPolygon geometry objects, with finite
+two-dimensional `[longitude, latitude]` coordinates in degrees. It rejects
+legacy CRS declarations rather than guessing a conversion. In-range swapped
+axes or mislabeled projected coordinates cannot be detected from numbers
+alone: callers must verify source CRS and coordinate order before import.
+Feature wrappers, altitude, poles, and longitude spans of 180 degrees or more
+are outside this bounded API. Each input and computed intersection is limited
+to 2,000 positions including ring closure and 128 total rings.
+
+Rings must be closed and simple. Empty, degenerate, self-touching,
+self-crossing, backtracking, and zero-area rings are rejected. Either winding
+direction is accepted. Holes must be strictly inside their exterior, without
+touching, crossing, overlapping, or nesting other holes. Multipart components
+must have disjoint interiors and boundaries; a component can lie within
+another component's hole. Overlapping or touching pieces require a separately
+approved union before use. Validation copies coordinates and performs no
+closure, snapping, simplification, repair, or dissolve.
+
+Results report `sourceAreaM2`, `intersectedAreaM2`, `fraction`, `overlap`, and
+the intersection geometry. No intersection, including boundary-only contact,
+returns `none`, zero intersected area/fraction, and null geometry. No remaining
+source-minus-study area returns `full`, fraction 1, and the original source
+area as both numerator and denominator. This avoids drift when clipping
+removes collinear vertices or changes summation order. Other intersections
+return `partial`, using the clipped area divided by source area. Nonfinite,
+nonpositive ring/component/source/intersection areas and partial ratios
+outside `(0, 1]` fail with explicit errors; ratios are never clamped. A tiny
+partial difference may be below numeric area resolution even though topology
+still reports partial.
+
+Coordinates, areas, and fractions retain JavaScript double precision without
+display rounding or a user-selected clipping epsilon. Reference rectangle
+tests use a relative tolerance of `1e-12`; this is a test tolerance, not a
+universal geographic accuracy guarantee. Turf's approximation can vary when
+diagonal boundary vertices are removed by clipping. The regression suite
+includes a valid near-full diagonal case that produces an area ratio above 1
+and is rejected, rather than repaired or silently normalized. Clipping failures
+throw an explicit intersection error; computed intersections are validated under
+the same bounds and topology rules as the inputs. A caller must retain that
+diagnostic and obtain method review before changing the boundary or area
+algorithm. This slice does not approve a real research snapshot.
+
+Verification evidence and environment limits are recorded in the
+[D3-04 receipt](../planning/receipts/D3-04/D3-04-task-44.md). The importer,
+source conversion, approved union, and integrated research workflow described
+above remain requirements for future work.
 
 ## Census sources and variables
 
