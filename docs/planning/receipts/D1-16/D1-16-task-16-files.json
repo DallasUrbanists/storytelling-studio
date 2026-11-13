@@ -1,0 +1,27 @@
+{
+  "issue": "D1-16",
+  "localReceiptId": "D1-16-task-16",
+  "baseCommit": "526e5d3a98e0aa0b78cdf7c6cb247e3e7592e0a8",
+  "files": [
+    {
+      "path": "apps/local-service/package.json",
+      "sha256": "c1865c9a71f41992ad47433e706be1b13d588d6139673baa05220df67ac08b97"
+    },
+    {
+      "path": "apps/local-service/src/db/database.ts",
+      "sha256": "a15b40eb7f3252eee8cf6937fdf1742d92b6e4880927674d7029c5493d19d9e2"
+    },
+    {
+      "path": "apps/local-service/src/db/project-repository.ts",
+      "sha256": "4a47891d0ca1bc36eeb8a9ba825f9159bb2604df26ab0b769d592f90e09ed9ec"
+    },
+    {
+      "path": "tests/persistence/revisions.test.ts",
+      "sha256": "fddcc673cc981db72df67055f05eec9d727bb6d03e70f5acd2e6bc717bc9e7b7"
+    },
+    {
+      "path": "docs/planning/receipts/D1-16/D1-16-task-16.md",
+      "sha256": "9758dfe66f3c57d0c1e8d0dfa2cdeec13b504f8e65d44fb5198930c37a7df6d1"
+    }
+  ]
+}

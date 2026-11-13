@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint --config eslint.config.mjs src/*.ts",
-    "test": "node --test ../../tests/persistence/security.test.ts",
-    "typecheck": "tsc --noEmit --strict --allowJs --checkJs --target es2022 --module nodenext --moduleResolution nodenext --allowImportingTsExtensions --skipLibCheck src/server.ts ../../tests/persistence/security.test.ts"
+    "lint": "eslint --config eslint.config.mjs src/**/*.ts src/*.ts",
+    "test": "node --test ../../tests/persistence/*.test.ts",
+    "typecheck": "tsc --noEmit --strict --allowJs --checkJs --target es2022 --module nodenext --moduleResolution nodenext --allowImportingTsExtensions --skipLibCheck src/server.ts src/db/database.ts src/db/project-repository.ts ../../tests/persistence/security.test.ts ../../tests/persistence/revisions.test.ts"
   }
 }
