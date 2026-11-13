@@ -22,7 +22,9 @@
     "test:core": "node --test tests/core/*.test.mjs tests/project-schema/*.test.mjs tests/roadway/*.test.mjs",
     "test:research": "node --test tests/research/*.test.mjs",
     "test:roadway": "node --test --test-isolation=none tests/roadway/*.test.mjs tests/roadway/*.test.ts",
-    "render:fixture": "node scripts/render-fixture.mjs"
+    "render:fixture": "node scripts/render-fixture.mjs",
+    "test:render-contract": "node tests/render-contract/run.mjs",
+    "test:render-contract:unit": "node --test --test-isolation=none tests/render-contract/compare.test.mjs tests/render-contract/browser.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
