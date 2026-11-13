@@ -4,8 +4,7 @@ Original Storytelling Studio work uses the [MIT license](LICENSE). That license
 does not replace the terms of third-party material, dependencies, datasets,
 imagery, fonts, icons, or other assets.
 
-Status: documentation-only planning baseline, November 11, 2026. No application
-dependency installation or media bundle is represented by this notice.
+The workspace uses third-party dependencies under their own licenses.
 
 ## Adapted documentation
 
@@ -35,3 +34,9 @@ nonprofit status does not automatically grant rights in third-party assets.
 Maintainers should add exact installed dependency notices and source-specific
 asset notices when those materials are acquired. Publication approval requires
 a complete source manifest and actual rights evidence for the selected assets.
+
+## Synthetic fixture font
+
+The synthetic bridge fixture includes Inter Regular v4.1, Copyright 2016
+the Inter Project Authors, under the SIL Open Font License 1.1. The full
+license and notices are retained in [OFL-Inter.txt](tests/fixtures/synthetic-story/assets/OFL-Inter.txt).

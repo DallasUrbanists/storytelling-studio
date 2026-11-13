@@ -440,3 +440,20 @@ intervals. The [receipt](../planning/receipts/D1-04/D1-04-20261111-01.md)
 records checks and unsupported modes. Camera fitting, authored variant
 framing, terrain, globe, multipart and antimeridian geometry, timed fills,
 resource readiness, and browser pixel parity remain future work.
+
+## Implemented bridge map adapter
+
+D1-05 mounts a fixed-size local MapLibre and SVG surface and applies evaluated
+frames. Hosts supply same-origin style and font resources and set the pinned
+MapLibre worker URL. Each frame request resolves only after its own mutation,
+render, idle, loaded map, ready tiles, and font readiness. Superseded requests
+fail. Missing resources, deadlines, graphics context loss, incorrect viewport
+dimensions, and a camera MapLibre cannot represent produce specific failures.
+Dispose removes the owned map, overlay, and font. See the
+[receipt](../planning/receipts/D1-05/D1-05-20261111-01.md) for procedures.
+
+The adapter supports the local synthetic static style, not a verified Vue or
+Remotion integration. Production worker bundling, browser pixel parity, outside
+dimming, leader-line labels, and the complete Gate B fixture remain unverified.
+A static draft fallback requires a permitted geographically registered image;
+it does not pass the moving MapLibre gate.
