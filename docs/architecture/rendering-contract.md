@@ -134,6 +134,38 @@ Each variant can override camera keyframes and label positions to preserve the
 focus within its frame. Export must not crop a completed landscape video to
 produce the portrait version.
 
+### Focus sequence evaluation
+
+The D2-01 core extension evaluates a validated scene's ordered `focusSteps`
+from scene-local time alone. It supports empty, single, and arbitrary-length
+sequences. At a shared half-open boundary the incoming step owns the frame.
+The returned `focus` contains its `stepId`, `featureRevisionId`, a detached copy
+of source `geometry`, the variant-resolved target `extent`, and `transition`
+metadata. Geometry and extent switch at step entry; geometry is not morphed.
+Outside any step, including an empty sequence, `focus` is `null` and the camera
+comes from the scene's saved `cameraTrack` at that same local frame. Layer,
+annotation, and outside-dimming evaluation remain independent of focus.
+
+A cut applies the saved target camera immediately and reports progress 1.
+A linear entrance reports `fromStepId` and progress
+`min(1, (localFrame - startFrame) / durationFrames)`. At its start the camera is
+the preceding step's saved target; at `startFrame + durationFrames` it is exactly
+the incoming target and then holds. The core resolves both targets' variant
+overrides before interpolating, using the existing Mercator center, linear zoom,
+shortest bearing, and positive half-turn rules. There is no camera inherited
+from a previously evaluated frame or a preceding scene. A linear entrance across
+a gap or at the first step is invalid, so evaluation never needs to invent an
+initial camera. Saved extents remain target metadata during camera interpolation.
+
+The frame snapshot is deeply frozen and does not freeze or alias saved step
+arrays or overrides. Legacy scenes with only `focusFeatureRevisionId` keep the
+original `{ featureRevisionId, geometry }` focus shape and camera-track behavior.
+Both forms use the same `evaluateFrame` entry point. The focus suite in
+`tests/core/focus.test.mjs` checks every frame of a five-step sequence in both
+variants, reverse/repeated seeks, retimed reorder, gaps, overrides, scene
+boundaries, and validation failures. This core proof does not establish browser
+pixel parity, automatic fitting, focus controls, or full Gate B acceptance.
+
 ## Geometry, layers, and labels
 
 The core must compute trace geometry from saved shapes and absolute frame

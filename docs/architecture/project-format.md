@@ -381,7 +381,53 @@ on any saved geometry and is not constrained to a city-neighborhood-street
 hierarchy. The Dallas-to-Oak-Lawn-to-Maple sequence is a project, not a schema
 rule or a hardcoded navigation path.
 
-Each map scene must store explicit camera keyframes. **Fit focus** is an author
+### Ordered focus steps
+
+The D2-01 schema extension accepts a map scene with `focusSteps` instead of
+the legacy `focusFeatureRevisionId`. Both fields together are invalid. Legacy
+scenes retain their original serialized frame state; the parser does not rewrite
+saved documents. `focusSteps: []` explicitly means no focus. There is no fixed
+step count. Editor controls and automatic camera fitting remain future work.
+
+Each step has a scene-scoped stable `id`, a saved `featureRevisionId`, and integer
+`startFrame` and `endFrameExclusive` values within the scene. The array is ordered
+by time, with nonoverlapping, half-open intervals. Repeated feature references
+are valid; repeated step IDs are invalid. Reordering requires explicitly retimed
+intervals while preserving step IDs and their associated overrides. Gaps are
+valid and have no active focus.
+
+A step saves `extent: [west, south, east, north]` in WGS84 degrees, and a complete
+target `camera: { center, zoom, bearing, pitch: 0 }`. Bounds must be finite,
+ordered, within longitude ±180 and Mercator latitude ±85.05112878, and must not
+cross the antimeridian. Zero-width or zero-height bounds are permitted, including
+point extents. The extent is an authored framing target, not replacement source
+geometry or a claim that the target camera has been fitted. Camera fitting is
+D2-03 work; evaluation uses saved camera values without refitting.
+
+Every step declares `transition: { kind: "cut" }` or
+`{ kind: "linear", durationFrames: N }`. A linear entrance requires a contiguous
+preceding step and an integer `0 < N < endFrameExclusive - startFrame`. Its
+camera interpolates from that preceding step's saved target to this target.
+The first step and any step following a gap must use a cut. A cut can occupy
+one frame; its transition carries no duration field.
+
+Optional step `variantOverrides.portrait` and `.landscape` records can replace
+`extent`, a complete `camera`, or both. Omitted values use the base step. They
+cannot change IDs, source references, timing, transitions, or factual content.
+Unknown fields and modes are rejected rather than silently ignored.
+
+`FocusValidationError` exposes `code` and `path` for future authoring controls.
+Codes distinguish `invalid-step-id`, `duplicate-step-id`, `invalid-interval`,
+`missing-reference`, `invalid-extent`, `invalid-camera`, `invalid-transition`,
+`invalid-override`, `ambiguous-focus`, and `unsupported-field`. Sequence
+validation runs in `parseProject` before frame evaluation; invalid order,
+overlap, fractional intervals, and out-of-scene ranges are errors. A malformed
+record can violate multiple rules; the first detected rule supplies the error.
+
+### Cameras and persistent layers
+
+Each map scene stores explicit camera keyframes as its fallback track; an active
+focus step supplies its saved camera target and entrance instead. **Fit focus** is an author
 action that computes camera values from geometry and the chosen output frame;
 the resulting keyframes are saved. Changing a geometry does not cause hidden
 camera refitting during export.

@@ -1,3 +1,5 @@
+import type { SceneFocus } from './focus.ts';
+
 /** A width with explicit evidence; unknown widths make no numeric assertion. */
 export type RoadwayDimension =
   | { status: 'unknown' }
@@ -58,5 +60,5 @@ export type ProjectDocument = {
   features: { id: string; name: string; kind: 'point' | 'line' | 'area'; currentRevisionId: string }[];
   featureRevisions: { id: string; featureId: string; geometry: Geometry; geometrySha256: string; sourceIds: string[] }[];
   layers: { id: string; featureRevisionId: string; order: number; startFrame: number; endFrameExclusive: number; trace?: { startFrame: number; endFrameExclusive: number; mode: 'line' | 'outer-ring' } }[];
-  scenes: { id: string; kind: 'map'; durationFrames: number; focusFeatureRevisionId: string; outsideDimming?: OutsideDimming; cameraTrack: CameraKeyframe[]; annotations: { id: string; text: string; anchor: Position; leaderLine?: LeaderLine; startFrame: number; fadeInEndFrame: number; fadeOutStartFrame: number; endFrameExclusive: number }[] }[];
+  scenes: ({ id: string; kind: 'map'; durationFrames: number; outsideDimming?: OutsideDimming; cameraTrack: CameraKeyframe[]; annotations: { id: string; text: string; anchor: Position; leaderLine?: LeaderLine; startFrame: number; fadeInEndFrame: number; fadeOutStartFrame: number; endFrameExclusive: number }[] } & SceneFocus)[];
 };
