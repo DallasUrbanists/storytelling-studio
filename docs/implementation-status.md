@@ -171,3 +171,13 @@ stop, and static and unit checks passed the Windows procedures in the
 and schema tests. The npm dependency audit reports seven moderate findings
 in the development-only lint chain; ESLint 9 is marked unsupported. No
 editor, persistence, or export workflow is implied by these stubs.
+
+## D1-05 supervised attempt: verified locally
+
+The shared map adapter passed seven Chromium cases, including request
+supersession, missing resources, deadlines, context loss, viewport failure,
+and camera constraints. Independent Sol review reproduced the viewport and
+camera problems and verified their fixes. The
+[receipt](planning/receipts/D1-05/D1-05-20261111-01.md) records the commands
+and limits. Vue and Remotion hosts, full Gate B fixture, parity, and export
+remain unverified.
