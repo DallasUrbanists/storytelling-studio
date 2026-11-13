@@ -179,5 +179,20 @@ supersession, missing resources, deadlines, context loss, viewport failure,
 and camera constraints. Independent Sol review reproduced the viewport and
 camera problems and verified their fixes. The
 [receipt](planning/receipts/D1-05/D1-05-20261111-01.md) records the commands
-and limits. Vue and Remotion hosts, full Gate B fixture, parity, and export
+and limits. At D1-05, the Vue and Remotion hosts, full Gate B fixture, parity, and export
 remain unverified.
+
+The supervising coordinator accepted D1-05 for D1-06 on November 13, 2026.
+[PR #88](https://github.com/DallasUrbanists/storytelling-studio/pull/88) merged
+reviewed head 057eada as b7f8d72 with the same tree. A clean Windows checkout
+of the merge passed npm run check, including 34 core and schema tests, and
+all seven MapLibre Chromium cases.
+
+## D1-06 supervised pilot
+
+The Vue and Quasar diagnostic preview passed coordinator verification on
+Windows. It sought frames out of order in both fixed dimensions, exposed
+deterministic state hashes, and supported keyboard navigation. The
+[receipt](planning/receipts/D1-06/D1-06-20261113-01.md) records the single
+Terra attempt, its sandbox limitation, and the coordinator's checks.
+Remotion integration, cross-host parity, and video export remain pending.

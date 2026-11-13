@@ -457,3 +457,14 @@ Remotion integration. Production worker bundling, browser pixel parity, outside
 dimming, leader-line labels, and the complete Gate B fixture remain unverified.
 A static draft fallback requires a permitted geographically registered image;
 it does not pass the moving MapLibre gate.
+
+## Diagnostic Vue preview
+
+The temporary `/bridge-preview` route hosts the synthetic fixture in Vue and
+Quasar. Frame and variant controls request independent evaluated snapshots;
+`window.__GSTORY_BRIDGE__` reports `requestedFrame`, `variant`, `readiness`,
+`stateHash` (SHA-256 of recursively key-sorted JSON), and `error`. The hash is
+available when the current request is ready. A pending or failed request hides
+the surface. Changing dimensions disposes the old surface; leaving the page
+also disposes it. This route is a fixture diagnostic. Browser
+accessibility, visual parity, and export remain subject to their own checks.
